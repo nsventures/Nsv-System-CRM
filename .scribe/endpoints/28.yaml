@@ -1,0 +1,417 @@
+name: 'Payment Method Management'
+description: ''
+endpoints:
+  -
+    httpMethods:
+      - GET
+    uri: 'api/payment-methods/{id?}'
+    metadata:
+      groupName: 'Payment Method Management'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'List or search payments methods.'
+      description: 'This endpoint retrieves a list of payments methods based on various filters. The user must be authenticated to perform this action. The request allows searching and sorting by different parameters.'
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Accept: application/json
+      workspace_id: 1
+    urlParameters:
+      id:
+        name: id
+        description: 'optional The ID of the tag to retrieve.'
+        required: false
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanUrlParameters:
+      id: 1
+    queryParameters:
+      search:
+        name: search
+        description: 'optional The search term to filter tags by title or id.'
+        required: false
+        example: Title
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      sort:
+        name: sort
+        description: 'optional The field to sort by. Defaults to "id". Sortable fields include: id,  created_at, and updated_at.'
+        required: false
+        example: id
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      order:
+        name: order
+        description: 'optional The sort order, either "ASC" or "DESC". Defaults to "DESC".'
+        required: false
+        example: ASC
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      limit:
+        name: limit
+        description: 'optional The number of tags per page for pagination.'
+        required: false
+        example: 10
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      offset:
+        name: offset
+        description: 'optional The offset for pagination, indicating the starting point of results.'
+        required: false
+        example: 0
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanQueryParameters:
+      search: Title
+      sort: id
+      order: ASC
+      limit: 10
+      offset: 0
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+            "error": false,
+            "message": "Payment Method retrieved successfully",
+            "total": 1,
+            "data": [
+              {
+          "id": 1,
+          "title": "Payment Method Title",
+          "created_at": "2025-04-16 09:41:57",
+          "updated_at": "2025-04-16 09:41:57"
+          }
+            ]
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 200
+        content: |-
+          {
+            "error": true,
+            "message": "Payment Method not found",
+            "total": 0,
+            "data": []
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 200
+        content: |-
+          {
+            "error": true,
+            "message": "Payment Methods not found",
+            "total": 0,
+            "data": []
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer gVv3hf1dek6aP8EaZD6cb45'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/payment-methods/store
+    metadata:
+      groupName: 'Payment Method Management'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Create a payment method.'
+      description: 'This endpoint creates a payment method. The user must be authenticated to perform this action.'
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Accept: application/json
+      workspace_id: 1
+      Content-Type: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      title:
+        name: title
+        description: 'The title of the payment method.'
+        required: true
+        example: Title
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanBodyParameters:
+      title: Title
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "error": false,
+          "message": "Payment Method created successfully.",
+          "id": 36,
+          "data": {
+                    'id' => '1',
+                    'title' => 'Title',
+                    'created_at =>'2025-04-16',
+                    'updated_at' =>'2025-04-16',
+                   }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 422
+        content: |-
+          {
+            "error": true,
+            "message": "Validation errors occurred",
+            "errors": {
+              "id": [
+                "The id field is required."
+              ],
+              "title": [
+                "The title field is required."
+              ],
+
+            }
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 500
+        content: |-
+          {
+            "error": true,
+            "message": "An error occurred while creating the payment method."
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6ad413EgP5ZvDfae8h6Vkcb'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/payment-methods/update
+    metadata:
+      groupName: 'Payment Method Management'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Update an existing payment method.'
+      description: 'This endpoint updates an existing payment method with the specified id. The user must be authenticated to perform this action.'
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Accept: application/json
+      workspace_id: 1
+      Content-Type: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      id:
+        name: id
+        description: 'The id of the payment method. Example : 1'
+        required: true
+        example: quas
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+      title:
+        name: title
+        description: 'The title of the payment method.'
+        required: true
+        example: Title
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanBodyParameters:
+      id: quas
+      title: Title
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "error": false,
+          "message": "Payment Method created successfully.",
+          "id": 36,
+          "data": {
+                    'id' => '1',
+                    'title' => 'Title',
+                    'created_at =>'2025-04-16',
+                    'updated_at' =>'2025-04-16',
+                   }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 422
+        content: |-
+          {
+            "error": true,
+            "message": "Validation errors occurred",
+            "errors": {
+              "id": [
+                "The id field is required."
+              ],
+              "title": [
+                "The title field is required."
+              ],
+
+            }
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 500
+        content: |-
+          {
+            "error": true,
+            "message": "An error occurred while creating the payment method."
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer av3hg6PEce6541DVafZbk8d'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - DELETE
+    uri: 'api/payment-methods/destroy/{id}'
+    metadata:
+      groupName: 'Payment Method Management'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Remove the specified payment method.'
+      description: 'This endpoint deletes a payment method based on the provided ID. The user must be authenticated to perform this action.'
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Accept: application/json
+      workspace_id: 1
+    urlParameters:
+      id:
+        name: id
+        description: 'The ID of the todo to be deleted.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanUrlParameters:
+      id: 1
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+            "error": false,
+            "message": "Payment Method deleted successfully.",
+            "id": 1,
+            "data": []
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 200
+        content: |-
+          {
+            "error": true,
+            "message": "Payment Method not found.",
+            "data": []
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 500
+        content: |-
+          {
+            "error": true,
+            "message": "An error occurred while deleting the Payment Method."
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer c8EvZbfhdDkgaP6e341a5V6'
+    controller: null
+    method: null
+    route: null
+    custom: []

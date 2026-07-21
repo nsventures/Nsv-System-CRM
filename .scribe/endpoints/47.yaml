@@ -1,0 +1,471 @@
+name: 'Time Tracker Management'
+description: ''
+endpoints:
+  -
+    httpMethods:
+      - POST
+    uri: api/time-tracker/store
+    metadata:
+      groupName: 'Time Tracker Management'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Start a new time tracker.'
+      description: 'Creates a new time tracking record for the authenticated user with the current start time and an optional message.'
+      authenticated: false
+      custom: []
+    headers:
+      Accept: application/json
+      workspace_id: 1
+      Content-Type: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      message:
+        name: message
+        description: 'optional A description or note for the time tracking session.'
+        required: false
+        example: 'Working on project X'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      isApi:
+        name: isApi
+        description: 'optional Whether to return a formatted API response. Defaults to false.'
+        required: false
+        example: true
+        type: boolean
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanBodyParameters:
+      message: 'Working on project X'
+      isApi: true
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+            "error": false,
+            "message": "Timer has been started successfully.",
+            "data": {
+              "id": 1,
+              "user": "<a href=\"/users/3\">John Doe</a>",
+              "start_date_time": "30 May, 2025 14:34:00",
+              "end_date_time": "-",
+              "message": "Working on project X",
+              "created_at": "30 May, 2025",
+              "updated_at": "30 May, 2025"
+            }
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 500
+        content: |-
+          {
+            "error": true,
+            "message": "An error occurred.",
+            "data": []
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/time-tracker/update
+    metadata:
+      groupName: 'Time Tracker Management'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Stop an existing time tracker.'
+      description: 'Updates an existing time tracking record with the current end time and an optional message.'
+      authenticated: false
+      custom: []
+    headers:
+      Accept: application/json
+      workspace_id: 1
+      Content-Type: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      record_id:
+        name: record_id
+        description: 'The ID of the time tracker to stop. Must exist in the `time_trackers` table.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      message:
+        name: message
+        description: 'optional A description or note for the time tracking session.'
+        required: false
+        example: 'Completed project X task'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      isApi:
+        name: isApi
+        description: 'optional Whether to return a formatted API response. Defaults to false.'
+        required: false
+        example: true
+        type: boolean
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanBodyParameters:
+      record_id: 1
+      message: 'Completed project X task'
+      isApi: true
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+            "error": false,
+            "message": "Timer has been stopped successfully.",
+            "data": {
+              "id": 1,
+              "user": "<a href=\"/users/3\">John Doe</a>",
+              "start_date_time": "30 May, 2025 14:34:00",
+              "end_date_time": "30 May, 2025 16:34:00",
+              "message": "Completed project X task",
+              "created_at": "30 May, 2025",
+              "updated_at": "30 May, 2025"
+            }
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 404
+        content: |-
+          {
+            "error": true,
+            "message": "No query results for model [App\\Models\\TimeTracker] 9999",
+            "data": []
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 500
+        content: |-
+          {
+            "error": true,
+            "message": "An error occurred.",
+            "data": []
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: api/time-tracker/list
+    metadata:
+      groupName: 'Time Tracker Management'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Get list of time trackers.'
+      description: 'Returns a list of time tracking records for the current workspace in API format, with optional filtering and sorting.'
+      authenticated: false
+      custom: []
+    headers:
+      Accept: application/json
+      workspace_id: 1
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters:
+      search:
+        name: search
+        description: 'optional Search term to filter time trackers by message.'
+        required: false
+        example: project
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      sort:
+        name: sort
+        description: 'optional Field to sort by. Defaults to id.'
+        required: false
+        example: start_date_time
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      order:
+        name: order
+        description: 'optional Sort order: ASC or DESC. Defaults to DESC.'
+        required: false
+        example: ASC
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      limit:
+        name: limit
+        description: 'optional Number of records to return. Defaults to 10.'
+        required: false
+        example: 20
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      offset:
+        name: offset
+        description: 'optional Number of records to skip. Defaults to 0.'
+        required: false
+        example: 10
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      user_id:
+        name: user_id
+        description: 'optional Filter by user ID.'
+        required: false
+        example: 3
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      date_between_from:
+        name: date_between_from
+        description: 'optional Start date for filtering records (YYYY-MM-DD).'
+        required: false
+        example: '2025-05-01'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      date_between_to:
+        name: date_between_to
+        description: 'optional End date for filtering records (YYYY-MM-DD).'
+        required: false
+        example: '2025-05-31'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      start_date_from:
+        name: start_date_from
+        description: 'optional Start date for filtering start_date_time (YYYY-MM-DD).'
+        required: false
+        example: '2025-05-01'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      start_date_to:
+        name: start_date_to
+        description: 'optional End date for filtering start_date_time (YYYY-MM-DD).'
+        required: false
+        example: '2025-05-31'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      end_date_from:
+        name: end_date_from
+        description: 'optional Start date for filtering end_date_time (YYYY-MM-DD).'
+        required: false
+        example: '2025-05-01'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      end_date_to:
+        name: end_date_to
+        description: 'optional End date for filtering end_date_time (YYYY-MM-DD).'
+        required: false
+        example: '2025-05-31'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanQueryParameters:
+      search: project
+      sort: start_date_time
+      order: ASC
+      limit: 20
+      offset: 10
+      user_id: 3
+      date_between_from: '2025-05-01'
+      date_between_to: '2025-05-31'
+      start_date_from: '2025-05-01'
+      start_date_to: '2025-05-31'
+      end_date_from: '2025-05-01'
+      end_date_to: '2025-05-31'
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+            "error": false,
+            "message": "Record(s) retrieved successfully!",
+            "total": 1,
+            "data": [
+              {
+                "id": 1,
+                "user": "<a href=\"/users/3\">John Doe</a>",
+                "start_date_time": "30 May, 2025 14:34:00",
+                "end_date_time": "30 May, 2025 16:34:00",
+                "message": "Working on project X",
+                "created_at": "30 May, 2025",
+                "updated_at": "30 May, 2025"
+              }
+            ]
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 500
+        content: |-
+          {
+            "error": true,
+            "message": "An error occurred.",
+            "data": []
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - DELETE
+    uri: 'api/time-tracker/destroy/{id}'
+    metadata:
+      groupName: 'Time Tracker Management'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Delete a time tracker.'
+      description: 'Deletes the specified time tracking record.'
+      authenticated: false
+      custom: []
+    headers:
+      Accept: application/json
+      workspace_id: 1
+      Content-Type: application/json
+    urlParameters:
+      id:
+        name: id
+        description: 'The ID of the time tracker to delete. Must exist in the `time_trackers` table.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanUrlParameters:
+      id: 1
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      isApi:
+        name: isApi
+        description: 'optional Whether to return a formatted API response. Defaults to false.'
+        required: false
+        example: true
+        type: boolean
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanBodyParameters:
+      isApi: true
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+            "error": false,
+            "message": "Record deleted successfully.",
+
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 404
+        content: |-
+          {
+            "error": true,
+            "message": "No query results for model [App\\Models\\TimeTracker] 9999",
+
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 500
+        content: |-
+          {
+            "error": true,
+            "message": "An error occurred.",
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []

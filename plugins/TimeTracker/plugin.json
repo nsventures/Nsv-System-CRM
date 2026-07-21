@@ -1,0 +1,9 @@
+{
+    "name": "Taskify - Team Monitoring & Productivity Tracker",
+    "slug": "time-tracker",
+    "description": "Tracks user time and screenshots for productivity analysis.",
+    "version": "1.0.2",
+    "enabled": true,
+    "provider": "Plugins\\TimeTracker\\Providers\\TimeTrackerServiceProvider",
+    "publish_tag": "timetracker-assets"
+}

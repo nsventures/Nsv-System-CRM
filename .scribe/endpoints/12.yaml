@@ -1,0 +1,1492 @@
+name: 'Task Management'
+description: ''
+endpoints:
+  -
+    httpMethods:
+      - POST
+    uri: api/tasks/store
+    metadata:
+      groupName: 'Task Management'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Create a new task.'
+      description: 'This endpoint creates a new task with the provided details. The user must be authenticated to perform this action. The request validates various fields, including title, status, priority, start and due dates, project association, and optional notes.'
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Accept: application/json
+      workspace_id: 1
+      Content-Type: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      title:
+        name: title
+        description: 'The title of the task.'
+        required: true
+        example: 'New Task'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      status_id:
+        name: status_id
+        description: 'The status of the task. Must exist in the `statuses` table.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      priority_id:
+        name: priority_id
+        description: 'nullable The priority of the task. Must exist in the `priorities` table.'
+        required: false
+        example: 2
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      start_date:
+        name: start_date
+        description: 'optional The start date of the task in the format specified in the general settings.'
+        required: false
+        example: '2024-07-20'
+        type: string|null
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      due_date:
+        name: due_date
+        description: 'optional The due date of the task in the format specified in the general settings.'
+        required: false
+        example: '2024-08-20'
+        type: string|null
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      description:
+        name: description
+        description: 'nullable A description of the task.'
+        required: false
+        example: 'This is a detailed description of the task.'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      project:
+        name: project
+        description: 'The ID of the project associated with the task. Must exist in the `projects` table.'
+        required: true
+        example: 10
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      note:
+        name: note
+        description: 'nullable Additional notes about the task.'
+        required: false
+        example: Urgent
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      user_id:
+        name: user_id
+        description: 'nullable An array of user IDs to be assigned to the task.'
+        required: false
+        example:
+          - 1
+          - 2
+          - 3
+        type: 'string[]'
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      clientCanDiscuss:
+        name: clientCanDiscuss
+        description: "optional Indicates if the client can participate in task discussions. Can only specify if `is_admin_or_has_all_data_access` is true for the logged-in user; otherwise, it will be considered 0 by default. The value should be 'on' to allow client participation."
+        required: false
+        example: 'on'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanBodyParameters:
+      title: 'New Task'
+      status_id: 1
+      priority_id: 2
+      start_date: '2024-07-20'
+      due_date: '2024-08-20'
+      description: 'This is a detailed description of the task.'
+      project: 10
+      note: Urgent
+      user_id:
+        - 1
+        - 2
+        - 3
+      clientCanDiscuss: 'on'
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "error": false,
+          "message": "Task created successfully.",
+          "id": 280,
+          "parent_id": "420",
+          "parent_type": "project",
+          "data": {
+            "id": 280,
+            "workspace_id": 6,
+            "title": "Res Test",
+            "status": "Default",
+            "status_id": "0",
+            "priority": "Default",
+            "priority_id": "0",
+            "users": [
+              {
+                "id": 7,
+                "first_name": "Madhavan",
+                "last_name": "Vaidya",
+                "photo": "https://test-taskify.infinitietech.com/storage/photos/yxNYBlFLALdLomrL0JzUY2USPLILL9Ocr16j4n2o.png"
+              }
+            ],
+            "user_id": [1,2],
+            "clients": [
+              {
+                "id": 173,
+                "first_name": "666",
+                "last_name": "666",
+                "photo": "https://test-taskify.infinitietech.com/storage/photos/no-image.jpg"
+              }
+            ],
+            "start_date": "07-08-2024",
+            "due_date": "07-08-2024",
+            "project": {
+              "id": 420,
+              "title": "Updated Project Title"
+            },
+            "description": "Test Desc",
+            "note": "Test Note",
+            "created_at": "07-08-2024 13:02:52",
+            "updated_at": "07-08-2024 13:02:52"
+          }
+
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 422
+        content: |-
+          {
+           "error": true,
+           "message": "Validation errors occurred",
+           "errors": {
+             "title": ["The title field is required."],
+             "status_id": ["The selected status_id is invalid."],
+             ...
+           }
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 500
+        content: |-
+          {
+           "error": true,
+           "message": "An error occurred while creating the task."
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer gve3aD8cPdZEb4khV56af16'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: 'api/tasks/{id?}'
+    metadata:
+      groupName: 'Task Management'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'List or search tasks.'
+      description: 'This endpoint retrieves a list of tasks based on various filters. The user must be authenticated to perform this action. The request allows filtering by multiple statuses, users, clients, projects, date ranges, and other parameters.'
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Accept: application/json
+      workspace_id: 1
+      Content-Type: application/json
+    urlParameters:
+      id:
+        name: id
+        description: 'optional The ID of the task to retrieve.'
+        required: false
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanUrlParameters:
+      id: 1
+    queryParameters:
+      search:
+        name: search
+        description: 'optional The search term to filter tasks by title or id.'
+        required: false
+        example: Task
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      sort:
+        name: sort
+        description: 'optional The field to sort by. Defaults to "id". Sortable fields include: id, title, project, status, priority, start_date, due_date, created_at, and updated_at.'
+        required: false
+        example: title
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      order:
+        name: order
+        description: 'optional The sort order, either "ASC" or "DESC". Defaults to "DESC".'
+        required: false
+        example: ASC
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      status_ids:
+        name: status_ids
+        description: 'optional An array of status IDs to filter tasks by.'
+        required: false
+        example:
+          - 2
+          - 3
+        type: 'string[]'
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      user_ids:
+        name: user_ids
+        description: 'optional An array of user IDs to filter tasks by.'
+        required: false
+        example:
+          - 1
+          - 2
+          - 3
+        type: 'string[]'
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      client_ids:
+        name: client_ids
+        description: 'optional An array of client IDs to filter tasks by.'
+        required: false
+        example:
+          - 5
+          - 6
+        type: 'string[]'
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      priority_ids:
+        name: priority_ids
+        description: 'optional An array of priority IDs to filter tasks by.'
+        required: false
+        example:
+          - 1
+          - 2
+        type: 'string[]'
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      project_ids:
+        name: project_ids
+        description: 'optional An array of project IDs to filter tasks by.'
+        required: false
+        example:
+          - 1
+          - 2
+        type: 'string[]'
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      task_start_date_from:
+        name: task_start_date_from
+        description: "optional The start date range's start in YYYY-MM-DD format."
+        required: false
+        example: '2024-01-01'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      task_start_date_to:
+        name: task_start_date_to
+        description: "optional The start date range's end in YYYY-MM-DD format."
+        required: false
+        example: '2024-12-31'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      task_end_date_from:
+        name: task_end_date_from
+        description: "optional The end date range's start in YYYY-MM-DD format."
+        required: false
+        example: '2024-01-01'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      task_end_date_to:
+        name: task_end_date_to
+        description: "optional The end date range's end in YYYY-MM-DD format."
+        required: false
+        example: '2024-12-31'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      is_favorites:
+        name: is_favorites
+        description: 'optional Filter projects marked as favorites.'
+        required: false
+        example: true
+        type: boolean
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      limit:
+        name: limit
+        description: 'optional The number of tasks per page for pagination.'
+        required: false
+        example: 10
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      offset:
+        name: offset
+        description: 'optional The offset for pagination, indicating the starting point of results.'
+        required: false
+        example: 0
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanQueryParameters:
+      search: Task
+      sort: title
+      order: ASC
+      status_ids:
+        - 2
+        - 3
+      user_ids:
+        - 1
+        - 2
+        - 3
+      client_ids:
+        - 5
+        - 6
+      priority_ids:
+        - 1
+        - 2
+      project_ids:
+        - 1
+        - 2
+      task_start_date_from: '2024-01-01'
+      task_start_date_to: '2024-12-31'
+      task_end_date_from: '2024-01-01'
+      task_end_date_to: '2024-12-31'
+      is_favorites: true
+      limit: 10
+      offset: 0
+    bodyParameters:
+      user_ids:
+        name: user_ids
+        description: 'The <code>id</code> of an existing record in the users table.'
+        required: false
+        example:
+          - 17
+        type: 'integer[]'
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+      client_ids:
+        name: client_ids
+        description: 'The <code>id</code> of an existing record in the clients table.'
+        required: false
+        example:
+          - 8
+        type: 'integer[]'
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+      priority_ids:
+        name: priority_ids
+        description: 'The <code>id</code> of an existing record in the priorities table.'
+        required: false
+        example:
+          - 19
+        type: 'integer[]'
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+      project_ids:
+        name: project_ids
+        description: 'The <code>id</code> of an existing record in the projects table.'
+        required: false
+        example:
+          - 9
+        type: 'integer[]'
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+      status_ids:
+        name: status_ids
+        description: 'The <code>id</code> of an existing record in the statuses table.'
+        required: false
+        example:
+          - 19
+        type: 'integer[]'
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+    cleanBodyParameters:
+      user_ids:
+        - 17
+      client_ids:
+        - 8
+      priority_ids:
+        - 19
+      project_ids:
+        - 9
+      status_ids:
+        - 19
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+            "error": false,
+            "message": "Tasks retrieved successfully",
+            "total": 1,
+            "data": [
+              {
+                "id": 268,
+                "workspace_id": 6,
+                "title": "sdff",
+                "status": "Default",
+                "priority": "Default",
+                "users": [
+                  {
+                    "id": 7,
+                    "first_name": "Madhavan",
+                    "last_name": "Vaidya",
+                    "photo": "https://test-taskify.infinitietech.com/storage/photos/yxNYBlFLALdLomrL0JzUY2USPLILL9Ocr16j4n2o.png"
+                  }
+                ],
+                "clients": [
+                  {
+                    "id": 102,
+                    "first_name": "Test",
+                    "last_name": "Client",
+                    "photo": "https://test-taskify.infinitietech.com/storage/photos/no-image.jpg"
+                  }
+                ],
+                "start_date": "23-07-2024",
+                "due_date": "24-07-2024",
+                "project": {
+                  "id": 379,
+                  "title": "From API"
+                },
+                "description": "<p>Test Desc</p>",
+                "note": "Test note",
+                "created_at": "23-07-2024 17:50:09",
+                "updated_at": "23-07-2024 19:08:16"
+              }
+            ]
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 200
+        content: |-
+          {
+            "error": true,
+            "message": "Task not found",
+            "total": 0,
+            "data": []
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 200
+        content: |-
+          {
+            "error": true,
+            "message": "Tasks not found",
+            "total": 0,
+            "data": []
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 1f8b6ZdaPve3k5gV6ah4DEc'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/tasks/update
+    metadata:
+      groupName: 'Task Management'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Update an existing task.'
+      description: 'This endpoint updates the details of an existing task. The user must be authenticated to perform this action. The request validates various fields including title, status, priority, start and due dates, and optional notes. It also handles user assignments and notifies relevant parties of any status changes.'
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Accept: application/json
+      workspace_id: 1
+      Content-Type: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      id:
+        name: id
+        description: 'The ID of the task to be updated. Must exist in the `tasks` table.'
+        required: true
+        example: 267
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      title:
+        name: title
+        description: 'The title of the task.'
+        required: true
+        example: 'Updated Task'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      status_id:
+        name: status_id
+        description: 'The status of the task. Must exist in the `statuses` table.'
+        required: true
+        example: 2
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      priority_id:
+        name: priority_id
+        description: 'nullable The priority of the task. Must exist in the `priorities` table.'
+        required: false
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      start_date:
+        name: start_date
+        description: 'optional The start date of the task in the format specified in the general settings.'
+        required: false
+        example: '2024-07-20'
+        type: string|null
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      due_date:
+        name: due_date
+        description: 'optional The due date of the task in the format specified in the general settings.'
+        required: false
+        example: '2024-08-20'
+        type: string|null
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      description:
+        name: description
+        description: 'nullable A description of the task.'
+        required: false
+        example: 'Updated task description.'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      note:
+        name: note
+        description: 'nullable Additional notes about the task.'
+        required: false
+        example: 'Needs immediate attention.'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      user_id:
+        name: user_id
+        description: 'nullable An array of user IDs to be assigned to the task.'
+        required: false
+        example:
+          - 2
+          - 3
+        type: 'string[]'
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      clientCanDiscuss:
+        name: clientCanDiscuss
+        description: "optional Indicates if the client can participate in task discussions. Can only specify if `is_admin_or_has_all_data_access` is true for the logged-in user; otherwise, it will be considered current value by default. The value should be 'on' to allow client participation."
+        required: false
+        example: 'on'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanBodyParameters:
+      id: 267
+      title: 'Updated Task'
+      status_id: 2
+      priority_id: 1
+      start_date: '2024-07-20'
+      due_date: '2024-08-20'
+      description: 'Updated task description.'
+      note: 'Needs immediate attention.'
+      user_id:
+        - 2
+        - 3
+      clientCanDiscuss: 'on'
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "error": false,
+          "message": "Task updated successfully.",
+          "id": 280,
+          "parent_id": "420",
+          "parent_type": "project",
+          "data": {
+            "id": 280,
+            "workspace_id": 6,
+            "title": "Res Test",
+            "status": "Default",
+            "priority": "Default",
+            "users": [
+              {
+                "id": 7,
+                "first_name": "Madhavan",
+                "last_name": "Vaidya",
+                "photo": "https://test-taskify.infinitietech.com/storage/photos/yxNYBlFLALdLomrL0JzUY2USPLILL9Ocr16j4n2o.png"
+              }
+            ],
+            "clients": [
+              {
+                "id": 173,
+                "first_name": "666",
+                "last_name": "666",
+                "photo": "https://test-taskify.infinitietech.com/storage/photos/no-image.jpg"
+              }
+            ],
+            "start_date": "07-08-2024",
+            "due_date": "07-08-2024",
+            "project": {
+              "id": 420,
+              "title": "Updated Project Title"
+            },
+            "description": "Test Desc",
+            "note": "Test Note",
+            "created_at": "07-08-2024 13:02:52",
+            "updated_at": "07-08-2024 13:02:52"
+          }
+
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 422
+        content: |-
+          {
+           "error": true,
+           "message": "Validation errors occurred",
+           "errors": {
+             "id": ["The selected id is invalid."],
+             "title": ["The title field is required."],
+             "status_id": ["The selected status_id is invalid."],
+             ...
+           }
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 500
+        content: |-
+          {
+           "error": true,
+           "message": "An error occurred while updating the task."
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 5634V1vcf6eEbda8ahZPDkg'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - PATCH
+    uri: 'api/tasks/{id}/favorite'
+    metadata:
+      groupName: 'Task Management'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Update the favorite status of a task.'
+      description: 'This endpoint updates whether a task is marked as a favorite or not. The user must be authenticated to perform this action.'
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Accept: application/json
+      workspace_id: 1
+      Content-Type: application/json
+    urlParameters:
+      id:
+        name: id
+        description: 'The ID of the task to update.'
+        required: true
+        example: 12
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+    cleanUrlParameters:
+      id: 12
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      is_favorite:
+        name: is_favorite
+        description: 'Indicates whether the task is a favorite. Use 1 for true and 0 for false.'
+        required: true
+        example: 16
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+    cleanBodyParameters:
+      is_favorite: 16
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "error": false,
+          "message": "Task favorite status updated successfully",
+          "data": {
+            "id": 438,
+            "title": "Task Example"
+            // Other task details will be included in the actual response
+          }
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 200
+        content: |-
+          {
+            "error": true,
+            "message": "Task not found",
+            "data": []
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 422
+        content: |-
+          {
+            "error": true,
+            "message": "Validation errors occurred",
+            "errors": {
+              "is_favorite": [
+                "The is favorite field must be either 0 or 1."
+              ]
+            }
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 500
+        content: |-
+          {
+            "error": true,
+            "message": "An error occurred while updating the favorite status."
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 3aPbVa1eZvdfgc54h66E8Dk'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - PATCH
+    uri: 'api/tasks/{id}/pinned'
+    metadata:
+      groupName: 'Task Management'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Update the pinned status of a task.'
+      description: 'This endpoint updates whether a task is marked as pinned or not. The user must be authenticated to perform this action.'
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Accept: application/json
+      workspace_id: 1
+      Content-Type: application/json
+    urlParameters:
+      id:
+        name: id
+        description: 'The ID of the task to update.'
+        required: true
+        example: 17
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+    cleanUrlParameters:
+      id: 17
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      is_pinned:
+        name: is_pinned
+        description: 'Indicates whether the task is pinned. Use 1 for true and 0 for false.'
+        required: true
+        example: 20
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+    cleanBodyParameters:
+      is_pinned: 20
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "error": false,
+          "message": "Task pinned status updated successfully",
+          "data": {
+            "id": 438,
+            "title": "Task Example"
+            // Other task details will be included in the actual response
+          }
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 200
+        content: |-
+          {
+            "error": true,
+            "message": "Task not found",
+            "data": []
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 422
+        content: |-
+          {
+            "error": true,
+            "message": "Validation errors occurred",
+            "errors": {
+              "is_pinned": [
+                "The is pinned field must be either 0 or 1."
+              ]
+            }
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 500
+        content: |-
+          {
+            "error": true,
+            "message": "An error occurred while updating the pinned status."
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer cbf168PehvZ4gE6k3DaVad5'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - PATCH
+    uri: 'api/tasks/{id}/status'
+    metadata:
+      groupName: 'Task Management'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Update the status of a task.'
+      description: 'This endpoint updates the status of a specified task. The user must be authenticated and have permission to set the new status. A notification will be sent to all users and clients associated with the task.'
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Accept: application/json
+      workspace_id: 1
+      Content-Type: application/json
+    urlParameters:
+      id:
+        name: id
+        description: 'The ID of the task whose status is to be updated.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanUrlParameters:
+      id: 1
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      statusId:
+        name: statusId
+        description: 'The ID of the new status to set for the task. Must exist in the `statuses` table.'
+        required: true
+        example: 2
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      note:
+        name: note
+        description: 'optional An optional note to attach to the task update.'
+        required: false
+        example: 'Updated due to client request.'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanBodyParameters:
+      statusId: 2
+      note: 'Updated due to client request.'
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "error": false,
+          "message": "Status updated successfully.",
+          "id": "278",
+          "type": "task",
+          "activity_message": "Madhavan Vaidya updated task status from Ongoing to Completed",
+          "data": {
+          "id": 278,
+          "workspace_id": 6,
+          "title": "New Task",
+          "status": "Completed",
+          "priority": "dsfdsf",
+          "users": [
+          {
+          "id": 7,
+          "first_name": "Madhavan",
+          "last_name": "Vaidya",
+          "photo": "https://test-taskify.infinitietech.com/storage/photos/yxNYBlFLALdLomrL0JzUY2USPLILL9Ocr16j4n2o.png"
+          }
+          ],
+          "clients": [
+          {
+          "id": 173,
+          "first_name": "666",
+          "last_name": "666",
+          "photo": "https://test-taskify.infinitietech.com/storage/photos/no-image.jpg"
+          }
+          ],
+          "start_date": "20-08-2024",
+          "due_date": null,
+          "project": {
+          "id": 419,
+          "title": "Updated Project Title"
+          },
+          "description": "This is a detailed description of the task.",
+          "note": null,
+          "created_at": "06-08-2024 11:42:13",
+          "updated_at": "12-08-2024 15:18:09"
+          }
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 200
+        content: |-
+          {
+            "error": true,
+            "message": "You are not authorized to set this status."
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 422
+        content: |-
+          {
+            "error": true,
+            "message": "Validation errors occurred",
+            "errors": {
+              "id": [
+                "The selected id is invalid."
+              ],
+              "statusId": [
+                "The selected status id is invalid."
+              ]
+            }
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 500
+        content: |-
+          {
+            "error": true,
+            "message": "Status couldn't be updated."
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer eh13ZbdDcP5VgvaEa86kf64'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - PATCH
+    uri: 'api/tasks/{id}/priority'
+    metadata:
+      groupName: 'Task Management'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Update the priority of a task.'
+      description: 'This endpoint updates the priority of a specified task. The user must be authenticated and have permission to set the new priority.'
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Accept: application/json
+      workspace_id: 1
+      Content-Type: application/json
+    urlParameters:
+      id:
+        name: id
+        description: 'The ID of the task whose priority is to be updated.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanUrlParameters:
+      id: 1
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      priorityId:
+        name: priorityId
+        description: 'The ID of the new priority to set for the task. Must exist in the `priorities` table.'
+        required: true
+        example: 3
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanBodyParameters:
+      priorityId: 3
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "error": false,
+          "message": "Priority updated successfully.",
+          "id": "278",
+          "type": "task",
+          "activity_message": "Madhavan Vaidya updated task priority from Medium to High",
+          "data": {
+          "id": 278,
+          "workspace_id": 6,
+          "title": "New Task",
+          "status": "Completed",
+          "priority": "High",
+          "users": [
+          {
+          "id": 7,
+          "first_name": "Madhavan",
+          "last_name": "Vaidya",
+          "photo": "https://test-taskify.infinitietech.com/storage/photos/yxNYBlFLALdLomrL0JzUY2USPLILL9Ocr16j4n2o.png"
+          }
+          ],
+          "clients": [
+          {
+          "id": 173,
+          "first_name": "666",
+          "last_name": "666",
+          "photo": "https://test-taskify.infinitietech.com/storage/photos/no-image.jpg"
+          }
+          ],
+          "start_date": "20-08-2024",
+          "due_date": null,
+          "project": {
+          "id": 419,
+          "title": "Updated Project Title"
+          },
+          "description": "This is a detailed description of the task.",
+          "note": null,
+          "created_at": "06-08-2024 11:42:13",
+          "updated_at": "12-08-2024 15:40:41"
+          }
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 422
+        content: |-
+          {
+            "error": true,
+            "message": "Validation errors occurred",
+            "errors": {
+              "id": [
+                "The selected id is invalid."
+              ],
+              "priorityId": [
+                "The selected priorityId is invalid."
+              ]
+            }
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 500
+        content: |-
+          {
+            "error": true,
+            "message": "Priority couldn't be updated."
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 3vb4e5aEa68cfhVkP61ZDdg'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - DELETE
+    uri: 'api/tasks/destroy/{id}'
+    metadata:
+      groupName: 'Task Management'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Remove the specified task.'
+      description: 'This endpoint deletes a task based on the provided ID. The user must be authenticated to perform this action.'
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Accept: application/json
+      workspace_id: 1
+    urlParameters:
+      id:
+        name: id
+        description: 'The ID of the task to be deleted.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanUrlParameters:
+      id: 1
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+            "error": false,
+            "message": "Task deleted successfully.",
+            "id": "262",
+            "title": "From API",
+            "parent_id": 377,
+            "parent_type": "project",
+            "data": []
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 200
+        content: |-
+          {
+            "error": true,
+            "message": "Task not found.",
+            "data": []
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 500
+        content: |-
+          {
+            "error": true,
+            "message": "An error occurred while deleting the task."
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer v58ZVPdfb1Dhak46E63ecag'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: 'api/tasks/{id}/status-timelines'
+    metadata:
+      groupName: 'Task Management'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Get task status timeline.'
+      description: 'This endpoint retrieves the status change history of a task, sorted in descending order.'
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Accept: application/json
+      workspace_id: 1
+    urlParameters:
+      id:
+        name: id
+        description: 'The ID of the task whose status timeline is to be retrieved.'
+        required: true
+        example: 18
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+    cleanUrlParameters:
+      id: 18
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+            "error": false,
+            "message": "Status timeline retrieved successfully.",
+            "status_timeline": [
+              {
+                "id": 1,
+                "status": "In Progress",
+                "previous_status": "Pending",
+                "new_color": "#ffcc00",
+                "old_color": "#cccccc",
+                "changed_at": "2025-03-03"
+              },
+              {
+                "id": 2,
+                "status": "Completed",
+                "previous_status": "In Progress",
+                "new_color": "#00cc66",
+                "old_color": "#ffcc00",
+                "changed_at": "2025-03-05 16:00:00"
+              }
+            ]
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 404
+        content: |-
+          {
+            "error": true,
+            "message": "Task not found."
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 500
+        content: |-
+          {
+            "error": true,
+            "message": "Could not retrieve status timeline."
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer c6Db6g3aVE4Pkea1hZdv58f'
+    controller: null
+    method: null
+    route: null
+    custom: []

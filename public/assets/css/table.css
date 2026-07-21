@@ -1,0 +1,508 @@
+/* =====================================================================
+   Taskify v2 — Design-system table (one source for ALL tables).
+   ===================================================================== */
+body.v2-shell .bootstrap-table {
+    font-family: var(--bs-font-sans-serif, sans-serif);
+    color: var(--fg-1);
+    background: var(--bg-1);
+    border: 0 !important;
+    border-radius: var(--r-2);
+    overflow: hidden;
+    box-shadow: none !important;
+}
+
+/* --- Toolbar bar: flex row, NO floats (overrides bootstrap-table.min.css). --- */
+body.v2-shell .bootstrap-table .fixed-table-toolbar {
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--line) !important;
+    /* Clean light line */
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+}
+
+body.v2-shell .bootstrap-table .fixed-table-toolbar::after {
+    display: none !important;
+    content: none !important;
+}
+
+/* Bulletproof spacer to push everything after it to the right */
+body.v2-shell .bootstrap-table .fixed-table-toolbar::before {
+    content: "" !important;
+    display: block !important;
+    flex: 1 1 auto !important;
+    order: 1 !important;
+    /* Sits between columns-left and search */
+}
+
+body.v2-shell .bootstrap-table .fixed-table-toolbar>* {
+    float: none !important;
+    margin: 0 !important;
+}
+
+body.v2-shell .bootstrap-table .fixed-table-toolbar .columns-left {
+    order: 0;
+    /* Keep them first (Left side) */
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-left: 0 !important;
+}
+
+body.v2-shell .bootstrap-table .fixed-table-toolbar .search {
+    order: 2;
+    /* Sits after the flex spacer (Right side) */
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    margin: 0 !important;
+}
+
+body.v2-shell .bootstrap-table .fixed-table-toolbar .columns-right {
+    order: 3;
+    /* Refresh and Column menu last (Right side) */
+    margin-left: 0 !important;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+body.v2-shell .bootstrap-table .fixed-table-toolbar .search input {
+    height: var(--ctrl-h-sm);
+    /* Using smaller design system size */
+    width: 100%;
+    max-width: 250px;
+    padding: 0 10px;
+    background: var(--bg-1);
+    border: 1px solid var(--line);
+    color: var(--fg-0);
+    border-radius: var(--r-2);
+    font-size: 13px;
+}
+
+body.v2-shell .bootstrap-table .fixed-table-toolbar .search input:focus {
+    border-color: var(--signal);
+    box-shadow: var(--shadow-focus);
+    outline: none;
+}
+
+body.v2-shell .bootstrap-table .fixed-table-toolbar .columns-left .btn {
+    height: var(--ctrl-h-sm);
+    /* Smaller design system buttons */
+    padding: 0 10px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--bg-1) !important;
+    border: 1px solid var(--line) !important;
+    color: var(--fg-1) !important;
+    border-radius: var(--r-2) !important;
+    font-size: 12.5px;
+    font-weight: 500;
+}
+
+body.v2-shell .bootstrap-table .fixed-table-toolbar .columns-left .btn:hover {
+    background: var(--bg-2) !important;
+    color: var(--fg-0) !important;
+}
+
+body.v2-shell .bootstrap-table .fixed-table-toolbar .columns-right .btn {
+    width: var(--ctrl-h-sm);
+    height: var(--ctrl-h-sm);
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent !important;
+    border: 0 !important;
+    color: var(--fg-2) !important;
+    border-radius: var(--r-2) !important;
+}
+
+body.v2-shell .bootstrap-table .fixed-table-toolbar .columns-right .btn:hover {
+    background: var(--bg-2) !important;
+    color: var(--fg-0) !important;
+}
+
+/* --- Table surface & Layout --- */
+body.v2-shell .bootstrap-table>div:not(.fixed-table-toolbar) {
+    border-top: 0 !important;
+    border-bottom: 0 !important;
+    box-shadow: none !important;
+}
+
+body.v2-shell .bootstrap-table .fixed-table-container,
+body.v2-shell .bootstrap-table .fixed-table-container.fixed-height,
+body.v2-shell .bootstrap-table .fixed-table-container.fixed-height:not(.has-footer) {
+    border: 0 !important;
+    border-bottom: 0 !important;
+    padding: 0 !important;
+    clear: none !important;
+    box-shadow: none !important;
+}
+
+body.v2-shell .bootstrap-table .fixed-table-header {
+    border: 0 !important;
+    border-bottom: 0 !important;
+}
+
+body.v2-shell .bootstrap-table .fixed-table-body {
+    border: 0 !important;
+    border-bottom: 0 !important;
+}
+
+body.v2-shell .bootstrap-table .fixed-table-border {
+    display: none !important;
+}
+
+body.v2-shell .bootstrap-table table.table,
+body.v2-shell .bootstrap-table table.table>tbody,
+body.v2-shell .bootstrap-table table.table>tfoot {
+    margin: 0 !important;
+    background: transparent;
+    border: 0 !important;
+    border-top: 0 !important;
+    border-bottom: 0 !important;
+    border-collapse: collapse;
+    box-shadow: none !important;
+    color: var(--fg-1);
+    font-size: 13px;
+    /* Compact size */
+    width: 100%;
+}
+
+body.v2-shell .table-responsive {
+    border: 0 !important;
+    border-bottom: 0 !important;
+    box-shadow: none !important;
+}
+
+/* Clean Header styling */
+body.v2-shell .bootstrap-table table.table>thead {
+    border-color: var(--line) !important;
+}
+
+body.v2-shell .bootstrap-table table.table>thead>tr {
+    border-color: var(--line) !important;
+}
+
+body.v2-shell .bootstrap-table table.table>thead>tr>th {
+    background: transparent !important;
+    color: var(--fg-3);
+    font-size: 10.5px;
+    /* var(--fs-xs) */
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    /* var(--tracking-wide) */
+    white-space: nowrap;
+    text-align: left;
+    vertical-align: middle;
+    border-color: var(--line) !important;
+    border-bottom: 1px solid var(--line) !important;
+    border-right: 1px solid var(--line) !important;
+    box-shadow: none !important;
+    padding: 12px 14px;
+}
+
+body.v2-shell .bootstrap-table table.table>thead>tr>th:last-child {
+    border-right: 0 !important;
+}
+
+body.v2-shell .bootstrap-table table.table>tbody>tr>td {
+    border: 0 !important;
+    border-bottom: 1px solid var(--line) !important;
+    border-right: 1px solid var(--line) !important;
+    padding: 14px 14px;
+    /* Clean padding */
+    color: var(--fg-1);
+    vertical-align: middle;
+    white-space: nowrap;
+    /* Prevent messy line breaking */
+}
+
+body.v2-shell .bootstrap-table table.table>tbody>tr>td:last-child {
+    border-right: 0 !important;
+}
+
+/* Fix for links (like project titles) being bright blue */
+body.v2-shell .bootstrap-table table.table>tbody>tr>td a:not(.btn):not(.quick-view):not(.edit-project):not(.duplicate) {
+    color: var(--fg-0);
+    text-decoration: none;
+    font-weight: 600;
+}
+
+body.v2-shell .bootstrap-table table.table>tbody>tr>td a:not(.btn):not(.quick-view):not(.edit-project):not(.duplicate):hover {
+    color: var(--signal);
+}
+
+body.v2-shell .bootstrap-table table.table>tbody>tr:hover>td {
+    background: var(--bg-2);
+}
+
+body.v2-shell .bootstrap-table table.table>tbody>tr:last-child>td {
+    border-bottom: 1px solid var(--line) !important;
+}
+
+/* Utility column widths */
+body.v2-shell .bootstrap-table table.table th.bs-checkbox,
+body.v2-shell .bootstrap-table table.table td.bs-checkbox {
+    width: 54px;
+    text-align: center;
+    padding: 16px 0 16px 24px;
+}
+
+body.v2-shell .bootstrap-table table.table th[data-field="actions"],
+body.v2-shell .bootstrap-table table.table td[data-field="actions"] {
+    width: 80px;
+    text-align: right;
+}
+
+/* Restyled Checkboxes */
+body.v2-shell .bootstrap-table .fixed-table-body {
+    scrollbar-width: none;
+}
+
+body.v2-shell .bootstrap-table .fixed-table-body::-webkit-scrollbar {
+    display: none;
+}
+
+body.v2-shell .bootstrap-table table.table input[type="checkbox"],
+body.v2-shell .bootstrap-table .fixed-table-toolbar .columns-right .dropdown-menu input[type="checkbox"] {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 16px;
+    /* Compact size */
+    height: 16px;
+    margin: 0;
+    vertical-align: middle;
+    border: 1.5px solid var(--line-2);
+    /* Softer border */
+    background: var(--bg-1);
+    border-radius: 3px;
+    /* Slightly softer rounded corners */
+    cursor: pointer;
+    display: inline-grid;
+    place-content: center;
+}
+
+body.v2-shell .bootstrap-table table.table input[type="checkbox"]:checked,
+body.v2-shell .bootstrap-table .fixed-table-toolbar .columns-right .dropdown-menu input[type="checkbox"]:checked {
+    background: var(--signal);
+    border-color: var(--signal);
+}
+
+body.v2-shell .bootstrap-table table.table input[type="checkbox"]:checked::after,
+body.v2-shell .bootstrap-table .fixed-table-toolbar .columns-right .dropdown-menu input[type="checkbox"]:checked::after {
+    content: '';
+    width: 9px;
+    height: 9px;
+    background: var(--signal-fg);
+    clip-path: polygon(14% 50%, 0 64%, 36% 100%, 100% 22%, 86% 8%, 36% 72%);
+}
+
+/* Custom Column Menu Dropdown Styling */
+body.v2-shell .bootstrap-table .fixed-table-toolbar .columns-right .dropdown-menu {
+    background: var(--bg-1);
+    border: 1px solid var(--line);
+    border-radius: var(--r-2);
+    box-shadow: var(--shadow-2);
+    padding: 8px 0;
+    margin-top: 8px;
+    min-width: 180px;
+}
+
+body.v2-shell .bootstrap-table .fixed-table-toolbar .columns-right .dropdown-menu label {
+    padding: 6px 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--fg-1);
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    margin: 0;
+    width: 100%;
+}
+
+body.v2-shell .bootstrap-table .fixed-table-toolbar .columns-right .dropdown-menu li:hover label {
+    background: var(--bg-2);
+    color: var(--fg-0);
+}
+
+/* Fix ugly column menu icon */
+body.v2-shell .bootstrap-table .fixed-table-toolbar .columns-right button[name="columns"] i,
+body.v2-shell .bootstrap-table .fixed-table-toolbar .columns-right .dropdown-toggle i {
+    display: none !important;
+}
+
+body.v2-shell .bootstrap-table .fixed-table-toolbar .columns-right button[name="columns"]::after,
+body.v2-shell .bootstrap-table .fixed-table-toolbar .columns-right .dropdown-toggle::after {
+    display: none !important;
+}
+
+body.v2-shell .bootstrap-table .fixed-table-toolbar .columns-right button[name="columns"]::before,
+body.v2-shell .bootstrap-table .fixed-table-toolbar .columns-right .dropdown-toggle::before {
+    content: '\edc2';
+    /* TRUE bx-menu (three lines) */
+    font-family: 'boxicons' !important;
+    font-size: 18px;
+    line-height: 1;
+}
+
+/* Action Buttons */
+body.v2-shell .bootstrap-table table.table td[data-field="actions"] a:not(.dropdown-item),
+body.v2-shell .bootstrap-table table.table td[data-field="actions"] button {
+    width: 28px;
+    height: 28px;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--r-2);
+    color: var(--fg-2);
+    background: var(--bg-2);
+    border: none;
+    font-size: 15px;
+    /* Compact icons */
+    margin: 0 2px;
+}
+
+body.v2-shell .bootstrap-table table.table td[data-field="actions"] a:not(.dropdown-item):hover,
+body.v2-shell .bootstrap-table table.table td[data-field="actions"] button:hover {
+    background: var(--bg-3);
+    color: var(--fg-0);
+}
+
+
+/* Icons Fix */
+body.v2-shell .bootstrap-table .favorite-icon[data-favorite="1"] {
+    color: var(--warn);
+}
+
+body.v2-shell .bootstrap-table .pinned-icon[data-pinned="1"] {
+    color: var(--ok);
+}
+
+/* Fix dark separate line between header and body */
+body.v2-shell .bootstrap-table table.table>tbody {
+    border-top: 0 !important;
+}
+
+/* Pagination mapped exactly from Taskify Revamp Kit system.css */
+body.v2-shell .bootstrap-table .fixed-table-pagination {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 20px;
+    border-top: 0 !important;
+    color: var(--fg-1);
+    font-size: 13px;
+    width: 100%;
+}
+
+body.v2-shell .bootstrap-table .fixed-table-pagination>div {
+    float: none !important;
+}
+
+/* Force the pagination container to the right */
+body.v2-shell .bootstrap-table .fixed-table-pagination>div.pagination,
+body.v2-shell .bootstrap-table .fixed-table-pagination>div.pull-right {
+    margin-left: auto !important;
+    display: flex;
+    justify-content: flex-end;
+}
+
+body.v2-shell .bootstrap-table .fixed-table-pagination .pagination {
+    display: inline-flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 4px;
+    margin: 0;
+}
+
+body.v2-shell .bootstrap-table .fixed-table-pagination .page-link {
+    min-width: 28px;
+    height: 28px;
+    padding: 0 8px;
+    border-radius: var(--r-2);
+    font-size: 13px;
+    color: var(--fg-1);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s;
+    background: transparent;
+    border: none;
+    box-shadow: none;
+}
+
+body.v2-shell .bootstrap-table .fixed-table-pagination .page-link:hover {
+    background: var(--bg-2);
+    color: var(--fg-0);
+}
+
+/* Active link styling (.on equivalent) */
+body.v2-shell .bootstrap-table .fixed-table-pagination .page-item.active .page-link {
+    background: var(--signal) !important;
+    color: #ffffff !important;
+    font-weight: 600;
+}
+
+/* Disabled styling */
+body.v2-shell .bootstrap-table .fixed-table-pagination .page-item.disabled .page-link {
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+/* ---- EMPTY STATE ---- */
+body.v2-shell .empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 48px 24px;
+    gap: 12px;
+    color: var(--fg-2);
+}
+
+body.v2-shell .empty-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: var(--r-3);
+    background: var(--bg-2);
+    display: grid;
+    place-items: center;
+    color: var(--fg-3);
+}
+
+body.v2-shell .empty-title {
+    font-size: var(--fs-md);
+    font-weight: 600;
+    color: var(--fg-0);
+}
+
+body.v2-shell .empty-sub {
+    font-size: var(--fs-base);
+    color: var(--fg-2);
+    max-width: 360px;
+}
+
+body.v2-shell .empty-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 4px;
+}
+
+/* Core resets to completely eliminate plugin wrapper default dark lines */
+.fixed-table-container,
+.fixed-table-body,
+.table-responsive,
+.bootstrap-table,
+.fixed-table-container.fixed-height:not(.has-footer) {
+    border: 0 !important;
+    border-bottom: 0 !important;
+    box-shadow: none !important;
+}

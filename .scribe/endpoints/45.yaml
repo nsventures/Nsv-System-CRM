@@ -1,0 +1,1116 @@
+name: 'Contract Management'
+description: ''
+endpoints:
+  -
+    httpMethods:
+      - POST
+    uri: api/contracts/store
+    metadata:
+      groupName: 'Contract Management'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Create a new contract.'
+      description: 'This endpoint creates a new contract with the specified details. The user must be authenticated to perform this action. If the user is a client, the client_id will be automatically set to their ID.'
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Accept: application/json
+      workspace_id: 1
+      Content-Type: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      title:
+        name: title
+        description: 'The title of the contract.'
+        required: true
+        example: 'Web Development Contract'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      value:
+        name: value
+        description: 'The contract value in currency format. Must be a valid currency format.'
+        required: true
+        example: '15,000.00'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      start_date:
+        name: start_date
+        description: 'The start date of the contract. Format depends on API usage (Y-m-d for API, system format for web).'
+        required: true
+        example: '2024-01-01'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      end_date:
+        name: end_date
+        description: 'The end date of the contract. Must be after start_date.'
+        required: true
+        example: '2024-12-31'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      client_id:
+        name: client_id
+        description: 'The ID of the client. Must exist in the clients table.'
+        required: true
+        example: 5
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      project_id:
+        name: project_id
+        description: 'The ID of the project. Must exist in the projects table.'
+        required: true
+        example: 12
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      contract_type_id:
+        name: contract_type_id
+        description: 'The ID of the contract type. Must exist in the contract_types table.'
+        required: true
+        example: 3
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      description:
+        name: description
+        description: 'optional Description of the contract.'
+        required: false
+        example: 'Full-stack web development project'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      isApi:
+        name: isApi
+        description: 'optional Set to true for API requests to handle date format properly.'
+        required: false
+        example: true
+        type: boolean
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanBodyParameters:
+      title: 'Web Development Contract'
+      value: '15,000.00'
+      start_date: '2024-01-01'
+      end_date: '2024-12-31'
+      client_id: 5
+      project_id: 12
+      contract_type_id: 3
+      description: 'Full-stack web development project'
+      isApi: true
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+            "error": false,
+            "message": "Contract created successfully.",
+            "data": {
+              "id": 15,
+              "title": "Web Development Contract",
+              "value": "15000.00",
+              "formatted_value": "$15,000.00",
+              "start_date": "2024-01-01",
+              "end_date": "2024-12-31",
+              "client": {
+                "id": 5,
+                "name": "John Doe"
+              },
+              "project": {
+                "id": 12,
+                "title": "Company Website"
+              },
+              "contract_type": {
+                "id": 3,
+                "type": "Fixed Price"
+              },
+              "description": "Full-stack web development project",
+              "status": "not_signed",
+              "created_at": "2024-01-15T10:30:00Z"
+            }
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 422
+        content: |-
+          {
+            "error": true,
+            "message": "Validation failed.",
+            "data": {
+              "title": ["The title field is required."],
+              "value": ["The value field is required."],
+              "start_date": ["The start date must be before end date."]
+            }
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 500
+        content: |-
+          {
+            "error": true,
+            "message": "An error occurred.",
+            "data": []
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer a3EDf5b66vkhgdcP1eZ8a4V'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/contracts/update
+    metadata:
+      groupName: 'Contract Management'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Update an existing contract.'
+      description: 'This endpoint updates an existing contract with new details. The user must be authenticated and have permission to edit contracts.'
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Accept: application/json
+      workspace_id: 1
+      Content-Type: multipart/form-data
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      id:
+        name: id
+        description: 'The ID of the contract to update. Must exist in the contracts table.'
+        required: true
+        example: 15
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      title:
+        name: title
+        description: 'The title of the contract.'
+        required: true
+        example: 'Updated Web Development Contract'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      value:
+        name: value
+        description: 'The contract value in currency format. Must be a valid currency format.'
+        required: true
+        example: '18,000.00'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      start_date:
+        name: start_date
+        description: 'The start date of the contract. Format depends on API usage.'
+        required: true
+        example: '2024-01-01'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      end_date:
+        name: end_date
+        description: 'The end date of the contract. Must be after start_date.'
+        required: true
+        example: '2024-12-31'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      client_id:
+        name: client_id
+        description: 'The ID of the client. Must exist in the clients table.'
+        required: true
+        example: 5
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      project_id:
+        name: project_id
+        description: 'The ID of the project. Must exist in the projects table.'
+        required: true
+        example: 12
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      contract_type_id:
+        name: contract_type_id
+        description: 'The ID of the contract type. Must exist in the contract_types table.'
+        required: true
+        example: 3
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      description:
+        name: description
+        description: 'optional Description of the contract.'
+        required: false
+        example: 'Updated full-stack web development project'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      signed_pdf:
+        name: signed_pdf
+        description: 'optional The signed PDF file. Must be a PDF file, max 10MB. No example required.'
+        required: false
+        example: null
+        type: file
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+      isApi:
+        name: isApi
+        description: 'optional Set to true for API requests to handle date format properly.'
+        required: false
+        example: true
+        type: boolean
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanBodyParameters:
+      id: 15
+      title: 'Updated Web Development Contract'
+      value: '18,000.00'
+      start_date: '2024-01-01'
+      end_date: '2024-12-31'
+      client_id: 5
+      project_id: 12
+      contract_type_id: 3
+      description: 'Updated full-stack web development project'
+      isApi: true
+    fileParameters:
+      signed_pdf: null
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+            "error": false,
+            "message": "Contract updated successfully.",
+            "data": {
+              "id": 15,
+              "title": "Updated Web Development Contract",
+              "value": "18000.00",
+              "formatted_value": "$18,000.00",
+              "start_date": "2024-01-01",
+              "end_date": "2024-12-31",
+              "client": {
+                "id": 5,
+                "name": "John Doe"
+              },
+              "project": {
+                "id": 12,
+                "title": "Company Website"
+              },
+              "contract_type": {
+                "id": 3,
+                "type": "Fixed Price"
+              },
+              "description": "Updated full-stack web development project",
+              "status": "partially_signed",
+              "signed_pdf_url": "storage/contracts/signed_contract_123.pdf",
+              "updated_at": "2024-01-20T14:45:00Z"
+            }
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 404
+        content: |-
+          {
+            "error": true,
+            "message": "Contract not found.",
+            "data": []
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 422
+        content: |-
+          {
+            "error": true,
+            "message": "Validation failed.",
+            "data": {
+              "signed_pdf": ["The file must be a PDF.", "The file size must be less than 10 MB."]
+            }
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 500
+        content: |-
+          {
+            "error": true,
+            "message": "An error occurred.",
+            "data": []
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer a65Dfh3kavbe6PVdZEg4c18'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: api/contracts/list
+    metadata:
+      groupName: 'Contract Management'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'List contracts with filtering and pagination.'
+      description: 'This endpoint retrieves a paginated list of contracts with optional search, sorting, and filtering capabilities. The user must be authenticated to perform this action. Access is restricted based on user permissions.'
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Accept: application/json
+      workspace_id: 1
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters:
+      search:
+        name: search
+        description: 'optional Filters contracts by title, value, description, or contract ID.'
+        required: false
+        example: 'Web Development'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      sort:
+        name: sort
+        description: 'optional The field to sort by (id, title, value, start_date, end_date, created_at). Defaults to id.'
+        required: false
+        example: start_date
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      order:
+        name: order
+        description: 'optional The sort order (ASC or DESC). Defaults to DESC.'
+        required: false
+        example: ASC
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      limit:
+        name: limit
+        description: 'optional The number of contracts per page (1-100). Defaults to 10.'
+        required: false
+        example: 20
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      statuses:
+        name: statuses
+        description: 'optional Filters contracts by status (signed, partially_signed, not_signed).'
+        required: false
+        example:
+          - signed
+          - partially_signed
+        type: 'string[]'
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      type_ids:
+        name: type_ids
+        description: 'optional Filters contracts by contract type IDs. Each ID must exist in contract_types table.'
+        required: false
+        example:
+          - 1
+          - 3
+          - 5
+        type: 'string[]'
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      project_ids:
+        name: project_ids
+        description: 'optional Filters contracts by project IDs. Each ID must exist in projects table.'
+        required: false
+        example:
+          - 12
+          - 15
+          - 18
+        type: 'string[]'
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      client_ids:
+        name: client_ids
+        description: 'optional Filters contracts by client IDs. Each ID must exist in clients table.'
+        required: false
+        example:
+          - 5
+          - 8
+        type: 'string[]'
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      date_between_from:
+        name: date_between_from
+        description: 'optional Filter contracts that start on or after this date. Format: Y-m-d.'
+        required: false
+        example: '2024-01-01'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      date_between_to:
+        name: date_between_to
+        description: 'optional Filter contracts that end on or before this date. Format: Y-m-d.'
+        required: false
+        example: '2024-12-31'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      start_date_from:
+        name: start_date_from
+        description: 'optional Filter contracts with start date from this date. Format: Y-m-d.'
+        required: false
+        example: '2024-01-01'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      start_date_to:
+        name: start_date_to
+        description: 'optional Filter contracts with start date until this date. Format: Y-m-d.'
+        required: false
+        example: '2024-06-30'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      end_date_from:
+        name: end_date_from
+        description: 'optional Filter contracts with end date from this date. Format: Y-m-d.'
+        required: false
+        example: '2024-06-01'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      end_date_to:
+        name: end_date_to
+        description: 'optional Filter contracts with end date until this date. Format: Y-m-d.'
+        required: false
+        example: '2024-12-31'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanQueryParameters:
+      search: 'Web Development'
+      sort: start_date
+      order: ASC
+      limit: 20
+      statuses:
+        - signed
+        - partially_signed
+      type_ids:
+        - 1
+        - 3
+        - 5
+      project_ids:
+        - 12
+        - 15
+        - 18
+      client_ids:
+        - 5
+        - 8
+      date_between_from: '2024-01-01'
+      date_between_to: '2024-12-31'
+      start_date_from: '2024-01-01'
+      start_date_to: '2024-06-30'
+      end_date_from: '2024-06-01'
+      end_date_to: '2024-12-31'
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+            "error": false,
+            "message": "Contracts retrieved successfully!",
+            "total": 25,
+            "data": [
+              {
+                "id": 15,
+                "title": "Web Development Contract",
+                "value": "15000.00",
+                "formatted_value": "$15,000.00",
+                "start_date": "2024-01-01",
+                "end_date": "2024-12-31",
+                "duration": "Jan 01, 2024 To Dec 31, 2024",
+                "client": {
+                  "id": 5,
+                  "name": "John Doe",
+                  "email": "john@example.com"
+                },
+                "project": {
+                  "id": 12,
+                  "title": "Company Website"
+                },
+                "contract_type": {
+                  "id": 3,
+                  "type": "Fixed Price"
+                },
+                "description": "Full-stack web development project",
+                "status": "signed",
+                "promisor_signed": true,
+                "promisee_signed": true,
+                "signed_pdf_url": "storage/contracts/signed_contract_123.pdf",
+                "created_by": {
+                  "id": 1,
+                  "name": "Admin User",
+                  "type": "user"
+                },
+                "created_at": "2024-01-15T10:30:00Z",
+                "updated_at": "2024-01-20T14:45:00Z"
+              }
+            ]
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 422
+        content: |-
+          {
+            "error": true,
+            "message": "Validation failed.",
+            "data": {
+              "limit": ["The limit must be between 1 and 100."],
+              "start_date_from": ["The start date from must be a valid date."]
+            }
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 500
+        content: |-
+          {
+            "error": true,
+            "message": "An error occurred.",
+            "data": []
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer E66kZghVPd513D84bveacfa'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: 'api/contracts/get/{id}'
+    metadata:
+      groupName: 'Contract Management'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Retrieve a single contract by ID.'
+      description: 'This endpoint retrieves detailed information about a specific contract. The user must be authenticated and have access to the contract based on their permissions.'
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Accept: application/json
+      workspace_id: 1
+    urlParameters:
+      id:
+        name: id
+        description: 'The ID of the contract to retrieve. Must exist in the contracts table.'
+        required: true
+        example: 15
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanUrlParameters:
+      id: 15
+    queryParameters:
+      isApi:
+        name: isApi
+        description: 'optional Set to true for API requests.'
+        required: false
+        example: true
+        type: boolean
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanQueryParameters:
+      isApi: true
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+            "error": false,
+            "message": "Contract retrieved successfully.",
+            "data": {
+              "id": 15,
+              "title": "Web Development Contract",
+              "value": "15000.00",
+              "formatted_value": "$15,000.00",
+              "start_date": "2024-01-01",
+              "end_date": "2024-12-31",
+              "client": {
+                "id": 5,
+                "name": "John Doe",
+                "email": "john@example.com",
+                "phone": "+1234567890"
+              },
+              "project": {
+                "id": 12,
+                "title": "Company Website",
+                "description": "Modern responsive website"
+              },
+              "contract_type": {
+                "id": 3,
+                "type": "Fixed Price"
+              },
+              "description": "Full-stack web development project",
+              "status": "signed",
+              "promisor_signed": true,
+              "promisee_signed": true,
+              "promisor_sign_date": "2024-01-18T09:15:00Z",
+              "promisee_sign_date": "2024-01-19T14:22:00Z",
+              "signed_pdf_url": "storage/contracts/signed_contract_123.pdf",
+              "created_by": {
+                "id": 1,
+                "name": "Admin User",
+                "type": "user"
+              },
+              "workspace_id": 1,
+              "created_at": "2024-01-15T10:30:00Z",
+              "updated_at": "2024-01-20T14:45:00Z"
+            }
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 403
+        content: |-
+          {
+            "error": true,
+            "message": "Access denied.",
+            "data": []
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 404
+        content: |-
+          {
+            "error": true,
+            "message": "Contract not found.",
+            "data": []
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 500
+        content: |-
+          {
+            "error": true,
+            "message": "An error occurred.",
+            "data": []
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6cdaPfgVZEaD64bk5hv8e13'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/contracts/create-sign
+    metadata:
+      groupName: 'Contract Management'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Sign a contract with a base64 image.'
+      description: 'This endpoint allows an authenticated user to sign a contract by uploading a base64-encoded signature image. The user must have appropriate permissions based on their role (admin or client). The image is saved, and the corresponding signature field in the contract is updated.'
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Accept: application/json
+      workspace_id: 1
+      Content-Type: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters:
+      isApi:
+        name: isApi
+        description: 'optional If true, returns a formatted API response instead of a regular JSON response.'
+        required: false
+        example: true
+        type: boolean
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanQueryParameters:
+      isApi: true
+    bodyParameters:
+      id:
+        name: id
+        description: 'The ID of the contract to sign.'
+        required: true
+        example: 12
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      signatureImage:
+        name: signatureImage
+        description: 'A base64-encoded PNG image string of the signature. Must include the data URI prefix (e.g., "data:image/png;base64,...").'
+        required: true
+        example: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAA...'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanBodyParameters:
+      id: 12
+      signatureImage: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAA...'
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+            "error": false,
+            "id": 12,
+            "activity_message": "John Doe signed contract NDA Agreement"
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 422
+        content: |-
+          {
+            "error": true,
+            "message": "The id field is required. (and 1 more error)"
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 500
+        content: |-
+          {
+            "error": true,
+            "message": "An error occurred.",
+            "data": []
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer ZPa8c4kg5V16hebfDd3E6va'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - DELETE
+    uri: 'api/contracts/destroy/{id}'
+    metadata:
+      groupName: 'Contract Management'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Delete a contract and associated files.'
+      description: 'This endpoint deletes a contract by its ID, including associated signature images and the signed PDF file (if any). Only authorized users can perform this operation.'
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Accept: application/json
+      workspace_id: 1
+    urlParameters:
+      id:
+        name: id
+        description: 'The ID of the contract to delete.'
+        required: true
+        example: 15
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanUrlParameters:
+      id: 15
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+            "error": false,
+            "message": "Contract deleted successfully!",
+            "data": []
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 404
+        content: |-
+          {
+            "error": true,
+            "message": "Contract not found.",
+            "data": []
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 500
+        content: |-
+          {
+            "error": true,
+            "message": "An error occurred",
+            "data": []
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer EVeDvZhfb6c5Pa41g6da8k3'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - DELETE
+    uri: 'api/contracts/delete-sign/{id}'
+    metadata:
+      groupName: 'Contract Management'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Remove signature from a contract.'
+      description: 'This endpoint allows authorized users to remove their signature from a contract, effectively "unsigned" the contract.'
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Accept: application/json
+      workspace_id: 1
+    urlParameters:
+      id:
+        name: id
+        description: 'The ID of the contract to remove signature from. Must exist in the contracts table.'
+        required: true
+        example: 15
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanUrlParameters:
+      id: 15
+    queryParameters:
+      isApi:
+        name: isApi
+        description: 'optional Set to true for API requests.'
+        required: false
+        example: true
+        type: boolean
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanQueryParameters:
+      isApi: true
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+            "error": false,
+            "message": "John Doe unsigned contract Web Development Contract",
+            "id": 15
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 403
+        content: |-
+          {
+            "error": true,
+            "message": "Unauthorized access.",
+            "data": []
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 404
+        content: |-
+          {
+            "error": true,
+            "message": "Contract not found.",
+            "data": []
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 500
+        content: |-
+          {
+            "error": true,
+            "message": "An error occurred.",
+            "data": []
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer D4c1ZV3bPdk66gaav85Eefh'
+    controller: null
+    method: null
+    route: null
+    custom: []

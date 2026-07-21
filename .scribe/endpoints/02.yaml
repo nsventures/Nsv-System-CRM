@@ -1,0 +1,274 @@
+name: 'Setting Management'
+description: ''
+endpoints:
+  -
+    httpMethods:
+      - GET
+    uri: 'api/settings/{variable}'
+    metadata:
+      groupName: 'Setting Management'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Retrieve the settings for a specific variable.'
+      description: 'This endpoint returns the settings for a given variable. The user must be authenticated.'
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Accept: application/json
+      workspace_id: 1
+    urlParameters:
+      variable:
+        name: variable
+        description: 'The variable type for which settings are to be retrieved. Must be one of the following: general_settings, pusher_settings, email_settings, media_storage_settings, sms_gateway_settings, whatsapp_settings, privacy_policy, about_us, terms_conditions.'
+        required: true
+        example: general_settings
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanUrlParameters:
+      variable: general_settings
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+            "error": false,
+            "message": "Settings retrieved successfully",
+            "settings": {
+              "company_title": "Taskify",
+              "currency_full_form": "Indian Rupee",
+              "currency_symbol": "₹",
+              "currency_code": "INR",
+              "currency_symbol_position": "before",
+              "currency_formate": "comma_separated",
+              "decimal_points_in_currency": "2",
+              "allowed_max_upload_size": "2000",
+              "allowSignup": 1,
+              "timezone": "Asia/Kolkata",
+              "date_format": "DD-MM-YYYY|d-m-Y",
+              "time_format": "H:i:s",
+              "toast_position": "toast-bottom-center",
+              "toast_time_out": "2",
+              "footer_text": "<p>made with ❤️ by <a href=\"https://www.infinitietech.com/\" target=\"_blank\" rel=\"noopener\">Infinitie Technologies</a></p>",
+              "full_logo": "https://test-taskify.infinitietech.com/storage/logos/zEy4tSCAFSMczWbOoxBZ3B43Nc9eeqMlNBXDrOzn.png",
+              "half_logo": null,
+              "favicon": "https://test-taskify.infinitietech.com/storage/logos/2FZTNY1qDTz7CTtwWC8Hh1eY4l7cIHgOXG2stVIU.png"
+            }
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 200
+        content: |-
+          {
+            "error": true,
+            "message": "Un Authorized Action!"
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 200
+        content: |-
+          {
+            "error": true,
+            "message": "Setting not found"
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer chEDkf1aZved48536VgbaP6'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/settings/update
+    metadata:
+      groupName: 'Setting Management'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Store the settings for a specific variable.'
+      description: 'This endpoint stores the settings for a given variable. The user must be authenticated.'
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Accept: application/json
+      workspace_id: 1
+      Content-Type: application/json
+    urlParameters:
+      variable:
+        name: variable
+        description: 'The variable type for which settings are to be stored. Must be one of the following: general_settings, pusher_settings, email_settings, media_storage_settings, sms_gateway_settings, whatsapp_settings, privacy_policy, about_us, terms_conditions.'
+        required: true
+        example: general_settings
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanUrlParameters:
+      variable: general_settings
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      variable:
+        name: variable
+        description: 'The variable type for which settings are to be stored. Must be one of the following: general_settings, pusher_settings, email_settings, media_storage_settings, sms_gateway_settings, whatsapp_settings, privacy_policy, about_us, terms_conditions.'
+        required: true
+        example: general_settings
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      company_title:
+        name: company_title
+        description: 'The title of the company.'
+        required: true
+        example: Taskify
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      site_url:
+        name: site_url
+        description: 'The URL of the site.'
+        required: true
+        example: 'https://www.taskify.com'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      timezone:
+        name: timezone
+        description: 'The timezone of the site.'
+        required: true
+        example: Asia/Kolkata
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      currency_full_form:
+        name: currency_full_form
+        description: 'The full form of the currency.'
+        required: true
+        example: 'Indian Rupee'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      currency_symbol:
+        name: currency_symbol
+        description: 'The symbol of the currency.'
+        required: true
+        example: ₹
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      currency_code:
+        name: currency_code
+        description: 'The code of the currency.'
+        required: true
+        example: INR
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      date_format:
+        name: date_format
+        description: 'The format of the date.'
+        required: true
+        example: DD-MM-YYYY|d-m-Y
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      toast_time_out:
+        name: toast_time_out
+        description: 'The time duration for the toast message to be displayed.'
+        required: false
+        example: '2'
+        type: numeric
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      allowed_max_upload_size:
+        name: allowed_max_upload_size
+        description: 'The maximum allowed upload size.'
+        required: false
+        example: '2000'
+        type: numeric
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanBodyParameters:
+      variable: general_settings
+      company_title: Taskify
+      site_url: 'https://www.taskify.com'
+      timezone: Asia/Kolkata
+      currency_full_form: 'Indian Rupee'
+      currency_symbol: ₹
+      currency_code: INR
+      date_format: DD-MM-YYYY|d-m-Y
+      toast_time_out: '2'
+      allowed_max_upload_size: '2000'
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+            "error": false,
+            "message": "Settings saved successfully."
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 200
+        content: |-
+          {
+            "error": true,
+            "message": "Un Authorized Action!"
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer V5a6fZk4Eg3ea1bhd8cDv6P'
+    controller: null
+    method: null
+    route: null
+    custom: []

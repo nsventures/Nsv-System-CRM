@@ -1,0 +1,787 @@
+name: 'Leave Request Management'
+description: ''
+endpoints:
+  -
+    httpMethods:
+      - POST
+    uri: api/leave-requests/store
+    metadata:
+      groupName: 'Leave Request Management'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Create a new leave request.'
+      description: 'This endpoint creates a new leave request with the provided details. The user must be authenticated to perform this action.'
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Accept: application/json
+      workspace_id: 1
+      Content-Type: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      reason:
+        name: reason
+        description: 'The reason for the leave.'
+        required: true
+        example: 'Family function'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      from_date:
+        name: from_date
+        description: 'The start date of the leave in the format specified in the general settings.'
+        required: true
+        example: '2024-08-05'
+        type: date
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      to_date:
+        name: to_date
+        description: 'The end date of the leave in the format specified in the general settings.'
+        required: true
+        example: '2024-08-01'
+        type: date
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      from_time:
+        name: from_time
+        description: 'required_if:partialLeave,on The start time of the leave in HH:MM format.'
+        required: false
+        example: '09:00'
+        type: time
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      to_time:
+        name: to_time
+        description: 'required_if:partialLeave,on The end time of the leave in HH:MM format.'
+        required: false
+        example: '17:00'
+        type: time
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      status:
+        name: status
+        description: "nullable The status of the leave request. Can be 'pending', 'approved', or 'rejected'."
+        required: false
+        example: pending
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      leaveVisibleToAll:
+        name: leaveVisibleToAll
+        description: "optional Set to 'on' if the leave should be visible to all users in the workspace."
+        required: false
+        example: 'on'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      visible_to_ids:
+        name: visible_to_ids
+        description: 'The IDs of users who can see the leave if it is not visible to all.'
+        required: false
+        example:
+          - 1
+          - 2
+          - 3
+        type: 'string[]'
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      user_id:
+        name: user_id
+        description: 'The ID of the user requesting the leave. Only admins or leave editors can specify this.'
+        required: false
+        example: 4
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      partialLeave:
+        name: partialLeave
+        description: "optional Set to 'on' if the leave is partial (specific times within a day)."
+        required: false
+        example: 'on'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      comment:
+        name: comment
+        description: 'optional An optional comment that can only be set by admin or leave editor.'
+        required: false
+        example: 'Approved due to exceptional circumstances'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanBodyParameters:
+      reason: 'Family function'
+      from_date: '2024-08-05'
+      to_date: '2024-08-01'
+      from_time: '09:00'
+      to_time: '17:00'
+      status: pending
+      leaveVisibleToAll: 'on'
+      visible_to_ids:
+        - 1
+        - 2
+        - 3
+      user_id: 4
+      partialLeave: 'on'
+      comment: 'Approved due to exceptional circumstances'
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "error": false,
+          "message": "Leave request created successfully.",
+          "id": 187,
+          "type": "leave_request",
+          "data": {
+            "id": 187,
+            "user_name": "Madhavan Vaidya",
+            "user_photo": "https://test-taskify.infinitietech.com/storage/photos/yxNYBlFLALdLomrL0JzUY2USPLILL9Ocr16j4n2o.png",
+            "action_by": null,
+            "action_by_id": null,
+            "from_date": "Wed, 07-08-2024",
+            "to_date": "Wed, 07-08-2024",
+            "type": "Full",
+            "duration": "1 day",
+            "reason": "Test",
+            "status": "Pending",
+            "visible_to": null,
+            "created_at": "07-08-2024 18:31:28",
+            "updated_at": "07-08-2024 18:31:28"
+          }
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 422
+        content: |-
+          {
+            "error": true,
+            "message": "Validation errors occurred",
+            "errors": {
+              "reason": [
+                "The reason field is required."
+              ],
+              "from_date": [
+                "The from date field is required."
+              ],
+              "to_date": [
+                "The to date field is required."
+              ],
+              "from_time": [
+                "The from time field is required when partial leave is checked."
+              ],
+              "to_time": [
+                "The to time field is required when partial leave is checked."
+              ]
+            }
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 500
+        content: |-
+          {
+            "error": true,
+            "message": "An error occurred while creating the leave request."
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer PDdZ514e86agakcb3f6EVhv'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: 'api/leave-requests/{id?}'
+    metadata:
+      groupName: 'Leave Request Management'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'List or search leave requests.'
+      description: 'This endpoint retrieves a list of leave requests based on various filters. The user must be authenticated to perform this action. The request allows filtering by status, user, action_by, date ranges, type, and search term.'
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Accept: application/json
+      workspace_id: 1
+    urlParameters:
+      id:
+        name: id
+        description: 'optional The ID of the leave request to retrieve.'
+        required: false
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanUrlParameters:
+      id: 1
+    queryParameters:
+      search:
+        name: search
+        description: 'optional The search term to filter leave requests by reason or id.'
+        required: false
+        example: Vacation
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      sort:
+        name: sort
+        description: 'optional The field to sort by. Defaults to "id". Sortable fields include: id, from_date, to_date, type, reason, status, action_by_id, created_at, and updated_at.'
+        required: false
+        example: id
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      order:
+        name: order
+        description: 'optional The sort order, either "ASC" or "DESC". Defaults to "DESC".'
+        required: false
+        example: ASC
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      status:
+        name: status
+        description: 'optional The status of the leave request to filter by. Can be "pending", "approved", "rejected", etc.'
+        required: false
+        example: pending
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      user_id:
+        name: user_id
+        description: 'optional The user ID to filter leave requests by.'
+        required: false
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      action_by_id:
+        name: action_by_id
+        description: 'optional The ID of the user who acted on the request to filter by.'
+        required: false
+        example: 2
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      start_date_from:
+        name: start_date_from
+        description: "optional The start date range's start in YYYY-MM-DD format."
+        required: false
+        example: '2024-01-01'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      start_date_to:
+        name: start_date_to
+        description: "optional The start date range's end in YYYY-MM-DD format."
+        required: false
+        example: '2024-12-31'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      end_date_from:
+        name: end_date_from
+        description: "optional The end date range's start in YYYY-MM-DD format."
+        required: false
+        example: '2024-01-01'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      end_date_to:
+        name: end_date_to
+        description: "optional The end date range's end in YYYY-MM-DD format."
+        required: false
+        example: '2024-12-31'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      type:
+        name: type
+        description: 'optional The type of leave request. Can be "full" or "partial".'
+        required: false
+        example: full
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      limit:
+        name: limit
+        description: 'optional The number of leave requests per page for pagination.'
+        required: false
+        example: 10
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      offset:
+        name: offset
+        description: 'optional The offset for pagination, indicating the starting point of results.'
+        required: false
+        example: 0
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanQueryParameters:
+      search: Vacation
+      sort: id
+      order: ASC
+      status: pending
+      user_id: 1
+      action_by_id: 2
+      start_date_from: '2024-01-01'
+      start_date_to: '2024-12-31'
+      end_date_from: '2024-01-01'
+      end_date_to: '2024-12-31'
+      type: full
+      limit: 10
+      offset: 0
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+            "error": false,
+            "message": "Leave requests retrieved successfully",
+            "total": 25,
+            "data": [
+              {
+                "id": 175,
+                "user_name": "Admin Test",
+                "user_photo": "https://test-taskify.infinitietech.com/storage/photos/no-image.jpg",
+                "action_by": null,
+                "from_date": "Mon, 29-07-2024",
+                "to_date": "Mon, 29-07-2024",
+                "type": "Full",
+                "duration": "1 day",
+                "reason": "dsdsdsd",
+                "status": "Pending",
+                "visible_to": [
+                  {
+                    "id": 183,
+                    "first_name": "Girish",
+                    "last_name": "Thacker",
+                    "photo": "https://test-taskify.infinitietech.com/storage/photos/no-image.jpg"
+                  }
+                ],
+                "created_at": "29-07-2024 10:02:45",
+                "updated_at": "29-07-2024 10:02:45"
+              }
+            ]
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 200
+        content: |-
+          {
+            "error": true,
+            "message": "Leave request not found",
+            "total": 0,
+            "data": []
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 200
+        content: |-
+          {
+            "error": true,
+            "message": "Leave requests not found",
+            "total": 0,
+            "data": []
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 436begDvPV5fEZhkaa81c6d'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/leave-requests/update
+    metadata:
+      groupName: 'Leave Request Management'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Update an existing leave request.'
+      description: 'This endpoint updates an existing leave request with the provided details. The user must be authenticated to perform this action.'
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Accept: application/json
+      workspace_id: 1
+      Content-Type: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      id:
+        name: id
+        description: 'The ID of the leave request to be updated.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      reason:
+        name: reason
+        description: 'The reason for the leave.'
+        required: true
+        example: 'Family function'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      from_date:
+        name: from_date
+        description: 'The start date of the leave in the format specified in the general settings.'
+        required: true
+        example: '2024-08-05'
+        type: date
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      to_date:
+        name: to_date
+        description: 'The end date of the leave in the format specified in the general settings.'
+        required: true
+        example: '2024-08-01'
+        type: date
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      from_time:
+        name: from_time
+        description: 'required_if:partialLeave,on The start time of the leave in HH:MM format.'
+        required: false
+        example: '09:00'
+        type: time
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      to_time:
+        name: to_time
+        description: 'required_if:partialLeave,on The end time of the leave in HH:MM format.'
+        required: false
+        example: '17:00'
+        type: time
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      status:
+        name: status
+        description: "nullable The status of the leave request. Can be 'pending', 'approved', or 'rejected'."
+        required: false
+        example: pending
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      leaveVisibleToAll:
+        name: leaveVisibleToAll
+        description: "optional Set to 'on' if the leave should be visible to all users in the workspace."
+        required: false
+        example: 'on'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      visible_to_ids:
+        name: visible_to_ids
+        description: 'nullable The IDs of users who can see the leave if it is not visible to all.'
+        required: false
+        example:
+          - 1
+          - 2
+          - 3
+        type: 'string[]'
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      partialLeave:
+        name: partialLeave
+        description: "optional Set to 'on' if the leave is partial (specific times within a day)."
+        required: false
+        example: 'on'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      comment:
+        name: comment
+        description: 'optional An optional comment that can only be set by admin or leave editor.'
+        required: false
+        example: 'Approved due to exceptional circumstances'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanBodyParameters:
+      id: 1
+      reason: 'Family function'
+      from_date: '2024-08-05'
+      to_date: '2024-08-01'
+      from_time: '09:00'
+      to_time: '17:00'
+      status: pending
+      leaveVisibleToAll: 'on'
+      visible_to_ids:
+        - 1
+        - 2
+        - 3
+      partialLeave: 'on'
+      comment: 'Approved due to exceptional circumstances'
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "error": false,
+          "message": "Leave request updated successfully.",
+          "id": 187,
+          "type": "leave_request",
+          "data": {
+            "id": 187,
+            "user_name": "Madhavan Vaidya",
+            "user_photo": "https://test-taskify.infinitietech.com/storage/photos/yxNYBlFLALdLomrL0JzUY2USPLILL9Ocr16j4n2o.png",
+            "action_by": null,
+            "action_by_id": null,
+            "from_date": "Wed, 07-08-2024",
+            "to_date": "Wed, 07-08-2024",
+            "type": "Full",
+            "duration": "1 day",
+            "reason": "Test",
+            "status": "Pending",
+            "visible_to": null,
+            "created_at": "07-08-2024 18:31:28",
+            "updated_at": "07-08-2024 18:31:28"
+          }
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 422
+        content: |-
+          {
+            "error": true,
+            "message": "Validation errors occurred",
+            "errors": {
+              "id": [
+                "The id field is required.",
+                "The selected id is invalid."
+              ],
+              "reason": [
+                "The reason field is required."
+              ],
+              "from_date": [
+                "The from date field is required."
+              ],
+              "to_date": [
+                "The to date field is required."
+              ],
+              "from_time": [
+                "The from time field is required when partial leave is checked."
+              ],
+              "to_time": [
+                "The to time field is required when partial leave is checked."
+              ]
+            }
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 500
+        content: |-
+          {
+            "error": true,
+            "message": "An error occurred while updating the leave request."
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer DV4Z5v6g1Ph83a6ekdfcabE'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - DELETE
+    uri: 'api/leave-requests/destroy/{id}'
+    metadata:
+      groupName: 'Leave Request Management'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Remove the specified leave request.'
+      description: 'This endpoint deletes a leave request item based on the provided ID. The user must be authenticated to perform this action.'
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Accept: application/json
+      workspace_id: 1
+    urlParameters:
+      id:
+        name: id
+        description: 'The ID of the leave request to be deleted.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanUrlParameters:
+      id: 1
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+            "error": false,
+            "message": "Leave request deleted successfully.",
+            "id": 1,
+            "type": "leave_request",
+            "data": []
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 200
+        content: |-
+          {
+            "error": true,
+            "message": "Leave request not found.",
+            "data": []
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 500
+        content: |-
+          {
+            "error": true,
+            "message": "An error occurred while deleting the leave request."
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 5aE3kDb1PcgfZda6Vh48v6e'
+    controller: null
+    method: null
+    route: null
+    custom: []

@@ -1,0 +1,38 @@
+/* Badge component styles based on design system tokens */
+.badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 2px 8px;
+    border-radius: 999px;
+    font-size: var(--fs-xs);
+    font-weight: 600;
+    line-height: 1.5;
+    background: var(--bg-3);
+    color: var(--fg-1);
+}
+
+.badge-primary {
+    background: oklch(from var(--signal) l c h / 0.16);
+    color: var(--signal);
+}
+
+.badge-ok {
+    background: oklch(from var(--ok) l c h / 0.16);
+    color: var(--ok);
+}
+
+.badge-warn {
+    background: oklch(from var(--warn) l c h / 0.16);
+    color: var(--warn);
+}
+
+.badge-err {
+    background: oklch(from var(--err) l c h / 0.16);
+    color: var(--err);
+}
+
+.badge-info {
+    background: oklch(from var(--info) l c h / 0.16);
+    color: var(--info);
+}

@@ -1,0 +1,126 @@
+name: 'Income vs Expense'
+description: ''
+endpoints:
+  -
+    httpMethods:
+      - GET
+    uri: api/reports/income-vs-expense-report-data
+    metadata:
+      groupName: 'Income vs Expense'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Get the Income vs Expense Statistics.'
+      description: |-
+        This endpoint provides the Income vs Expense Statistics.
+        The user must be authenticated to access this data.
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Accept: application/json
+      workspace_id: 1
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+            "total_income": "$ 705.00",
+            "total_expenses": "$ 20,000.00",
+            "profit_or_loss": "$ -19,295.00",
+            "invoices": [
+              {
+                "id": 3,
+                "view_route": "http://localhost:8000/estimates-invoices/view/3",
+                "amount": "$ 105.00",
+                "to_date": "05-02-2025",
+                "from_date": "05-02-2025"
+              },
+              {
+                "id": 4,
+                "view_route": "http://localhost:8000/estimates-invoices/view/4",
+                "amount": "$ 600.00",
+                "to_date": "05-02-2025",
+                "from_date": "05-02-2025"
+              }
+            ],
+            "expenses": [
+              {
+                "id": 1,
+                "title": "Salary",
+                "amount": "$ 500.00",
+                "expense_date": "31-01-2025"
+              },
+              {
+                "id": 2,
+                "title": "January Rent Pay",
+                "amount": "$ 5,000.00",
+                "expense_date": "04-02-2025"
+              },
+              {
+                "id": 3,
+                "title": "Salary to Karen",
+                "amount": "$ 5,000.00",
+                "expense_date": "31-01-2025"
+              },
+              {
+                "id": 4,
+                "title": "Internet Bill Payment",
+                "amount": "$ 300.00",
+                "expense_date": "31-01-2025"
+              },
+              {
+                "id": 5,
+                "title": "Office Refreshment Items",
+                "amount": "$ 1,000.00",
+                "expense_date": "31-01-2025"
+              },
+              {
+                "id": 9,
+                "title": "Transportation Fuel",
+                "amount": "$ 2,000.00",
+                "expense_date": "08-02-2025"
+              },
+              {
+                "id": 10,
+                "title": "Corporate Tax",
+                "amount": "$ 1,200.00",
+                "expense_date": "08-02-2025"
+              },
+              {
+                "id": 11,
+                "title": "Event Sponsorships",
+                "amount": "$ 5,000.00",
+                "expense_date": "08-02-2025"
+              }
+            ]
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 500
+        content: |-
+          {
+            "error": true,
+            "message": "Something went wrong."
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer vhP5a66bDg34e8ka1VcdfZE'
+    controller: null
+    method: null
+    route: null
+    custom: []

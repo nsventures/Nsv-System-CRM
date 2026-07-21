@@ -1,0 +1,953 @@
+name: 'Client Management'
+description: ''
+endpoints:
+  -
+    httpMethods:
+      - GET
+    uri: 'api/clients/{id?}'
+    metadata:
+      groupName: 'Client Management'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'List or search clients.'
+      description: 'This endpoint retrieves a list of clients based on various filters. The user must be authenticated to perform this action. The request allows filtering by status, search term, type, type_id, and other parameters.'
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Accept: application/json
+      workspace_id: 1
+    urlParameters:
+      id:
+        name: id
+        description: 'optional The ID of the client to retrieve.'
+        required: false
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanUrlParameters:
+      id: 1
+    queryParameters:
+      search:
+        name: search
+        description: 'optional The search term to filter clients by id, first name, last name, comapny, phone, or email.'
+        required: false
+        example: John
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      sort:
+        name: sort
+        description: 'optional The field to sort by. Defaults to "id". Sortable fields include: id, company, phone, created_at, and updated_at.'
+        required: false
+        example: id
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      order:
+        name: order
+        description: 'optional The sort order, either "ASC" or "DESC". Defaults to "DESC".'
+        required: false
+        example: ASC
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      status:
+        name: status
+        description: 'optional The status ID to filter clients by, either 0 or 1.'
+        required: false
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      type:
+        name: type
+        description: 'optional The type of filter to apply, either "project" or "task".'
+        required: false
+        example: project
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      type_id:
+        name: type_id
+        description: 'optional The ID associated with the type filter.'
+        required: false
+        example: 3
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      limit:
+        name: limit
+        description: 'optional The number of clients per page for pagination.'
+        required: false
+        example: 10
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      offset:
+        name: offset
+        description: 'optional The offset for pagination, indicating the starting point of results.'
+        required: false
+        example: 0
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanQueryParameters:
+      search: John
+      sort: id
+      order: ASC
+      status: 1
+      type: project
+      type_id: 3
+      limit: 10
+      offset: 0
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+           "error": false,
+           "message": "Clients retrieved successfully",
+           "total": 1,
+           "clients": [
+             {
+               "id": 185,
+               "first_name": "Client",
+               "last_name": "Test",
+               "company": "Test Company",
+               "email": "client@test.com",
+               "phone": "1 5555555555",
+               "status": 1,
+               "internal_purpose": 1,
+               "created_at": "10-06-2024",
+               "updated_at": "29-07-2024",
+               "assigned": {
+                 "projects": 0,
+                 "tasks": 0
+               }
+             }
+           ]
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 200
+        content: |-
+          {
+            "error": true,
+            "message": "Client not found",
+            "total": 0,
+            "clients": []
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 200
+        content: |-
+          {
+            "error": true,
+            "message": "Clients not found",
+            "total": 0,
+            "clients": []
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 200
+        content: |-
+          {
+            "error": true,
+            "message": "Project not found",
+            "total": 0,
+            "clients": []
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 200
+        content: |-
+          {
+            "error": true,
+            "message": "Task not found",
+            "total": 0,
+            "clients": []
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 63Peabd4gE1a8h5VfcDvk6Z'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/clients/store
+    metadata:
+      groupName: 'Client Management'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Store a new client.'
+      description: 'This endpoint creates a new client. The client must be authenticated to perform this action.'
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Accept: application/json
+      workspace_id: 1
+      Content-Type: multipart/form-data
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      first_name:
+        name: first_name
+        description: 'The first name of the client.'
+        required: true
+        example: John
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      last_name:
+        name: last_name
+        description: 'The last name of the client.'
+        required: true
+        example: Doe
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      company:
+        name: company
+        description: 'nullable The company of the client.'
+        required: false
+        example: 'Example Corp'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      email:
+        name: email
+        description: 'The email address of the client.'
+        required: true
+        example: john.doe@example.com
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      phone:
+        name: phone
+        description: 'nullable The phone number of the client.'
+        required: false
+        example: '1234567890'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      country_code:
+        name: country_code
+        description: 'nullable The country code for the phone number.'
+        required: false
+        example: '+91'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      country_iso_code:
+        name: country_iso_code
+        description: 'nullable The ISO code for the phone number.'
+        required: false
+        example: in
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      password:
+        name: password
+        description: 'The password for the client. Must be confirmed and at least 6 characters long.'
+        required: true
+        example: password123
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      password_confirmation:
+        name: password_confirmation
+        description: 'The password confirmation. Required if password is provided.'
+        required: true
+        example: password123
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      address:
+        name: address
+        description: 'nullable The address of the client.'
+        required: false
+        example: '123 Main St'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      city:
+        name: city
+        description: 'nullable The city of the client.'
+        required: false
+        example: 'New York'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      state:
+        name: state
+        description: 'nullable The state of the client.'
+        required: false
+        example: NY
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      country:
+        name: country
+        description: 'nullable The country of the client.'
+        required: false
+        example: USA
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      zip:
+        name: zip
+        description: 'nullable The ZIP code of the client.'
+        required: false
+        example: '10001'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      dob:
+        name: dob
+        description: 'nullable The date of birth of the user in the format specified in the general settings.'
+        required: false
+        example: '1990-01-01'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      doj:
+        name: doj
+        description: 'nullable The date of joining in the format specified in the general settings.'
+        required: false
+        example: '2024-01-01'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      internal_purpose:
+        name: internal_purpose
+        description: "nullable Set to 'on' if the client is for internal purposes."
+        required: false
+        example: 'on'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      profile:
+        name: profile
+        description: 'nullable The profile photo of the client.'
+        required: false
+        example: null
+        type: file
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+      status:
+        name: status
+        description: |-
+          0 or 1. If Deactivated (0), the client won't be able to log in to their account.
+          Can only specify if `is_admin_or_has_all_data_access` is true for the logged-in user, else 0 will be considered by default.
+        required: true
+        example: true
+        type: boolean
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      require_ev:
+        name: require_ev
+        description: |-
+          0 or 1. If Yes (1) is selected, the client will receive a verification link via email.
+          Can only specify if `is_admin_or_has_all_data_access` is true for the logged-in user, else 1 will be considered by default.
+        required: true
+        example: true
+        type: boolean
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanBodyParameters:
+      first_name: John
+      last_name: Doe
+      company: 'Example Corp'
+      email: john.doe@example.com
+      phone: '1234567890'
+      country_code: '+91'
+      country_iso_code: in
+      password: password123
+      password_confirmation: password123
+      address: '123 Main St'
+      city: 'New York'
+      state: NY
+      country: USA
+      zip: '10001'
+      dob: '1990-01-01'
+      doj: '2024-01-01'
+      internal_purpose: 'on'
+      status: true
+      require_ev: true
+    fileParameters:
+      profile: null
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "error": false,
+          "message": "Client created successfully.",
+          "data": {
+          "id": 183,
+          "first_name": "API",
+          "last_name": "Client",
+          "company": "test",
+          "email": "777@gmail.com",
+          "phone": "+91 1111111111",
+          "address": "Test adr",
+          "city": "Test cty",
+          "state": "Test ct",
+          "country": "test ctr",
+          "zip": "111-111",
+          "photo": "https://test-taskify.infinitietech.com/storage/photos/a5xT73btrbk7sybc0768Bv8xlBn16ROK1Znf1Ddc.webp",
+          "status": "1",
+          "internal_purpose": 0,
+          "created_at": "09-08-2024 19:22:17",
+          "updated_at": "09-08-2024 20:10:06",
+          "assigned": {
+          "projects": 0,
+          "tasks": 0
+          }
+          }
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 422
+        content: |-
+          {
+          "error": true,
+          "message": "Validation errors occurred",
+          "errors": {
+            "first_name": [
+              "The first name field is required."
+            ],
+            "last_name": [
+              "The last name field is required."
+            ],
+            "email": [
+              "The email has already been taken."
+            ]
+          }
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 500
+        content: |-
+          {
+            "error": true,
+            "message": "Client couldn’t be created, please make sure email settings are operational."
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer aDeZ6Va6gdhfE41P5bck38v'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/clients/update
+    metadata:
+      groupName: 'Client Management'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Update an existing client.'
+      description: 'This endpoint updates the details of an existing client. The client must be authenticated to perform this action.'
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Accept: application/json
+      workspace_id: 1
+      Content-Type: multipart/form-data
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      id:
+        name: id
+        description: 'The ID of the client to be updated.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      first_name:
+        name: first_name
+        description: 'The first name of the client.'
+        required: true
+        example: John
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      last_name:
+        name: last_name
+        description: 'The last name of the client.'
+        required: true
+        example: Doe
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      company:
+        name: company
+        description: 'nullable The company of the client.'
+        required: false
+        example: XYZ
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      email:
+        name: email
+        description: 'The email address of the client.'
+        required: true
+        example: john.doe@example.com
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      password:
+        name: password
+        description: 'nullable The new password for the client. Can only be updated if `is_admin_or_has_all_data_access` is true for the logged-in user.'
+        required: false
+        example: newpassword123
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      password_confirmation:
+        name: password_confirmation
+        description: 'required_with:password The password confirmation.'
+        required: false
+        example: newpassword123
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      address:
+        name: address
+        description: 'nullable The address of the client.'
+        required: false
+        example: '123 Main St'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      phone:
+        name: phone
+        description: 'nullable The phone number of the client.'
+        required: false
+        example: '1234567890'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      country_code:
+        name: country_code
+        description: 'nullable The country code for the phone number.'
+        required: false
+        example: '+91'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      country_iso_code:
+        name: country_iso_code
+        description: 'nullable The ISO code for the phone number.'
+        required: false
+        example: in
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      city:
+        name: city
+        description: 'nullable The city of the client.'
+        required: false
+        example: 'New York'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      state:
+        name: state
+        description: 'nullable The state of the client.'
+        required: false
+        example: NY
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      country:
+        name: country
+        description: 'nullable The country of the client.'
+        required: false
+        example: USA
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      zip:
+        name: zip
+        description: 'nullable The ZIP code of the client.'
+        required: false
+        example: '10001'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      dob:
+        name: dob
+        description: 'nullable The date of birth of the user in the format specified in the general settings.'
+        required: false
+        example: '1990-01-01'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      doj:
+        name: doj
+        description: 'nullable The date of joining in the format specified in the general settings.'
+        required: false
+        example: '2024-01-01'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      internal_purpose:
+        name: internal_purpose
+        description: "nullable Set to 'on' if the client is for internal purposes."
+        required: false
+        example: 'on'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      profile:
+        name: profile
+        description: 'nullable The new profile photo of the client.'
+        required: false
+        example: null
+        type: file
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+      status:
+        name: status
+        description: |-
+          0 or 1. If Deactivated (0), the client won't be able to log in to their account.
+          Can only specify if `is_admin_or_has_all_data_access` is true for the logged-in user, else the current status will be considered by default.
+        required: true
+        example: true
+        type: boolean
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      require_ev:
+        name: require_ev
+        description: |-
+          0 or 1. If Yes (1) is selected, the client will receive a verification link via email.
+          Can only specify if `is_admin_or_has_all_data_access` is true for the logged-in user, else the current require_ev will be considered by default.
+        required: true
+        example: true
+        type: boolean
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanBodyParameters:
+      id: 1
+      first_name: John
+      last_name: Doe
+      company: XYZ
+      email: john.doe@example.com
+      password: newpassword123
+      password_confirmation: newpassword123
+      address: '123 Main St'
+      phone: '1234567890'
+      country_code: '+91'
+      country_iso_code: in
+      city: 'New York'
+      state: NY
+      country: USA
+      zip: '10001'
+      dob: '1990-01-01'
+      doj: '2024-01-01'
+      internal_purpose: 'on'
+      status: true
+      require_ev: true
+    fileParameters:
+      profile: null
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "error": false,
+          "message": "Client updated successfully.",
+          "data": {
+          "id": 183,
+          "first_name": "API",
+          "last_name": "Client",
+          "company": "test",
+          "email": "777@gmail.com",
+          "phone": "+91 1111111111",
+          "address": "Test adr",
+          "city": "Test cty",
+          "state": "Test ct",
+          "country": "test ctr",
+          "zip": "111-111",
+          "photo": "https://test-taskify.infinitietech.com/storage/photos/a5xT73btrbk7sybc0768Bv8xlBn16ROK1Znf1Ddc.webp",
+          "status": "1",
+          "internal_purpose": 0,
+          "created_at": "09-08-2024 19:22:17",
+          "updated_at": "09-08-2024 20:10:06",
+          "assigned": {
+          "projects": 0,
+          "tasks": 0
+          }
+          }
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 422
+        content: |-
+          {
+          "error": true,
+          "message": "Validation errors occurred",
+          "errors": {
+            "first_name": [
+              "The first name field is required."
+            ],
+            "last_name": [
+              "The last name field is required."
+            ],
+            "email": [
+              "The email has already been taken."
+            ]
+          }
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 500
+        content: |-
+          {
+            "error": true,
+            "message": "Client couldn't be updated."
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 56c8kbEPgeVDa63fhd1vZa4'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - DELETE
+    uri: 'api/clients/destroy/{id}'
+    metadata:
+      groupName: 'Client Management'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Remove the specified client.'
+      description: 'This endpoint deletes a client based on the provided ID. The request must be authenticated to perform this action.'
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Accept: application/json
+      workspace_id: 1
+    urlParameters:
+      id:
+        name: id
+        description: 'The ID of the client to be deleted.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanUrlParameters:
+      id: 1
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+            "data": {
+              "error": false,
+              "message": "Client deleted successfully.",
+              "id": "1",
+              "title": "Jane Doe",
+              "data": []
+            }
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 200
+        content: |-
+          {
+            "data": {
+              "error": true,
+              "message": "Client not found.",
+              "data": []
+            }
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 500
+        content: |-
+          {
+            "data": {
+              "error": true,
+              "message": "An internal server error occurred."
+            }
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer EVk4386aPD5bh6vfeg1dcZa'
+    controller: null
+    method: null
+    route: null
+    custom: []

@@ -1,0 +1,598 @@
+name: 'Interview Management'
+description: ''
+endpoints:
+  -
+    httpMethods:
+      - POST
+    uri: api/interviews/store
+    metadata:
+      groupName: 'Interview Management'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Create a new interview.'
+      description: 'This endpoint creates a new interview record for a candidate, with details such as the interviewer, round, schedule, mode, and status. The user must be authenticated to perform this action. A notification is triggered to inform the candidate and interviewer.'
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Accept: application/json
+      workspace_id: 1
+      Content-Type: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters:
+      isApi:
+        name: isApi
+        description: 'optional Indicates if the response should be formatted for API use. Defaults to false.'
+        required: false
+        example: true
+        type: boolean
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanQueryParameters:
+      isApi: true
+    bodyParameters:
+      candidate_id:
+        name: candidate_id
+        description: 'The ID of the candidate for the interview. Must exist in the `candidates` table.'
+        required: true
+        example: 101
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      interviewer_id:
+        name: interviewer_id
+        description: 'The ID of the interviewer. Must exist in the `users` table.'
+        required: true
+        example: 7
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      round:
+        name: round
+        description: 'The interview round (e.g., Technical, HR). Maximum length is 255 characters.'
+        required: true
+        example: Technical
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      scheduled_at:
+        name: scheduled_at
+        description: 'The date and time of the interview (format: YYYY-MM-DD HH:MM:SS).'
+        required: true
+        example: '2025-05-20 10:00:00'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      mode:
+        name: mode
+        description: 'The mode of the interview (e.g., Online, In-Person). Maximum length is 255 characters.'
+        required: true
+        example: Online
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      location:
+        name: location
+        description: 'nullable The location of the interview (if applicable). Maximum length is 255 characters.'
+        required: false
+        example: Zoom
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: true
+        custom: []
+      status:
+        name: status
+        description: 'The status of the interview. Must be one of: scheduled, completed, cancelled.'
+        required: true
+        example: scheduled
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanBodyParameters:
+      candidate_id: 101
+      interviewer_id: 7
+      round: Technical
+      scheduled_at: '2025-05-20 10:00:00'
+      mode: Online
+      location: Zoom
+      status: scheduled
+    fileParameters: []
+    responses:
+      -
+        status: 201
+        content: |-
+          {
+            "error": false,
+            "message": "Interview Created Successfully!",
+            "data": {
+              "id": 1,
+              "candidate_id": 101,
+              "interviewer_id": 7,
+              "round": "Technical",
+              "scheduled_at": "2025-05-20 10:00:00",
+              "mode": "Online",
+              "location": "Zoom",
+              "status": "scheduled",
+              "created_at": "2025-05-15 16:15:00",
+              "updated_at": "2025-05-15 16:15:00"
+            }
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 422
+        content: |-
+          {
+            "error": true,
+            "message": "The candidate_id field is required."
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 500
+        content: |-
+          {
+            "error": true,
+            "message": "An error occurred while creating the interview."
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer vhf6e3a8agdPVEk14Dcb65Z'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: 'api/interviews/update/{id}'
+    metadata:
+      groupName: 'Interview Management'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Update an interview.'
+      description: 'This endpoint updates the details of an existing interview, such as the candidate, interviewer, round, schedule, mode, location, or status. The user must be authenticated to perform this action. A notification is triggered if the status changes.'
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Accept: application/json
+      workspace_id: 1
+      Content-Type: application/json
+    urlParameters:
+      id:
+        name: id
+        description: 'The ID of the interview to update. Must exist in the `interviews` table.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanUrlParameters:
+      id: 1
+    queryParameters:
+      isApi:
+        name: isApi
+        description: 'optional Indicates if the response should be formatted for API use. Defaults to false.'
+        required: false
+        example: true
+        type: boolean
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanQueryParameters:
+      isApi: true
+    bodyParameters:
+      candidate_id:
+        name: candidate_id
+        description: 'The ID of the candidate for the interview. Must exist in the `candidates` table.'
+        required: true
+        example: 101
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      interviewer_id:
+        name: interviewer_id
+        description: 'The ID of the interviewer. Must exist in the `users` table.'
+        required: true
+        example: 7
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      round:
+        name: round
+        description: 'The interview round (e.g., Technical, HR). Maximum length is 255 characters.'
+        required: true
+        example: Technical
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      scheduled_at:
+        name: scheduled_at
+        description: 'The date and time of the interview (format: YYYY-MM-DD HH:MM:SS).'
+        required: true
+        example: '2025-05-20 10:00:00'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      mode:
+        name: mode
+        description: 'The mode of the interview (e.g., Online, In-Person). Maximum length is 255 characters.'
+        required: true
+        example: Online
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      location:
+        name: location
+        description: 'nullable The location of the interview (if applicable). Maximum length is 255 characters.'
+        required: false
+        example: Zoom
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: true
+        custom: []
+      status:
+        name: status
+        description: 'The status of the interview. Must be one of: scheduled, completed, cancelled.'
+        required: true
+        example: completed
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanBodyParameters:
+      candidate_id: 101
+      interviewer_id: 7
+      round: Technical
+      scheduled_at: '2025-05-20 10:00:00'
+      mode: Online
+      location: Zoom
+      status: completed
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+            "error": false,
+            "message": "Interview Updated Successfully!",
+            "data": {
+              "id": 1,
+              "candidate_id": 101,
+              "interviewer_id": 7,
+              "round": "Technical",
+              "scheduled_at": "2025-05-20 10:00:00",
+              "mode": "Online",
+              "location": "Zoom",
+              "status": "completed",
+              "created_at": "2025-05-15 16:15:00",
+              "updated_at": "2025-05-15 16:20:00"
+            }
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 404
+        content: |-
+          {
+            "error": true,
+            "message": "Interview not found"
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 422
+        content: |-
+          {
+            "error": true,
+            "message": "The candidate_id field is required."
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 500
+        content: |-
+          {
+            "error": true,
+            "message": "An error occurred while updating the interview."
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6aeg5E36ab4Dhkdv1PZfV8c'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - DELETE
+    uri: 'api/interviews/destroy/{id}'
+    metadata:
+      groupName: 'Interview Management'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Delete an interview.'
+      description: 'This endpoint deletes a specific interview record. The user must be authenticated and have appropriate permissions to perform this action.'
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Accept: application/json
+      workspace_id: 1
+    urlParameters:
+      id:
+        name: id
+        description: 'The ID of the interview to delete. Must exist in the `interviews` table.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanUrlParameters:
+      id: 1
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+            "error": false,
+            "message": "Interview deleted successfully!"
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 404
+        content: |-
+          {
+            "error": false,
+            "message": "Interview not found",
+            "data": []
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 500
+        content: |-
+          {
+            "error": true,
+            "message": "An error occurred while deleting the interview."
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer a3ba8EP51f4eghckZd6VDv6'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: 'api/interviews/list/{id?}'
+    metadata:
+      groupName: 'Interview Management'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'List interviews or retrieve a single interview.'
+      description: 'This endpoint retrieves a paginated list of interviews or a single interview by ID, with optional search, sorting, and status filtering. The user must be authenticated to perform this action. The response includes permission details for editing and deletion.'
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Accept: application/json
+      workspace_id: 1
+    urlParameters:
+      id:
+        name: id
+        description: 'optional The ID of the interview to retrieve. If provided, returns a single interview. Must exist in the `interviews` table.'
+        required: false
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanUrlParameters:
+      id: 1
+    queryParameters:
+      search:
+        name: search
+        description: 'optional Filters interviews by candidate name, interviewer name, round, status, location, or mode.'
+        required: false
+        example: Technical
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      sort:
+        name: sort
+        description: 'optional The field to sort by (id, newest, oldest, recently-updated, earliest-updated). Defaults to id.'
+        required: false
+        example: newest
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      limit:
+        name: limit
+        description: 'optional The number of interviews per page (1-100). Defaults to 10.'
+        required: false
+        example: 20
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      offset:
+        name: offset
+        description: 'optional The number of interviews to skip. Defaults to 0.'
+        required: false
+        example: 10
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      status:
+        name: status
+        description: 'optional Filters interviews by status (e.g., scheduled, completed, cancelled).'
+        required: false
+        example: scheduled
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanQueryParameters:
+      search: Technical
+      sort: newest
+      limit: 20
+      offset: 10
+      status: scheduled
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+            "error": false,
+            "message": "Interviews retrieved successfully",
+            "data": {
+              "total": 10,
+              "data": [
+                {
+                  "id": 1,
+                  "candidate_id": 101,
+                  "candidate_name": "John Doe",
+                  "interviewer_id": 7,
+                  "interviewer_name": "Jane Smith",
+                  "round": "Technical",
+                  "scheduled_at": "2025-05-20 10:00:00",
+                  "mode": "Online",
+                  "location": "Zoom",
+                  "status": "scheduled",
+                  "created_at": "2025-05-15 16:15:00",
+                  "updated_at": "2025-05-15 16:15:00",
+                  "can_edit": true,
+                  "can_delete": true
+                }
+              ],
+              "permissions": {
+                "can_edit": true,
+                "can_delete": true
+              }
+            }
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 404
+        content: |-
+          {
+            "error": true,
+            "message": "Interview not found.",
+            "data": []
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 422
+        content: |-
+          {
+            "error": true,
+            "message": "Validation failed: The search field must be a string.",
+            "data": []
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 500
+        content: |-
+          {
+            "error": true,
+            "message": "An error occurred.",
+            "data": []
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer aDP58gkvfd1ZhEbe36a4c6V'
+    controller: null
+    method: null
+    route: null
+    custom: []

@@ -1,0 +1,518 @@
+name: 'Dashboard Management'
+description: ''
+endpoints:
+  -
+    httpMethods:
+      - GET
+    uri: api/upcoming-birthdays
+    metadata:
+      groupName: 'Dashboard Management'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'List or search users with birthdays today or upcoming.'
+      description: 'This endpoint retrieves a list of users with birthdays occurring today or within a specified range of days. The user must be authenticated to perform this action.'
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Accept: application/json
+      workspace_id: 1
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters:
+      search:
+        name: search
+        description: 'Optional. The search term to filter users by first name or last name or combination of first name and last name or User ID or date of birth.'
+        required: false
+        example: John
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      order:
+        name: order
+        description: 'Optional. The sort order for the `dob` column. Acceptable values are `ASC` or `DESC`. Default is `ASC`.'
+        required: false
+        example: DESC
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      upcoming_days:
+        name: upcoming_days
+        description: 'Optional. The number of days from today to consider for upcoming birthdays. Default is 30.'
+        required: false
+        example: 15
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      user_ids:
+        name: user_ids
+        description: 'Optional. The specific user IDs to filter the results.'
+        required: false
+        example:
+          - 123
+          - 456
+        type: 'string[]'
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      limit:
+        name: limit
+        description: 'Optional. The number of results to return per page. Default is 15.'
+        required: false
+        example: 10
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      offset:
+        name: offset
+        description: 'Optional. The number of results to skip before starting to collect the result set. Default is 0.'
+        required: false
+        example: 5
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanQueryParameters:
+      search: John
+      order: DESC
+      upcoming_days: 15
+      user_ids:
+        - 123
+        - 456
+      limit: 10
+      offset: 5
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+            "error": false,
+            "message": "Upcoming birthdays retrieved successfully",
+            "total": 1,
+            "data": [
+              {
+                "id": 1,
+                "member": "John Doe",
+                "photo": "http://example.com/storage/photos/john_doe.jpg",
+                "birthday_count": 30,
+                "days_left": 10,
+                "dob": "Tue, 2024-08-08"
+              }
+            ]
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 200
+        content: |-
+          {
+            "error": true,
+            "message": "Upcoming birthdays not found.",
+            "data": []
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer ed6bkcf8Zv41ahVEa6P3gD5'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: api/upcoming-work-anniversaries
+    metadata:
+      groupName: 'Dashboard Management'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'List or search users with work anniversaries today or upcoming.'
+      description: 'This endpoint retrieves a list of users with work anniversaries occurring today or within a specified range of days. The user must be authenticated to perform this action.'
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Accept: application/json
+      workspace_id: 1
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters:
+      search:
+        name: search
+        description: 'Optional. The search term to filter users by first name or last name or combination of first name and last name or User ID or date of joining.'
+        required: false
+        example: John
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      order:
+        name: order
+        description: 'Optional. The sort order for the `doj` column. Acceptable values are `ASC` or `DESC`. Default is `ASC`.'
+        required: false
+        example: DESC
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      upcoming_days:
+        name: upcoming_days
+        description: 'Optional. The number of days from today to consider for upcoming work anniversaries. Default is 30.'
+        required: false
+        example: 15
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      user_ids:
+        name: user_ids
+        description: 'Optional. The specific user IDs to filter the results.'
+        required: false
+        example:
+          - 123
+          - 456
+        type: 'string[]'
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      limit:
+        name: limit
+        description: 'Optional. The number of results to return per page. Default is 15.'
+        required: false
+        example: 10
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      offset:
+        name: offset
+        description: 'Optional. The number of results to skip before starting to collect the result set. Default is 0.'
+        required: false
+        example: 5
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanQueryParameters:
+      search: John
+      order: DESC
+      upcoming_days: 15
+      user_ids:
+        - 123
+        - 456
+      limit: 10
+      offset: 5
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+            "error": false,
+            "message": "Upcoming work anniversaries retrieved successfully",
+            "total": 1,
+            "data": [
+              {
+                "id": 1,
+                "member": "John Doe",
+                "photo": "http://example.com/storage/photos/john_doe.jpg",
+                "anniversary_count": 5,
+                "days_left": 10,
+                "doj": "Tue, 2024-08-08"
+              }
+            ]
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 200
+        content: |-
+          {
+            "error": true,
+            "message": "Upcoming work anniversaries not found.",
+            "data": []
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer kZhDa6gdEe36VvPb14fc8a5'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: api/members-on-leave
+    metadata:
+      groupName: 'Dashboard Management'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'List members currently on leave or scheduled to be on leave.'
+      description: |-
+        This endpoint retrieves a list of members who are currently on leave or scheduled to be on leave within a specified range of days.
+        The user must be authenticated to perform this action.
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Accept: application/json
+      workspace_id: 1
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters:
+      search:
+        name: search
+        description: 'Optional. The search term to filter users by first name or last name or combination of first name and last name or User ID or date of joining.'
+        required: false
+        example: John
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      sort:
+        name: sort
+        description: 'Optional. The field to sort by. Acceptable values are `from_date` and `to_date`. Default is `from_date`.'
+        required: false
+        example: to_date
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      order:
+        name: order
+        description: 'Optional. The sort order. Acceptable values are `ASC` or `DESC`. Default is `ASC`.'
+        required: false
+        example: DESC
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      upcoming_days:
+        name: upcoming_days
+        description: 'Optional. The number of days from today to consider for upcoming leave. Default is 30.'
+        required: false
+        example: 15
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      user_ids:
+        name: user_ids
+        description: 'Optional. The specific user IDs to filter the results.'
+        required: false
+        example:
+          - 123
+          - 456
+        type: 'string[]'
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      limit:
+        name: limit
+        description: 'Optional. The number of results to return per page. Default is 15.'
+        required: false
+        example: 10
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      offset:
+        name: offset
+        description: 'Optional. The number of results to skip before starting to collect the result set. Default is 0.'
+        required: false
+        example: 5
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanQueryParameters:
+      search: John
+      sort: to_date
+      order: DESC
+      upcoming_days: 15
+      user_ids:
+        - 123
+        - 456
+      limit: 10
+      offset: 5
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+            "error": false,
+            "message": "Members on leave retrieved successfully.",
+            "total": 1,
+            "data": [
+              {
+                "id": 1,
+                "member": "John Doe",
+                "photo": "http://example.com/storage/photos/john_doe.jpg",
+                "from_date": "Mon, 2024-07-15",
+                "to_date": "Fri, 2024-07-19",
+                "type": "Full",
+                "duration": "5 days",
+                "days_left": 0
+              }
+            ]
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 200
+        content: |-
+          {
+            "error": true,
+            "message": "Members on leave not found.",
+            "data": []
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 3Zkgfad16h4aDveEV56cPb8'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: api/dashboard/statistics
+    metadata:
+      groupName: 'Dashboard Management'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Get Statistics'
+      description: 'This endpoint retrieves workspace-specific statistics related to projects, tasks, users, clients, todos, and meetings. The user must be authenticated and have the necessary permissions to manage (if applicable) each respective module.'
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Accept: application/json
+      workspace_id: 1
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+            "error": false,
+            "message": "Statistics retrieved successfully",
+            "data": {
+              "total_projects": 8,
+              "total_tasks": 8,
+              "total_users": 8,
+              "total_clients": 8,
+              "total_meetings": 8,
+              "total_todos": 0,
+              "completed_todos": 0,
+              "pending_todos": 0,
+              "status_wise_projects": [
+                {
+                  "id": 1,
+                  "title": "In Progress",
+                  "color": "primary",
+                  "total_projects": 4
+                },
+                {
+                  "id": 2,
+                  "title": "Completed",
+                  "color": "success",
+                  "total_projects": 4
+                }
+              ],
+              "status_wise_tasks": [
+                {
+                  "id": 1,
+                  "title": "In Progress",
+                  "color": "primary",
+                  "total_tasks": 4
+                },
+                {
+                  "id": 2,
+                  "title": "Completed",
+                  "color": "success",
+                  "total_tasks": 4
+                }
+              ]
+            }
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 500
+        content: |-
+          {
+            "error": true,
+            "message": "An error occurred while retrieving statistics: Internal server error message"
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer fD1b4dkEh6vg63VcP8a5aZe'
+    controller: null
+    method: null
+    route: null
+    custom: []

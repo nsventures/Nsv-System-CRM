@@ -1,0 +1,1009 @@
+name: 'Payslip Management'
+description: ''
+endpoints:
+  -
+    httpMethods:
+      - POST
+    uri: api/payslips/store
+    metadata:
+      groupName: 'Payslip Management'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Create a new payslip.'
+      description: 'Creates a new payslip with salary details, allowances, and deductions. Requires valid user ID, salary components, and optional payment information if marked as paid.'
+      authenticated: false
+      custom: []
+    headers:
+      Accept: application/json
+      workspace_id: 1
+      Content-Type: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      user_id:
+        name: user_id
+        description: 'The user ID.'
+        required: true
+        example: 3
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      month:
+        name: month
+        description: 'Month of payslip. Format: YYYY-MM.'
+        required: true
+        example: 2025-05
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      basic_salary:
+        name: basic_salary
+        description: 'Basic salary.'
+        required: true
+        example: 50000.0
+        type: number
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      working_days:
+        name: working_days
+        description: 'Working days in the month.'
+        required: true
+        example: 22
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      lop_days:
+        name: lop_days
+        description: 'Loss of pay days.'
+        required: true
+        example: 2
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      paid_days:
+        name: paid_days
+        description: 'Paid days.'
+        required: true
+        example: 20
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      bonus:
+        name: bonus
+        description: 'Bonus amount.'
+        required: true
+        example: 2000.0
+        type: number
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      incentives:
+        name: incentives
+        description: 'Incentives amount.'
+        required: true
+        example: 1500.0
+        type: number
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      leave_deduction:
+        name: leave_deduction
+        description: 'Leave deduction amount.'
+        required: true
+        example: 500.0
+        type: number
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      ot_hours:
+        name: ot_hours
+        description: 'Overtime hours.'
+        required: true
+        example: 5
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      ot_rate:
+        name: ot_rate
+        description: 'Overtime rate per hour.'
+        required: true
+        example: 100.0
+        type: number
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      ot_payment:
+        name: ot_payment
+        description: 'Overtime payment.'
+        required: true
+        example: 500.0
+        type: number
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      total_allowance:
+        name: total_allowance
+        description: 'Total allowance amount.'
+        required: true
+        example: 3500.0
+        type: number
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      total_deductions:
+        name: total_deductions
+        description: 'Total deductions.'
+        required: true
+        example: 500.0
+        type: number
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      total_earnings:
+        name: total_earnings
+        description: 'Total earnings.'
+        required: true
+        example: 53500.0
+        type: number
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      net_pay:
+        name: net_pay
+        description: 'Final payable amount.'
+        required: true
+        example: 53000.0
+        type: number
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      payment_method_id:
+        name: payment_method_id
+        description: 'optional Required if status is 1 (paid).'
+        required: false
+        example: 2
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      payment_date:
+        name: payment_date
+        description: 'optional Required if status is 1 (paid). Format: Y-m-d.'
+        required: false
+        example: '2025-05-20'
+        type: date
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      status:
+        name: status
+        description: 'Payslip status (0 = Unpaid, 1 = Paid).'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      note:
+        name: note
+        description: 'optional Additional notes.'
+        required: false
+        example: 'Bonus included for performance.'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      allowances:
+        name: allowances
+        description: 'optional Array of allowance IDs to associate with the payslip.'
+        required: false
+        example:
+          - 1
+          - 2
+        type: 'string[]'
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      deductions:
+        name: deductions
+        description: 'optional Array of deduction IDs to associate with the payslip.'
+        required: false
+        example:
+          - 3
+          - 4
+        type: 'string[]'
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      isApi:
+        name: isApi
+        description: 'optional Whether to return a formatted API response. Defaults to false.'
+        required: false
+        example: true
+        type: boolean
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanBodyParameters:
+      user_id: 3
+      month: 2025-05
+      basic_salary: 50000.0
+      working_days: 22
+      lop_days: 2
+      paid_days: 20
+      bonus: 2000.0
+      incentives: 1500.0
+      leave_deduction: 500.0
+      ot_hours: 5
+      ot_rate: 100.0
+      ot_payment: 500.0
+      total_allowance: 3500.0
+      total_deductions: 500.0
+      total_earnings: 53500.0
+      net_pay: 53000.0
+      payment_method_id: 2
+      payment_date: '2025-05-20'
+      status: 1
+      note: 'Bonus included for performance.'
+      allowances:
+        - 1
+        - 2
+      deductions:
+        - 3
+        - 4
+      isApi: true
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+            "error": false,
+            "message": "Payslip created successfully.",
+            "data": {
+              "id": 10,
+              "user_id": 3,
+              "user_name": "John Doe",
+              "month": "2025-05-01",
+              "basic_salary": 50000.00,
+              "working_days": 22,
+              "lop_days": 2,
+              "paid_days": 20,
+              "bonus": 2000.00,
+              "incentives": 1500.00,
+              "leave_deduction": 500.00,
+              "ot_hours": 5,
+              "ot_rate": 100.00,
+              "ot_payment": 500.00,
+              "total_allowance": 3500.00,
+              "total_deductions": 500.00,
+              "total_earnings": 53500.00,
+              "net_pay": 53000.00,
+              "status": 1,
+              "status_label": "Paid",
+              "payment_method_id": 2,
+              "payment_method": "Bank Transfer",
+              "payment_date": "2025-05-20",
+              "note": "Bonus included for performance.",
+              "created_at": "2025-05-15",
+              "updated_at": "2025-05-15"
+            }
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 422
+        content: |-
+          {
+            "error": true,
+            "message": "The given data was invalid.",
+            "data": {
+              "errors": {
+                "user_id": ["The user field is required."],
+                "basic_salary": ["The basic salary must be a valid number with or without decimals."]
+              }
+            }
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 500
+        content: |-
+          {
+            "error": true,
+            "message": "An error occurred.",
+            "data": []
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/payslips/update
+    metadata:
+      groupName: 'Payslip Management'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Update an existing payslip.'
+      description: 'Updates an existing payslip by ID with revised salary and payment details. Fields must be validated as in creation.'
+      authenticated: false
+      custom: []
+    headers:
+      Accept: application/json
+      workspace_id: 1
+      Content-Type: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      id:
+        name: id
+        description: 'The ID of the payslip to update. Must exist in the `payslips` table.'
+        required: true
+        example: 7
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      user_id:
+        name: user_id
+        description: 'The user ID.'
+        required: true
+        example: 3
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      month:
+        name: month
+        description: 'Month of payslip. Format: YYYY-MM.'
+        required: true
+        example: 2025-05
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      basic_salary:
+        name: basic_salary
+        description: 'Basic salary.'
+        required: true
+        example: 50000.0
+        type: number
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      working_days:
+        name: working_days
+        description: 'Working days in the month.'
+        required: true
+        example: 22
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      lop_days:
+        name: lop_days
+        description: 'Loss of pay days.'
+        required: true
+        example: 2
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      paid_days:
+        name: paid_days
+        description: 'Paid days.'
+        required: true
+        example: 20
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      bonus:
+        name: bonus
+        description: 'Bonus amount.'
+        required: true
+        example: 2000.0
+        type: number
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      incentives:
+        name: incentives
+        description: 'Incentives amount.'
+        required: true
+        example: 1500.0
+        type: number
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      leave_deduction:
+        name: leave_deduction
+        description: 'Leave deduction.'
+        required: true
+        example: 500.0
+        type: number
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      ot_hours:
+        name: ot_hours
+        description: 'Overtime hours.'
+        required: true
+        example: 5
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      ot_rate:
+        name: ot_rate
+        description: 'Overtime rate.'
+        required: true
+        example: 100.0
+        type: number
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      ot_payment:
+        name: ot_payment
+        description: 'Overtime payment.'
+        required: true
+        example: 500.0
+        type: number
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      total_allowance:
+        name: total_allowance
+        description: 'Allowance total.'
+        required: true
+        example: 3500.0
+        type: number
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      total_deductions:
+        name: total_deductions
+        description: 'Deductions total.'
+        required: true
+        example: 500.0
+        type: number
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      total_earnings:
+        name: total_earnings
+        description: 'Earnings total.'
+        required: true
+        example: 53500.0
+        type: number
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      net_pay:
+        name: net_pay
+        description: 'Net pay.'
+        required: true
+        example: 53000.0
+        type: number
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      payment_method_id:
+        name: payment_method_id
+        description: 'optional Required if status is 1 (paid).'
+        required: false
+        example: 2
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      payment_date:
+        name: payment_date
+        description: 'optional Required if status is 1 (paid). Format: Y-m-d.'
+        required: false
+        example: '2025-05-20'
+        type: date
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      status:
+        name: status
+        description: 'Status (0 = Unpaid, 1 = Paid).'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      note:
+        name: note
+        description: 'optional Note text.'
+        required: false
+        example: 'Updated after bonus revision.'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      allowances:
+        name: allowances
+        description: 'optional Array of allowance IDs to associate with the payslip.'
+        required: false
+        example:
+          - 1
+          - 2
+        type: 'string[]'
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      deductions:
+        name: deductions
+        description: 'optional Array of deduction IDs to associate with the payslip.'
+        required: false
+        example:
+          - 3
+          - 4
+        type: 'string[]'
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      isApi:
+        name: isApi
+        description: 'optional Whether to return a formatted API response. Defaults to false.'
+        required: false
+        example: true
+        type: boolean
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanBodyParameters:
+      id: 7
+      user_id: 3
+      month: 2025-05
+      basic_salary: 50000.0
+      working_days: 22
+      lop_days: 2
+      paid_days: 20
+      bonus: 2000.0
+      incentives: 1500.0
+      leave_deduction: 500.0
+      ot_hours: 5
+      ot_rate: 100.0
+      ot_payment: 500.0
+      total_allowance: 3500.0
+      total_deductions: 500.0
+      total_earnings: 53500.0
+      net_pay: 53000.0
+      payment_method_id: 2
+      payment_date: '2025-05-20'
+      status: 1
+      note: 'Updated after bonus revision.'
+      allowances:
+        - 1
+        - 2
+      deductions:
+        - 3
+        - 4
+      isApi: true
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+            "error": false,
+            "message": "Payslip updated successfully.",
+            "data": {
+              "id": 7,
+              "user_id": 3,
+              "user_name": "John Doe",
+              "month": "2025-05-01",
+              "basic_salary": 50000.00,
+              "working_days": 22,
+              "lop_days": 2,
+              "paid_days": 20,
+              "bonus": 2000.00,
+              "incentives": 1500.00,
+              "leave_deduction": 500.00,
+              "ot_hours": 5,
+              "ot_rate": 100.00,
+              "ot_payment": 500.00,
+              "total_allowance": 3500.00,
+              "total_deductions": 500.00,
+              "total_earnings": 53500.00,
+              "net_pay": 53000.00,
+              "status": 1,
+              "status_label": "Paid",
+              "payment_method_id": 2,
+              "payment_method": "Bank Transfer",
+              "payment_date": "2025-05-20",
+              "note": "Updated after bonus revision.",
+              "created_at": "2025-05-15",
+              "updated_at": "2025-05-15"
+            }
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 404
+        content: |-
+          {
+            "error": true,
+            "message": "Payslip not found.",
+            "data": []
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 422
+        content: |-
+          {
+            "error": true,
+            "message": "The given data was invalid.",
+            "data": {
+              "errors": {
+                "user_id": ["The user field is required."],
+                "basic_salary": ["The basic salary must be a valid number with or without decimals."]
+              }
+            }
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 500
+        content: |-
+          {
+            "error": true,
+            "message": "An error occurred.",
+            "data": []
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - DELETE
+    uri: 'api/payslips/destroy/{id}'
+    metadata:
+      groupName: 'Payslip Management'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Delete a payslip.'
+      description: 'This endpoint deletes the specified payslip and detaches all associated allowances and deductions.'
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Accept: application/json
+      workspace_id: 1
+    urlParameters:
+      id:
+        name: id
+        description: 'The ID of the payslip to delete.'
+        required: true
+        example: 10
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanUrlParameters:
+      id: 10
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+            "error": false,
+            "message": "Payslip deleted successfully."
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 404
+        content: |-
+          {
+            "error": true,
+            "message": "Payslip not found."
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 500
+        content: |-
+          {
+            "error": true,
+            "message": "An error occurred."
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer ahgPva4df6Dk5e6EbV38Zc1'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: api/payslips/list
+    metadata:
+      groupName: 'Payslip Management'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'List payslips with filtering (API format).'
+      description: 'Retrieves a list of payslips in API format with support for searching, filtering by user, status, and month.'
+      authenticated: false
+      custom: []
+    headers:
+      Accept: application/json
+      workspace_id: 1
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters:
+      search:
+        name: search
+        description: 'optional Search term to filter payslips by ID, note, or payment method.'
+        required: false
+        example: PSL-5
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      sort:
+        name: sort
+        description: 'optional Field to sort by. Defaults to id.'
+        required: false
+        example: month
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      order:
+        name: order
+        description: 'optional Sort order: ASC or DESC. Defaults to DESC.'
+        required: false
+        example: ASC
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      limit:
+        name: limit
+        description: 'optional Number of records to return. Default: 10.'
+        required: false
+        example: 20
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      statuses:
+        name: statuses
+        description: 'optional Filter by status values (0 = Unpaid, 1 = Paid).'
+        required: false
+        example:
+          - 0
+          - 1
+        type: 'string[]'
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      user_ids:
+        name: user_ids
+        description: 'optional Filter by user IDs.'
+        required: false
+        example:
+          - 3
+          - 4
+        type: 'string[]'
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      created_by_user_ids:
+        name: created_by_user_ids
+        description: 'optional Filter by user IDs who created the payslip.'
+        required: false
+        example:
+          - 2
+        type: 'string[]'
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      created_by_client_ids:
+        name: created_by_client_ids
+        description: 'optional Filter by client IDs who created the payslip.'
+        required: false
+        example:
+          - 1
+        type: 'string[]'
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      month:
+        name: month
+        description: 'optional Filter by month. Format: YYYY-MM.'
+        required: false
+        example: 2025-05
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanQueryParameters:
+      search: PSL-5
+      sort: month
+      order: ASC
+      limit: 20
+      statuses:
+        - 0
+        - 1
+      user_ids:
+        - 3
+        - 4
+      created_by_user_ids:
+        - 2
+      created_by_client_ids:
+        - 1
+      month: 2025-05
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+            "error": false,
+            "message": "Payslips retrieved successfully.",
+            "data": {
+              "total": 5,
+              "data": [
+                {
+                  "id": 7,
+                  "user_id": 3,
+                  "user_name": "John Doe",
+                  "month": "2025-05-01",
+                  "basic_salary": 50000.00,
+                  "working_days": 22,
+                  "lop_days": 2,
+                  "paid_days": 20,
+                  "bonus": 2000.00,
+                  "incentives": 1500.00,
+                  "leave_deduction": 500.00,
+                  "ot_hours": 5,
+                  "ot_rate": 100.00,
+                  "ot_payment": 500.00,
+                  "total_allowance": 3500.00,
+                  "total_deductions": 500.00,
+                  "total_earnings": 53500.00,
+                  "net_pay": 53000.00,
+                  "status": 1,
+                  "status_label": "Paid",
+                  "payment_method_id": 2,
+                  "payment_method": "Bank Transfer",
+                  "payment_date": "2025-05-20",
+                  "note": "Bonus included for performance.",
+                  "created_at": "2025-05-15",
+                  "updated_at": "2025-05-15"
+                }
+              ]
+            }
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 500
+        content: |-
+          {
+            "error": true,
+            "message": "An error occurred.",
+            "data": []
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []

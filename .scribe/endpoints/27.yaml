@@ -1,0 +1,566 @@
+name: 'Payment Management'
+description: ''
+endpoints:
+  -
+    httpMethods:
+      - POST
+    uri: api/payments/store
+    metadata:
+      groupName: 'Payment Management'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Create a new payment.'
+      description: 'This endpoint creates a new payment with the specified user_id, invoice_id,payment_method_id,amount,payment_date,note. The user must be authenticated to perform this action.'
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Accept: application/json
+      workspace_id: 1
+      Content-Type: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      user_id:
+        name: user_id
+        description: 'The user_id of the payment.'
+        required: true
+        example: '1'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      invoice_id:
+        name: invoice_id
+        description: 'The invoice_id of the payment.'
+        required: true
+        example: '1'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      payment_method_id:
+        name: payment_method_id
+        description: 'The payment_method_id of the payment methods.'
+        required: true
+        example: '1'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      amount:
+        name: amount
+        description: 'The amount of the amount.'
+        required: true
+        example: '100'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      payment_date:
+        name: payment_date
+        description: 'The payment_date of the payment.'
+        required: true
+        example: '2024-08-07'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      note:
+        name: note
+        description: 'The note of the note.'
+        required: true
+        example: 'Finish report'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanBodyParameters:
+      user_id: '1'
+      invoice_id: '1'
+      payment_method_id: '1'
+      amount: '100'
+      payment_date: '2024-08-07'
+      note: 'Finish report'
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "error": false,
+          "message": "Payment created successfully.",
+          "id": 36,
+          "data": {
+                    'id' => '1',
+                    'user_id' => '1',
+                    'invoice_id' => '1',
+                    'payment_method_id' => '1',
+                    'amount' => '100.00',
+                    'payment_date' => '2023-10-01',
+                    'note' => 'Payment note',
+                    'created_at' => format_date($exp->created_at, true),
+                   }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 422
+        content: |-
+          {
+            "error": true,
+            "message": "Validation errors occurred",
+            "errors": {
+              "user_id": [
+                "The user_id field is required."
+              ],
+              "invoice_id": [
+                "The invoice_id field is required."
+              ],
+             "payment_method_id": [
+               "The payment method id field is required."
+             ],
+             "amount": [
+               "The amount field is required."
+            ],
+            "payment_date": [
+              "The payment date field is required."
+             ],
+            }
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 500
+        content: |-
+          {
+            "error": true,
+            "message": "An error occurred while creating the payment."
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer ZeDhb5V8Pg6Ea3f4ak6v1cd'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: 'api/payments/{id?}'
+    metadata:
+      groupName: 'Payment Management'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'List or search payments.'
+      description: 'This endpoint retrieves a list of payments based on various filters. The user must be authenticated to perform this action. The request allows searching and sorting by different parameters.'
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Accept: application/json
+      workspace_id: 1
+    urlParameters:
+      id:
+        name: id
+        description: 'optional The ID of the tag to retrieve.'
+        required: false
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanUrlParameters:
+      id: 1
+    queryParameters:
+      search:
+        name: search
+        description: 'optional The search term to filter tags by title or id.'
+        required: false
+        example: Title
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      sort:
+        name: sort
+        description: 'optional The field to sort by. Defaults to "id". Sortable fields include: id,  created_at, and updated_at.'
+        required: false
+        example: id
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      order:
+        name: order
+        description: 'optional The sort order, either "ASC" or "DESC". Defaults to "DESC".'
+        required: false
+        example: ASC
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      limit:
+        name: limit
+        description: 'optional The number of tags per page for pagination.'
+        required: false
+        example: 10
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      offset:
+        name: offset
+        description: 'optional The offset for pagination, indicating the starting point of results.'
+        required: false
+        example: 0
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanQueryParameters:
+      search: Title
+      sort: id
+      order: ASC
+      limit: 10
+      offset: 0
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+            "error": false,
+            "message": "Payment retrieved successfully",
+            "total": 1,
+            "data": [
+              {
+          "id": 1,
+          "user_id": 1,
+          "user": {
+          "id": 1,
+          "first_name": "Admin",
+          "last_name": "User",
+          "email": "admin@gmail.com",
+          "photo": "https://dev-taskify.taskhub.company/storage/photos/C03PJmIQInts2j3O2on99Nilu45UcChrepcsIFxO.jpg"
+          },
+          "invoice_id": null,
+          "invoice": "-",
+          "payment_method_id": 1,
+          "payment_method": "some",
+          "amount": "₹ 100.00",
+          "payment_date": "2025-04-16",
+          "note": "123",
+          "created_by": "Admin User",
+          "created_at": "2025-04-16 09:41:57",
+          "updated_at": "2025-04-16 09:41:57"
+          }
+            ]
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 200
+        content: |-
+          {
+            "error": true,
+            "message": "Payment not found",
+            "total": 0,
+            "data": []
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 200
+        content: |-
+          {
+            "error": true,
+            "message": "Payments not found",
+            "total": 0,
+            "data": []
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer aDchva46kdge8b3P51EVfZ6'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/payments/update
+    metadata:
+      groupName: 'Payment Management'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Update an existing payment.'
+      description: 'This endpoint updates an existing payment with the specified user_id, invoice_id,payment_method_id,amount,payment_date,note. The user must be authenticated to perform this action.'
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Accept: application/json
+      workspace_id: 1
+      Content-Type: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      id:
+        name: id
+        description: 'The id of the payment. Example : 1'
+        required: true
+        example: quam
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+      user_id:
+        name: user_id
+        description: 'The user_id of the payment.'
+        required: true
+        example: '1'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      invoice_id:
+        name: invoice_id
+        description: 'The invoice_id of the payment.'
+        required: true
+        example: '1'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      payment_method_id:
+        name: payment_method_id
+        description: 'The payment_method_id of the payment methods.'
+        required: true
+        example: '1'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      amount:
+        name: amount
+        description: 'The amount of the amount.'
+        required: true
+        example: '100'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      payment_date:
+        name: payment_date
+        description: 'The payment_date of the payment.'
+        required: true
+        example: '2024-08-07'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      note:
+        name: note
+        description: 'The note of the note.'
+        required: true
+        example: 'Finish report'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanBodyParameters:
+      id: quam
+      user_id: '1'
+      invoice_id: '1'
+      payment_method_id: '1'
+      amount: '100'
+      payment_date: '2024-08-07'
+      note: 'Finish report'
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "error": false,
+          "message": "Payment created successfully.",
+          "id": 36,
+          "data": {
+                    'id' => '1',
+                    'user_id' => '1',
+                    'invoice_id' => '1',
+                    'payment_method_id' => '1',
+                    'amount' => '100.00',
+                    'payment_date' => '2023-10-01',
+                    'note' => 'Payment note',
+                    'created_at' => format_date($exp->created_at, true),
+                   }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 422
+        content: |-
+          {
+            "error": true,
+            "message": "Validation errors occurred",
+            "errors": {
+              "user_id": [
+                "The user_id field is required."
+              ],
+              "invoice_id": [
+                "The invoice_id field is required."
+              ],
+             "payment_method_id": [
+               "The payment method id field is required."
+             ],
+             "amount": [
+               "The amount field is required."
+            ],
+            "payment_date": [
+              "The payment date field is required."
+             ],
+            }
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 500
+        content: |-
+          {
+            "error": true,
+            "message": "An error occurred while creating the payment."
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer gE46vZckVa53abf68DePdh1'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - DELETE
+    uri: 'api/payments/destroy/{id}'
+    metadata:
+      groupName: 'Payment Management'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Remove the specified payment.'
+      description: 'This endpoint deletes a payment based on the provided ID. The user must be authenticated to perform this action.'
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Accept: application/json
+      workspace_id: 1
+    urlParameters:
+      id:
+        name: id
+        description: 'The ID of the todo to be deleted.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanUrlParameters:
+      id: 1
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+            "error": false,
+            "message": "Payment deleted successfully.",
+            "id": 1,
+            "data": []
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 200
+        content: |-
+          {
+            "error": true,
+            "message": "Payment not found.",
+            "data": []
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 500
+        content: |-
+          {
+            "error": true,
+            "message": "An error occurred while deleting the Payment."
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer abkPZgVvaEfe6Dh16d358c4'
+    controller: null
+    method: null
+    route: null
+    custom: []

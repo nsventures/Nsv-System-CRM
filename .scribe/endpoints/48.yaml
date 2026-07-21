@@ -1,0 +1,511 @@
+name: 'Task List Management'
+description: ''
+endpoints:
+  -
+    httpMethods:
+      - POST
+    uri: api/task-lists/store
+    metadata:
+      groupName: 'Task List Management'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Create a new task list.'
+      description: 'Creates a new task list associated with a specific project.'
+      authenticated: false
+      custom: []
+    headers:
+      Accept: application/json
+      workspace_id: 1
+      Content-Type: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters:
+      isApi:
+        name: isApi
+        description: 'optional Whether to return a JSON API response. Defaults to false.'
+        required: false
+        example: true
+        type: boolean
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanQueryParameters:
+      isApi: true
+    bodyParameters:
+      name:
+        name: name
+        description: 'The name of the task list. Max 255 characters.'
+        required: true
+        example: 'UI Tasks'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      project_id:
+        name: project_id
+        description: 'The ID of the project this task list belongs to. Must exist in the `projects` table.'
+        required: true
+        example: 5
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanBodyParameters:
+      name: 'UI Tasks'
+      project_id: 5
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+            "error": false,
+            "message": "Task list created successfully.",
+            "data": {
+              "id": 1,
+              "name": "UI Tasks",
+              "project": "Website Redesign",
+              "created_at": "30 May, 2025",
+              "updated_at": "30 May, 2025"
+            }
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 422
+        content: |-
+          {
+            "error": true,
+            "message": "The given data was invalid.",
+            "data": {
+              "errors": {
+                "name": ["The name field is required."],
+                "project_id": ["The selected project id is invalid."]
+              }
+            }
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 500
+        content: |-
+          {
+            "error": true,
+            "message": "Task list couldn't be created.",
+            "data": []
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/task-lists/update
+    metadata:
+      groupName: 'Task List Management'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Update a task list.'
+      description: 'Updates the name of an existing task list.'
+      authenticated: false
+      custom: []
+    headers:
+      Accept: application/json
+      workspace_id: 1
+      Content-Type: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters:
+      isApi:
+        name: isApi
+        description: 'optional Whether to return a JSON API response. Defaults to false.'
+        required: false
+        example: true
+        type: boolean
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanQueryParameters:
+      isApi: true
+    bodyParameters:
+      id:
+        name: id
+        description: 'The ID of the task list to update. Must exist in the `task_lists` table.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      name:
+        name: name
+        description: 'The new name for the task list. Max 255 characters.'
+        required: true
+        example: 'Backend Tasks'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanBodyParameters:
+      id: 1
+      name: 'Backend Tasks'
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+            "error": false,
+            "message": "Task list updated successfully.",
+            "data": {
+              "id": 1,
+              "name": "Backend Tasks",
+              "project": "Website Redesign",
+              "created_at": "30 May, 2025",
+              "updated_at": "30 May, 2025"
+            }
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 404
+        content: |-
+          {
+            "error": true,
+            "message": "Task list not found.",
+            "data": []
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 422
+        content: |-
+          {
+            "error": true,
+            "message": "The given data was invalid.",
+            "data": {
+              "errors": {
+                "id": ["The selected id is invalid."],
+                "name": ["The name field is required."]
+              }
+            }
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 500
+        content: |-
+          {
+            "error": true,
+            "message": "Task lists couldn't be updated.",
+            "data": []
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: 'api/task-lists/get/{id}'
+    metadata:
+      groupName: 'Task List Management'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Retrieve a specific task list.'
+      description: 'Fetches a task list by its ID, including associated project details.'
+      authenticated: false
+      custom: []
+    headers:
+      Accept: application/json
+      workspace_id: 1
+    urlParameters:
+      id:
+        name: id
+        description: 'The ID of the task list to retrieve. Must exist in the `task_lists` table.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanUrlParameters:
+      id: 1
+    queryParameters:
+      isApi:
+        name: isApi
+        description: 'optional Whether to return a JSON API response. Defaults to false.'
+        required: false
+        example: true
+        type: boolean
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanQueryParameters:
+      isApi: true
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+            "error": false,
+            "message": "Task list retrieved successfully.",
+            "data": {
+              "id": 1,
+              "name": "UI Tasks",
+              "project": "Website Redesign",
+              "created_at": "30 May, 2025",
+              "updated_at": "30 May, 2025"
+            }
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 404
+        content: |-
+          {
+            "error": true,
+            "message": "Task list not found.",
+            "data": []
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 500
+        content: |-
+          {
+            "error": true,
+            "message": "An error occurred.",
+            "data": []
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - DELETE
+    uri: 'api/task-lists/destroy/{id}'
+    metadata:
+      groupName: 'Task List Management'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Delete a task list.'
+      description: 'Permanently deletes a task list by its ID.'
+      authenticated: false
+      custom: []
+    headers:
+      Accept: application/json
+      workspace_id: 1
+    urlParameters:
+      id:
+        name: id
+        description: 'The ID of the task list to delete. Must exist in the `task_lists` table.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanUrlParameters:
+      id: 1
+    queryParameters:
+      isApi:
+        name: isApi
+        description: 'optional Whether to return a JSON API response. Defaults to false.'
+        required: false
+        example: true
+        type: boolean
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanQueryParameters:
+      isApi: true
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+            "error": false,
+            "message": "Task list deleted successfully.",
+            "data": []
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 404
+        content: |-
+          {
+            "error": true,
+            "message": "Task list not found.",
+            "data": []
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 500
+        content: |-
+          {
+            "error": true,
+            "message": "An error occurred.",
+            "data": []
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: api/task-lists/list
+    metadata:
+      groupName: 'Task List Management'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Get list of task lists (API format).'
+      description: 'Returns a list of task lists for the current workspace in API format, with optional filtering and sorting.'
+      authenticated: false
+      custom: []
+    headers:
+      Accept: application/json
+      workspace_id: 1
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters:
+      search:
+        name: search
+        description: 'optional Search keyword to filter task lists by name, ID, or project title.'
+        required: false
+        example: UI
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      sort:
+        name: sort
+        description: 'optional Field to sort by. Defaults to id.'
+        required: false
+        example: name
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      order:
+        name: order
+        description: 'optional Sort order: ASC or DESC. Defaults to DESC.'
+        required: false
+        example: ASC
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      limit:
+        name: limit
+        description: 'optional Number of records to return. Defaults to 10.'
+        required: false
+        example: 20
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanQueryParameters:
+      search: UI
+      sort: name
+      order: ASC
+      limit: 20
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+            "error": false,
+            "message": "Task lists retrieved successfully.",
+            "total": 1,
+            "data": [
+              {
+                "id": 1,
+                "name": "UI Tasks",
+                "project": "Website Redesign",
+                "created_at": "30 May, 2025",
+                "updated_at": "30 May, 2025"
+              }
+            ]
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 500
+        content: |-
+          {
+            "error": true,
+            "message": "An error occurred.",
+            "data": []
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []

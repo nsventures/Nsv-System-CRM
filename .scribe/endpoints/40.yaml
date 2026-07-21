@@ -1,0 +1,1755 @@
+name: 'Leads Management'
+description: ''
+endpoints:
+  -
+    httpMethods:
+      - POST
+    uri: api/leads/store
+    metadata:
+      groupName: 'Leads Management'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Create a new lead.'
+      description: 'This endpoint creates a new lead in the system. The user must be authenticated and belong to the workspace. All required fields must be provided, and the email must be unique.'
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Accept: application/json
+      workspace_id: 1
+      Content-Type: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters:
+      isApi:
+        name: isApi
+        description: 'optional Indicates if the response should be formatted for API use. Defaults to false.'
+        required: false
+        example: true
+        type: boolean
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanQueryParameters:
+      isApi: true
+    bodyParameters:
+      first_name:
+        name: first_name
+        description: 'The first name of the lead. Max 255 characters.'
+        required: true
+        example: John
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      last_name:
+        name: last_name
+        description: 'The last name of the lead. Max 255 characters.'
+        required: true
+        example: Doe
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      email:
+        name: email
+        description: 'The email address of the lead. Must be unique.'
+        required: true
+        example: john.doe@example.com
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      phone:
+        name: phone
+        description: 'The phone number of the lead. Max 20 characters.'
+        required: true
+        example: '1234567890'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      country_code:
+        name: country_code
+        description: 'The country code for the phone number. Max 5 characters.'
+        required: true
+        example: '+1'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      country_iso_code:
+        name: country_iso_code
+        description: 'The ISO 2-letter country code.'
+        required: true
+        example: US
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      source_id:
+        name: source_id
+        description: 'The ID of the lead source. Must exist in `lead_sources`.'
+        required: true
+        example: 3
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      stage_id:
+        name: stage_id
+        description: 'The ID of the lead stage. Must exist in `lead_stages`.'
+        required: true
+        example: 2
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      assigned_to:
+        name: assigned_to
+        description: 'The ID of the user assigned to this lead. Must exist in `users`.'
+        required: true
+        example: 7
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      job_title:
+        name: job_title
+        description: 'optional The lead’s job title. Max 255 characters.'
+        required: false
+        example: 'Marketing Manager'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      industry:
+        name: industry
+        description: 'optional The industry the lead belongs to. Max 255 characters.'
+        required: false
+        example: Technology
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      company:
+        name: company
+        description: 'The company name. Max 255 characters.'
+        required: true
+        example: 'Acme Corp'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      website:
+        name: website
+        description: 'optional The company website URL. Must be a valid URL.'
+        required: false
+        example: 'https://acme.com'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      linkedin:
+        name: linkedin
+        description: 'optional The LinkedIn profile URL. Must be a valid URL.'
+        required: false
+        example: 'https://linkedin.com/in/johndoe'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      instagram:
+        name: instagram
+        description: 'optional The Instagram profile URL. Must be a valid URL.'
+        required: false
+        example: 'https://instagram.com/johndoe'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      facebook:
+        name: facebook
+        description: 'optional The Facebook profile URL. Must be a valid URL.'
+        required: false
+        example: 'https://facebook.com/johndoe'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      pinterest:
+        name: pinterest
+        description: 'optional The Pinterest profile URL. Must be a valid URL.'
+        required: false
+        example: 'https://pinterest.com/johndoe'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      city:
+        name: city
+        description: 'optional The city of the lead. Max 255 characters.'
+        required: false
+        example: 'New York'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      state:
+        name: state
+        description: 'optional The state of the lead. Max 255 characters.'
+        required: false
+        example: NY
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      zip:
+        name: zip
+        description: 'optional The zip/postal code. Max 20 characters.'
+        required: false
+        example: '10001'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      country:
+        name: country
+        description: 'optional The country of the lead. Max 255 characters.'
+        required: false
+        example: 'United States'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanBodyParameters:
+      first_name: John
+      last_name: Doe
+      email: john.doe@example.com
+      phone: '1234567890'
+      country_code: '+1'
+      country_iso_code: US
+      source_id: 3
+      stage_id: 2
+      assigned_to: 7
+      job_title: 'Marketing Manager'
+      industry: Technology
+      company: 'Acme Corp'
+      website: 'https://acme.com'
+      linkedin: 'https://linkedin.com/in/johndoe'
+      instagram: 'https://instagram.com/johndoe'
+      facebook: 'https://facebook.com/johndoe'
+      pinterest: 'https://pinterest.com/johndoe'
+      city: 'New York'
+      state: NY
+      zip: '10001'
+      country: 'United States'
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+            "error": false,
+            "message": "Lead created successfully!",
+            "data": {
+              "id": 1,
+              "first_name": "John",
+              "last_name": "Doe",
+              "email": "john.doe@example.com",
+              "phone": "1234567890",
+              "company": "Acme Corp",
+              "stage_id": 2,
+              "source_id": 3,
+              "assigned_to": 7,
+              "created_at": "2025-05-15T10:00:00.000000Z",
+              "updated_at": "2025-05-15T10:00:00.000000Z"
+            }
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 422
+        content: |-
+          {
+            "error": true,
+            "message": "Validation failed.",
+            "errors": {
+              "email": ["The email field is required."]
+            }
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 500
+        content: |-
+          {
+            "error": true,
+            "message": "An error occurred while creating the lead."
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer DV86v45P3aEfdbk1gah6ceZ'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: 'api/leads/get/{id?}'
+    metadata:
+      groupName: 'Leads Management'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Retrieve a specific lead.'
+      description: 'This endpoint retrieves the details of a specific lead by its ID. The user must be authenticated and authorized to access the lead.'
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Accept: application/json
+      workspace_id: 1
+    urlParameters:
+      id:
+        name: id
+        description: 'The ID of the lead to retrieve. Must exist in the `leads` table.'
+        required: true
+        example: 5
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanUrlParameters:
+      id: 5
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+            "error": false,
+            "message": "Lead retrieved successfully!",
+            "data": {
+              "id": 5,
+              "first_name": "John",
+              "last_name": "Doe",
+              "email": "john.doe@example.com",
+              "phone": "1234567890",
+              "company": "Acme Corp",
+              "stage_id": 2,
+              "source_id": 3,
+              "assigned_to": 7,
+              "created_at": "2025-05-10T12:30:00.000000Z",
+              "updated_at": "2025-05-15T09:12:00.000000Z"
+            }
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 404
+        content: |-
+          {
+            "error": true,
+            "message": "Lead not found."
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 500
+        content: |-
+          {
+            "error": true,
+            "message": "An error occurred while retrieving the lead."
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer P61ha4cfbEvVgD8dZkae635'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: api/leads/list
+    metadata:
+      groupName: 'Leads Management'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'List leads with optional filters, sorting, and pagination.'
+      description: 'This endpoint retrieves a paginated list of leads accessible to the authenticated user, with optional search, source and stage filters, date range filtering, and sorting. Permissions for editing and deleting are included in the response.'
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Accept: application/json
+      workspace_id: 1
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters:
+      search:
+        name: search
+        description: 'optional Filters leads by first name, last name, email, phone, company, job title, or ID.'
+        required: false
+        example: John
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      source_ids:
+        name: source_ids
+        description: 'optional Filters leads by one or more source IDs.'
+        required: false
+        example:
+          - 1
+          - 2
+        type: 'string[]'
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      stage_ids:
+        name: stage_ids
+        description: 'optional Filters leads by one or more stage IDs.'
+        required: false
+        example:
+          - 3
+          - 4
+        type: 'string[]'
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      start_date:
+        name: start_date
+        description: 'optional Filters leads created on or after this date (YYYY-MM-DD).'
+        required: false
+        example: '2025-01-01'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      end_date:
+        name: end_date
+        description: 'optional Filters leads created on or before this date (YYYY-MM-DD).'
+        required: false
+        example: '2025-05-01'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      sort:
+        name: sort
+        description: 'optional Sorts leads by criteria (newest, oldest, recently-updated, earliest-updated). Defaults to newest.'
+        required: false
+        example: newest
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      limit:
+        name: limit
+        description: 'optional Number of leads per page (1-100). Defaults to 10.'
+        required: false
+        example: 20
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanQueryParameters:
+      search: John
+      source_ids:
+        - 1
+        - 2
+      stage_ids:
+        - 3
+        - 4
+      start_date: '2025-01-01'
+      end_date: '2025-05-01'
+      sort: newest
+      limit: 20
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+            "error": false,
+            "message": "Leads retrieved successfully!",
+            "data": {
+              "total": 50,
+              "data": [
+                {
+                  "id": 1,
+                  "first_name": "John",
+                  "last_name": "Doe",
+                  "email": "john.doe@example.com",
+                  "phone": "1234567890",
+                  "company": "Acme Corp",
+                  "job_title": "Manager",
+                  "source": { "id": 1, "name": "Website" },
+                  "stage": { "id": 2, "name": "Negotiation", "color": "primary" },
+                  "assigned_user": { "id": 5, "name": "Jane Smith" },
+                  "created_at": "2025-01-10T12:00:00.000000Z",
+                  "updated_at": "2025-05-15T10:00:00.000000Z",
+                  "can_edit": true,
+                  "can_delete": true
+                }
+              ],
+              "permissions": {
+                "can_edit": true,
+                "can_delete": true
+              }
+            }
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 500
+        content: |-
+          {
+            "error": true,
+            "message": "An error occurred while retrieving the leads."
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer Z8e6Dd36cE4bvakhfaVP15g'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: 'api/leads/update/{id}'
+    metadata:
+      groupName: 'Leads Management'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Update a specific lead.'
+      description: 'This endpoint updates the details of an existing lead. The user must be authenticated and belong to the workspace. The email must remain unique among other leads.'
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Accept: application/json
+      workspace_id: 1
+      Content-Type: application/json
+    urlParameters:
+      id:
+        name: id
+        description: 'The ID of the lead to update. Must exist in the `leads` table.'
+        required: true
+        example: 5
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanUrlParameters:
+      id: 5
+    queryParameters:
+      isApi:
+        name: isApi
+        description: 'optional Indicates if the response should be formatted for API use. Defaults to false.'
+        required: false
+        example: true
+        type: boolean
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanQueryParameters:
+      isApi: true
+    bodyParameters:
+      first_name:
+        name: first_name
+        description: 'The first name of the lead. Max 255 characters.'
+        required: true
+        example: John
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      last_name:
+        name: last_name
+        description: 'The last name of the lead. Max 255 characters.'
+        required: true
+        example: Doe
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      email:
+        name: email
+        description: 'The email address. Must be unique except for this lead.'
+        required: true
+        example: john.doe@example.com
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      phone:
+        name: phone
+        description: 'The phone number. Max 20 characters.'
+        required: true
+        example: '1234567890'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      country_code:
+        name: country_code
+        description: 'The country code for the phone number. Max 5 characters.'
+        required: true
+        example: '+1'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      country_iso_code:
+        name: country_iso_code
+        description: 'The ISO 2-letter country code.'
+        required: true
+        example: US
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      source_id:
+        name: source_id
+        description: 'The ID of the lead source. Must exist in `lead_sources`.'
+        required: true
+        example: 3
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      stage_id:
+        name: stage_id
+        description: 'The ID of the lead stage. Must exist in `lead_stages`.'
+        required: true
+        example: 2
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      assigned_to:
+        name: assigned_to
+        description: 'The ID of the user assigned to this lead. Must exist in `users`.'
+        required: true
+        example: 7
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      job_title:
+        name: job_title
+        description: 'optional The lead’s job title. Max 255 characters.'
+        required: false
+        example: CTO
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      industry:
+        name: industry
+        description: 'optional The industry the lead belongs to. Max 255 characters.'
+        required: false
+        example: SaaS
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      company:
+        name: company
+        description: 'The company name. Max 255 characters.'
+        required: true
+        example: 'Acme Corp'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      website:
+        name: website
+        description: 'optional The company website URL. Must be a valid URL.'
+        required: false
+        example: 'https://acme.com'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      linkedin:
+        name: linkedin
+        description: 'optional The LinkedIn profile URL. Must be a valid URL.'
+        required: false
+        example: 'https://linkedin.com/in/johndoe'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      instagram:
+        name: instagram
+        description: 'optional The Instagram profile URL. Must be a valid URL.'
+        required: false
+        example: 'https://instagram.com/johndoe'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      facebook:
+        name: facebook
+        description: 'optional The Facebook profile URL. Must be a valid URL.'
+        required: false
+        example: 'https://facebook.com/johndoe'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      pinterest:
+        name: pinterest
+        description: 'optional The Pinterest profile URL. Must be a valid URL.'
+        required: false
+        example: 'https://pinterest.com/johndoe'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      city:
+        name: city
+        description: 'optional The city of the lead. Max 255 characters.'
+        required: false
+        example: 'San Francisco'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      state:
+        name: state
+        description: 'optional The state of the lead. Max 255 characters.'
+        required: false
+        example: CA
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      zip:
+        name: zip
+        description: 'optional The zip/postal code. Max 20 characters.'
+        required: false
+        example: '94107'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      country:
+        name: country
+        description: 'optional The country of the lead. Max 255 characters.'
+        required: false
+        example: 'United States'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanBodyParameters:
+      first_name: John
+      last_name: Doe
+      email: john.doe@example.com
+      phone: '1234567890'
+      country_code: '+1'
+      country_iso_code: US
+      source_id: 3
+      stage_id: 2
+      assigned_to: 7
+      job_title: CTO
+      industry: SaaS
+      company: 'Acme Corp'
+      website: 'https://acme.com'
+      linkedin: 'https://linkedin.com/in/johndoe'
+      instagram: 'https://instagram.com/johndoe'
+      facebook: 'https://facebook.com/johndoe'
+      pinterest: 'https://pinterest.com/johndoe'
+      city: 'San Francisco'
+      state: CA
+      zip: '94107'
+      country: 'United States'
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+            "error": false,
+            "message": "Lead updated successfully!",
+            "data": {
+              "id": 5,
+              "first_name": "John",
+              "last_name": "Doe",
+              "email": "john.doe@example.com",
+              "phone": "1234567890",
+              "company": "Acme Corp",
+              "stage_id": 2,
+              "source_id": 3,
+              "assigned_to": 7,
+              "created_at": "2025-05-10T12:30:00.000000Z",
+              "updated_at": "2025-05-15T09:12:00.000000Z"
+            }
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 404
+        content: |-
+          {
+            "error": true,
+            "message": "Lead not found."
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 422
+        content: |-
+          {
+            "error": true,
+            "message": "Validation failed.",
+            "errors": {
+              "email": ["The email has already been taken."]
+            }
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 500
+        content: |-
+          {
+            "error": true,
+            "message": "An error occurred while updating the lead."
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer ZghcDk5Va1Evf68bde3a4P6'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - DELETE
+    uri: 'api/leads/destroy/{id}'
+    metadata:
+      groupName: 'Leads Management'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Delete a specific lead.'
+      description: 'This endpoint deletes a specific lead by its ID. The user must be authenticated and have appropriate permissions to perform the deletion.'
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Accept: application/json
+      workspace_id: 1
+    urlParameters:
+      id:
+        name: id
+        description: 'The ID of the lead to delete. Must exist in the `leads` table.'
+        required: true
+        example: 5
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanUrlParameters:
+      id: 5
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+            "error": false,
+            "message": "Lead deleted successfully!"
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 404
+        content: |-
+          {
+            "error": true,
+            "message": "Lead not found."
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 500
+        content: |-
+          {
+            "error": true,
+            "message": "An error occurred while deleting the lead."
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer fdD5Ekc83466bvh1PeaZVga'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/leads/follow-up/store
+    metadata:
+      groupName: 'Leads Management'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Create a new lead follow-up.'
+      description: 'This endpoint creates a follow-up activity (such as call, email, or meeting) for a specific lead. The date and time are converted to UTC before storing.'
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Accept: application/json
+      workspace_id: 1
+      Content-Type: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      lead_id:
+        name: lead_id
+        description: 'The ID of the lead to associate the follow-up with.'
+        required: true
+        example: 12
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      assigned_to:
+        name: assigned_to
+        description: 'The ID of the user assigned to the follow-up.'
+        required: true
+        example: 5
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      type:
+        name: type
+        description: 'The type of follow-up. One of: email, sms, call, meeting, other.'
+        required: true
+        example: call
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      status:
+        name: status
+        description: 'The current status of the follow-up. One of: pending, completed, rescheduled.'
+        required: true
+        example: pending
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      follow_up_at:
+        name: follow_up_at
+        description: 'The follow-up date and time in local format (Y-m-d\TH:i).'
+        required: true
+        example: '2025-06-20T14:30'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      note:
+        name: note
+        description: 'optional Additional notes for the follow-up. Max 255 characters.'
+        required: false
+        example: 'Call scheduled with client to discuss proposal.'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanBodyParameters:
+      lead_id: 12
+      assigned_to: 5
+      type: call
+      status: pending
+      follow_up_at: '2025-06-20T14:30'
+      note: 'Call scheduled with client to discuss proposal.'
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+            "error": false,
+            "message": "Follow Up Created Successfully",
+            "data": {
+              "id": 101,
+              "type": "lead_follow_up"
+            }
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 422
+        content: |-
+          {
+            "error": true,
+            "message": "The given data was invalid.",
+            "errors": {
+              "lead_id": ["The lead id field is required."]
+            }
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 500
+        content: |-
+          {
+            "error": true,
+            "message": "Follow Up Couldn't Created.",
+            "data": {
+              "error": "...",
+              "line": 123,
+              "file": "/app/Http/Controllers/LeadFollowUpController.php"
+            }
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer PcbV3Ddae686E51Zafgvhk4'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: 'api/leads/follow-up/get/{id}'
+    metadata:
+      groupName: 'Leads Management'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Retrieve a specific lead follow-up.'
+      description: 'This endpoint fetches the details of a lead follow-up for editing or displaying, including the related lead and assigned user.'
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Accept: application/json
+      workspace_id: 1
+    urlParameters:
+      id:
+        name: id
+        description: 'The ID of the follow-up to retrieve.'
+        required: true
+        example: 101
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanUrlParameters:
+      id: 101
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+            "error": false,
+            "message": "Follow Up Retrived Successfully",
+            "follow_up": {
+              "id": 101,
+              "lead_id": 12,
+              "assigned_to": 5,
+              "type": "call",
+              "status": "pending",
+              "follow_up_at": "2025-06-20T09:00:00.000000Z",
+              "note": "Discuss proposal",
+              "lead": {
+                "id": 12,
+                "first_name": "John",
+                "last_name": "Doe"
+              },
+              "assigned_to_user": {
+                "id": 5,
+                "name": "Jane Smith"
+              }
+            }
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 404
+        content: |-
+          {
+            "message": "No query results for model [App\\Models\\LeadFollowUp] 101"
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer fvcV58461PEkDbhd6Zaaeg3'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/leads/follow-up/update
+    metadata:
+      groupName: 'Leads Management'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Update an existing lead follow-up.'
+      description: 'This endpoint updates the details of an existing follow-up activity for a lead, including reassignment, type, and follow-up date.'
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Accept: application/json
+      workspace_id: 1
+      Content-Type: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      id:
+        name: id
+        description: 'The ID of the follow-up to update.'
+        required: true
+        example: 101
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      assigned_to:
+        name: assigned_to
+        description: 'The ID of the user assigned to the follow-up.'
+        required: true
+        example: 6
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      type:
+        name: type
+        description: 'The type of follow-up. One of: email, sms, call, meeting, other.'
+        required: true
+        example: email
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      status:
+        name: status
+        description: 'The current status. One of: pending, completed, rescheduled.'
+        required: true
+        example: completed
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      follow_up_at:
+        name: follow_up_at
+        description: 'The updated follow-up datetime in local format (Y-m-d\TH:i).'
+        required: true
+        example: '2025-06-21T16:00'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      note:
+        name: note
+        description: 'optional Optional follow-up notes. Max 255 characters.'
+        required: false
+        example: 'Follow-up completed.'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanBodyParameters:
+      id: 101
+      assigned_to: 6
+      type: email
+      status: completed
+      follow_up_at: '2025-06-21T16:00'
+      note: 'Follow-up completed.'
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+            "error": false,
+            "message": "Follow Up Updated Successfully",
+            "data": {
+              "id": 101,
+              "type": "lead_follow_up"
+            }
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 422
+        content: |-
+          {
+            "error": true,
+            "message": "The given data was invalid.",
+            "errors": {
+              "follow_up_at": ["The follow up at must be a valid date."]
+            }
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 500
+        content: |-
+          {
+            "error": true,
+            "message": "Follow Up Couldn't Be Updated.",
+            "data": {
+              "error": "...",
+              "line": 123,
+              "file": "/app/Http/Controllers/LeadFollowUpController.php"
+            }
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer Ec3eP8DhgkV5a164d6abZfv'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - DELETE
+    uri: 'api/leads/follow-up/destroy/{id}'
+    metadata:
+      groupName: 'Leads Management'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Delete a lead follow-up.'
+      description: 'This endpoint deletes a follow-up record permanently from the system.'
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Accept: application/json
+      workspace_id: 1
+    urlParameters:
+      id:
+        name: id
+        description: 'The ID of the follow-up to delete.'
+        required: true
+        example: 101
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanUrlParameters:
+      id: 101
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+            "error": false,
+            "message": "Lead Follow Up deleted successfully"
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 404
+        content: |-
+          {
+            "error": true,
+            "message": "Lead Follow Up not found"
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 500
+        content: |-
+          {
+            "error": true,
+            "message": "An error occurred while deleting Lead Follow Up.",
+            "data": {
+              "error": "...",
+              "line": 123,
+              "file": "/app/Services/DeletionService.php"
+            }
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 8gZDvbVfd561acPa6e4h3kE'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/leads/stage-change
+    metadata:
+      groupName: 'Leads Management'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Change the stage of a lead.'
+      description: 'This endpoint updates the stage of a specific lead by its ID. The user must be authenticated and authorized to modify the lead.'
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Accept: application/json
+      workspace_id: 1
+      Content-Type: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters:
+      isApi:
+        name: isApi
+        description: 'optional Indicates if the response should be formatted for API use. Defaults to false.'
+        required: false
+        example: true
+        type: boolean
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanQueryParameters:
+      isApi: true
+    bodyParameters:
+      id:
+        name: id
+        description: 'The ID of the lead to update. Must exist in the `leads` table.'
+        required: true
+        example: 123
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      stage_id:
+        name: stage_id
+        description: 'The ID of the new lead stage. Must exist in the `lead_stages` table.'
+        required: true
+        example: 5
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanBodyParameters:
+      id: 123
+      stage_id: 5
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+            "error": false,
+            "message": "Lead stage updated successfully!",
+            "data": {
+              "id": 123,
+              "type": "lead",
+              "activity_message": "Lead Stage Changed to Negotiation"
+            }
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 404
+        content: |-
+          {
+            "error": true,
+            "message": "Lead not found."
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 422
+        content: |-
+          {
+            "error": true,
+            "message": "Validation failed.",
+            "errors": {
+              "stage_id": ["The selected stage_id is invalid."]
+            }
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 500
+        content: |-
+          {
+            "error": true,
+            "message": "An error occurred while updating the lead stage."
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer k6Z68a3a51vDhcPbeV4Edfg'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: 'api/leads/{lead_id}/convert-to-client'
+    metadata:
+      groupName: 'Leads Management'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Convert a lead to a client.'
+      description: "This endpoint converts a lead to a client by creating a new client record with the lead's data. The user must be authenticated, and the lead must not already be converted."
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Accept: application/json
+      workspace_id: 1
+    urlParameters:
+      lead_id:
+        name: lead_id
+        description: 'The ID of the lead.'
+        required: true
+        example: 43
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+      lead:
+        name: lead
+        description: 'The ID of the lead to convert. Must exist in the `leads` table.'
+        required: true
+        example: 5
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanUrlParameters:
+      lead_id: 43
+      lead: 5
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+            "error": false,
+            "message": "Lead converted to client successfully!",
+            "data": {
+              "id": 5,
+              "first_name": "John",
+              "last_name": "Doe",
+              "email": "john.doe@example.com",
+              "company": "Acme Corp"
+            }
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 400
+        content: |-
+          {
+            "error": true,
+            "message": "Lead is already converted to the client.",
+            "id": 5
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 404
+        content: |-
+          {
+            "error": true,
+            "message": "Lead not found."
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 422
+        content: |-
+          {
+            "error": true,
+            "message": "Validation failed.",
+            "errors": {
+              "email": ["The email has already been taken."]
+            }
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 500
+        content: |-
+          {
+            "error": true,
+            "message": "An error occurred while converting the lead."
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer be4VP6Dd85a631agckfZhvE'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - PUT
+    uri: api/save-leads-view-preference
+    metadata:
+      groupName: 'Leads Management'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Save the default view preference for leads.'
+      description: 'This endpoint sets the default view preference (e.g., list or Kanban) for the authenticated user or client when viewing leads.'
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Accept: application/json
+      workspace_id: 1
+      Content-Type: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters:
+      isApi:
+        name: isApi
+        description: 'optional Indicates if the response should be formatted for API use. Defaults to false.'
+        required: false
+        example: true
+        type: boolean
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanQueryParameters:
+      isApi: true
+    bodyParameters:
+      view:
+        name: view
+        description: 'The preferred view type (e.g., list, kanban).'
+        required: true
+        example: kanban
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanBodyParameters:
+      view: kanban
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+            "error": false,
+            "message": "Default view set successfully!"
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 500
+        content: |-
+          {
+            "error": true,
+            "message": "An error occurred while setting the default view."
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 3Vhk6baD1evc5PE64dZgaf8'
+    controller: null
+    method: null
+    route: null
+    custom: []

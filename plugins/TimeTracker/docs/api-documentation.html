@@ -1,0 +1,2101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TimeTracker Plugin - API Documentation</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-color: #4f46e5;
+            --primary-dark: #4338ca;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --danger-color: #ef4444;
+            --bg-light: #f9fafb;
+            --bg-dark: #1f2937;
+            --text-light: #111827;
+            --text-dark: #f9fafb;
+            --border-color: #e5e7eb;
+            --code-bg: #f3f4f6;
+            --sidebar-width: 280px;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: var(--text-light);
+            background: #fff;
+            transition: all 0.3s ease;
+        }
+
+        [data-hp-theme-mode="dark"] body {
+            background: var(--bg-dark);
+            color: var(--text-dark);
+        }
+
+        .container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Header */
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 60px;
+            background: #fff;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            padding: 0 2rem;
+            z-index: 1000;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+        }
+
+        [data-hp-theme-mode="dark"] .header {
+            background: #111827;
+            border-bottom-color: #374151;
+        }
+
+        .header-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+
+        .header-subtitle {
+            margin-left: 1rem;
+            color: #6b7280;
+            font-size: 0.875rem;
+        }
+
+        .theme-toggle {
+            margin-left: auto;
+            padding: 0.5rem 1rem;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.875rem;
+            transition: background 0.2s;
+        }
+
+        .theme-toggle:hover {
+            background: var(--primary-dark);
+        }
+
+        /* Sidebar */
+        .sidebar {
+            position: fixed;
+            top: 60px;
+            left: 0;
+            width: var(--sidebar-width);
+            height: calc(100vh - 60px);
+            background: #fff;
+            border-right: 1px solid var(--border-color);
+            overflow-y: auto;
+            padding: 2rem 0;
+        }
+
+        [data-hp-theme-mode="dark"] .sidebar {
+            background: #111827;
+            border-right-color: #374151;
+        }
+
+        .sidebar-section {
+            margin-bottom: 1.5rem;
+        }
+
+        .sidebar-section-title {
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #9ca3af;
+            padding: 0 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .sidebar-link {
+            display: block;
+            padding: 0.75rem 1.5rem;
+            color: #6b7280;
+            text-decoration: none;
+            transition: all 0.2s;
+            border-left: 3px solid transparent;
+        }
+
+        .sidebar-link:hover {
+            background: var(--bg-light);
+            color: var(--primary-color);
+            border-left-color: var(--primary-color);
+        }
+
+        [data-hp-theme-mode="dark"] .sidebar-link:hover {
+            background: #1f2937;
+        }
+
+        .sidebar-link.active {
+            background: var(--bg-light);
+            color: var(--primary-color);
+            font-weight: 600;
+            border-left-color: var(--primary-color);
+        }
+
+        [data-hp-theme-mode="dark"] .sidebar-link.active {
+            background: #1f2937;
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: var(--sidebar-width);
+            margin-top: 60px;
+            padding: 3rem;
+            flex: 1;
+            max-width: calc(100% - var(--sidebar-width));
+        }
+
+        .intro-section {
+            background: linear-gradient(135deg, var(--primary-color) 0%, #7c3aed 100%);
+            color: white;
+            padding: 3rem;
+            border-radius: 12px;
+            margin-bottom: 3rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        .intro-section h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .intro-section p {
+            font-size: 1.125rem;
+            opacity: 0.95;
+            line-height: 1.8;
+        }
+
+        .section {
+            margin-bottom: 4rem;
+            scroll-margin-top: 80px;
+        }
+
+        .section-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--text-light);
+            border-bottom: 3px solid var(--primary-color);
+            padding-bottom: 0.5rem;
+        }
+
+        [data-hp-theme-mode="dark"] .section-title {
+            color: var(--text-dark);
+        }
+
+        .section-description {
+            color: #6b7280;
+            margin-bottom: 2rem;
+            font-size: 1.125rem;
+        }
+
+        /* Endpoint Card */
+        .endpoint {
+            background: #fff;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            margin-bottom: 2rem;
+            overflow: hidden;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+        }
+
+        [data-hp-theme-mode="dark"] .endpoint {
+            background: #1f2937;
+            border-color: #374151;
+        }
+
+        .endpoint-header {
+            padding: 1.5rem;
+            background: var(--bg-light);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        [data-hp-theme-mode="dark"] .endpoint-header {
+            background: #111827;
+            border-bottom-color: #374151;
+        }
+
+        .endpoint-method-url {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .endpoint-method {
+            display: inline-block;
+            padding: 0.375rem 0.75rem;
+            border-radius: 6px;
+            font-weight: 700;
+            font-size: 0.875rem;
+            text-transform: uppercase;
+        }
+
+        .method-get {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .method-post {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .method-put {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .method-delete {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .endpoint-url {
+            font-family: 'Courier New', monospace;
+            font-size: 1rem;
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+
+        .endpoint-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .endpoint-description {
+            color: #6b7280;
+            font-size: 0.95rem;
+        }
+
+        .endpoint-body {
+            padding: 1.5rem;
+        }
+
+        .subsection {
+            margin-bottom: 1.5rem;
+        }
+
+        .subsection-title {
+            font-size: 1rem;
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+            color: #374151;
+        }
+
+        [data-hp-theme-mode="dark"] .subsection-title {
+            color: #e5e7eb;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-right: 0.5rem;
+        }
+
+        .badge-required {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .badge-optional {
+            background: #e0e7ff;
+            color: #3730a3;
+        }
+
+        .badge-authenticated {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        /* Parameters Table */
+        .params-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+
+        .params-table th,
+        .params-table td {
+            padding: 0.75rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        [data-hp-theme-mode="dark"] .params-table th,
+        [data-hp-theme-mode="dark"] .params-table td {
+            border-bottom-color: #374151;
+        }
+
+        .params-table th {
+            background: var(--bg-light);
+            font-weight: 700;
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            color: #6b7280;
+        }
+
+        [data-hp-theme-mode="dark"] .params-table th {
+            background: #111827;
+        }
+
+        .params-table code {
+            background: var(--code-bg);
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.875rem;
+            color: #db2777;
+        }
+
+        [data-hp-theme-mode="dark"] .params-table code {
+            background: #374151;
+            color: #fda4af;
+        }
+
+        /* Code Block */
+        pre {
+            background: #1f2937;
+            color: #f9fafb;
+            padding: 1.5rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-size: 0.875rem;
+            line-height: 1.7;
+            margin-top: 1rem;
+        }
+
+        [data-hp-theme-mode="dark"] pre {
+            background: #111827;
+        }
+
+        code {
+            font-family: 'Courier New', Courier, monospace;
+        }
+
+        /* Response Examples */
+        .response-example {
+            margin-top: 1rem;
+        }
+
+        .response-status {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .status-200 {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .status-400,
+        .status-404,
+        .status-422,
+        .status-500 {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .status-403 {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        /* Info Boxes */
+        .info-box {
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            border-left: 4px solid;
+        }
+
+        .info-box.info {
+            background: #dbeafe;
+            border-color: #2563eb;
+            color: #1e40af;
+        }
+
+        .info-box.warning {
+            background: #fef3c7;
+            border-color: #f59e0b;
+            color: #92400e;
+        }
+
+        .info-box.success {
+            background: #dcfce7;
+            border-color: #10b981;
+            color: #166534;
+        }
+
+        [data-hp-theme-mode="dark"] .info-box.info {
+            background: #1e3a5f;
+            color: #93c5fd;
+        }
+
+        [data-hp-theme-mode="dark"] .info-box.warning {
+            background: #78350f;
+            color: #fde68a;
+        }
+
+        [data-hp-theme-mode="dark"] .info-box.success {
+            background: #14532d;
+            color: #86efac;
+        }
+
+        /* Footer */
+        .footer {
+            margin-top: 4rem;
+            padding: 2rem;
+            text-align: center;
+            color: #6b7280;
+            border-top: 1px solid var(--border-color);
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .main-content {
+                margin-left: 0;
+                max-width: 100%;
+            }
+        }
+
+        /* Smooth scroll */
+        html {
+            scroll-behavior: smooth;
+        }
+    </style>
+</head>
+<body data-hp-theme-mode="light">
+    <!-- Header -->
+    <div class="header">
+        <div class="header-title">⏱️ TimeTracker API</div>
+        <div class="header-subtitle">Complete API Documentation v1.0</div>
+        <button class="theme-toggle" onclick="toggleTheme()">🌙 Toggle Theme</button>
+    </div>
+
+    <div class="container">
+        <!-- Sidebar Navigation -->
+        <nav class="sidebar">
+            <div class="sidebar-section">
+                <div class="sidebar-section-title">Getting Started</div>
+                <a href="#introduction" class="sidebar-link active">Introduction</a>
+                <a href="#authentication" class="sidebar-link">Authentication</a>
+                <a href="#base-url" class="sidebar-link">Base URL</a>
+            </div>
+
+            <div class="sidebar-section">
+                <div class="sidebar-section-title">Core APIs</div>
+                <a href="#time-tracking" class="sidebar-link">Time Tracking</a>
+                <a href="#configuration" class="sidebar-link">Configuration</a>
+                <a href="#dashboard" class="sidebar-link">Dashboard</a>
+            </div>
+
+            <div class="sidebar-section">
+                <div class="sidebar-section-title">Features</div>
+                <a href="#screenshots" class="sidebar-link">Screenshots</a>
+                <a href="#manual-time" class="sidebar-link">Manual Time Entry</a>
+                <a href="#attendance" class="sidebar-link">Time & Attendance</a>
+            </div>
+
+            <div class="sidebar-section">
+                <div class="sidebar-section-title">Resources</div>
+                <a href="#error-handling" class="sidebar-link">Error Handling</a>
+                <a href="#response-format" class="sidebar-link">Response Format</a>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Introduction -->
+            <div class="intro-section" id="introduction">
+                <h1>TimeTracker Plugin API Documentation</h1>
+                <p>Welcome to the comprehensive API documentation for the TimeTracker plugin. This RESTful API allows you to track employee time, manage screenshots, handle manual time entries, and generate detailed productivity reports. Built with Laravel, this API provides a complete time tracking solution for your application.</p>
+            </div>
+
+            <!-- Authentication Section -->
+            <section class="section" id="authentication">
+                <h2 class="section-title">🔐 Authentication</h2>
+                <p class="section-description">TimeTracker API uses Laravel Sanctum for API authentication. Most endpoints require authentication via Bearer token.</p>
+
+                <!-- Login Endpoint -->
+                <div class="endpoint">
+                    <div class="endpoint-header">
+                        <div class="endpoint-method-url">
+                            <span class="endpoint-method method-post">POST</span>
+                            <span class="endpoint-url">/api/plugin/timetracker/login</span>
+                        </div>
+                        <h3 class="endpoint-title">User Login</h3>
+                        <p class="endpoint-description">Authenticates a user and returns an access token for subsequent API requests.</p>
+                    </div>
+                    <div class="endpoint-body">
+                        <div class="subsection">
+                            <h4 class="subsection-title">Request Body Parameters</h4>
+                            <table class="params-table">
+                                <thead>
+                                    <tr>
+                                        <th>Parameter</th>
+                                        <th>Type</th>
+                                        <th>Required</th>
+                                        <th>Description</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><code>email</code></td>
+                                        <td>string</td>
+                                        <td><span class="badge badge-required">Required</span></td>
+                                        <td>User's email address</td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>password</code></td>
+                                        <td>string</td>
+                                        <td><span class="badge badge-required">Required</span></td>
+                                        <td>User's password</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="subsection">
+                            <h4 class="subsection-title">Example Request</h4>
+                            <pre><code>{
+  "email": "user@example.com",
+  "password": "SecurePassword123"
+}</code></pre>
+                        </div>
+
+                        <div class="subsection">
+                            <h4 class="subsection-title">Success Response</h4>
+                            <div class="response-example">
+                                <span class="response-status status-200">200 OK</span>
+                                <pre><code>{
+  "error": false,
+  "message": "Login successful",
+  "data": {
+    "token": "1|abc123xyz789...",
+    "user": {
+      "id": 1,
+      "first_name": "John",
+      "last_name": "Doe",
+      "email": "user@example.com"
+    }
+  }
+}</code></pre>
+                            </div>
+                        </div>
+
+                        <div class="subsection">
+                            <h4 class="subsection-title">Error Response</h4>
+                            <div class="response-example">
+                                <span class="response-status status-400">401 Unauthorized</span>
+                                <pre><code>{
+  "error": true,
+  "message": "Invalid credentials"
+}</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Validate Token Endpoint -->
+                <div class="endpoint">
+                    <div class="endpoint-header">
+                        <div class="endpoint-method-url">
+                            <span class="endpoint-method method-get">GET</span>
+                            <span class="endpoint-url">/api/plugin/timetracker/validate-token</span>
+                        </div>
+                        <h3 class="endpoint-title">Validate Token</h3>
+                        <p class="endpoint-description">Validates the provided authentication token and returns user information.</p>
+                        <span class="badge badge-authenticated">🔒 Authenticated</span>
+                    </div>
+                    <div class="endpoint-body">
+                        <div class="subsection">
+                            <h4 class="subsection-title">Headers</h4>
+                            <table class="params-table">
+                                <thead>
+                                    <tr>
+                                        <th>Header</th>
+                                        <th>Value</th>
+                                        <th>Description</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><code>Authorization</code></td>
+                                        <td>Bearer {token}</td>
+                                        <td>Your authentication token</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="subsection">
+                            <h4 class="subsection-title">Success Response</h4>
+                            <div class="response-example">
+                                <span class="response-status status-200">200 OK</span>
+                                <pre><code>{
+  "error": false,
+  "message": "Token is valid",
+  "data": {
+    "user": {
+      "id": 1,
+      "first_name": "John",
+      "last_name": "Doe",
+      "email": "user@example.com"
+    }
+  }
+}</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Base URL Section -->
+            <section class="section" id="base-url">
+                <h2 class="section-title">🌐 Base URL</h2>
+                <div class="info-box info">
+                    <strong>API Base URL:</strong> <code>/api/plugin/timetracker</code><br>
+                    <strong>Web Routes Base URL:</strong> <code>/timetracker</code>
+                </div>
+                <p class="section-description">All API endpoints should be prefixed with the base URL. Authentication is required for most endpoints using Bearer token in the Authorization header.</p>
+            </section>
+
+            <!-- Time Tracking Section -->
+            <section class="section" id="time-tracking">
+                <h2 class="section-title">⏰ Time Tracking</h2>
+                <p class="section-description">Core time tracking functionality for logging work sessions, breaks, idle time, and manual entries.</p>
+
+                <!-- Log Update Endpoint -->
+                <div class="endpoint">
+                    <div class="endpoint-header">
+                        <div class="endpoint-method-url">
+                            <span class="endpoint-method method-post">POST</span>
+                            <span class="endpoint-url">/api/plugin/timetracker/log-update</span>
+                        </div>
+                        <h3 class="endpoint-title">Log Time Update</h3>
+                        <p class="endpoint-description">Records employee activity logs such as clock-in, clock-out, break start/stop, idle start/stop, and manual time entries.</p>
+                        <span class="badge badge-authenticated">🔒 Authenticated</span>
+                    </div>
+                    <div class="endpoint-body">
+                        <div class="subsection">
+                            <h4 class="subsection-title">Request Body Parameters</h4>
+                            <table class="params-table">
+                                <thead>
+                                    <tr>
+                                        <th>Parameter</th>
+                                        <th>Type</th>
+                                        <th>Required</th>
+                                        <th>Description</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><code>user_id</code></td>
+                                        <td>integer</td>
+                                        <td><span class="badge badge-optional">Optional</span></td>
+                                        <td>Employee ID (defaults to authenticated user)</td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>action</code></td>
+                                        <td>string</td>
+                                        <td><span class="badge badge-required">Required</span></td>
+                                        <td>Action type: clock-in, clock-out, idle-start, idle-stop, break-start, break-stop, manual-start, manual-stop</td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>timestamp</code></td>
+                                        <td>datetime</td>
+                                        <td><span class="badge badge-required">Required</span></td>
+                                        <td>Timestamp of the action (format: Y-m-d H:i:s)</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="info-box warning">
+                            <strong>⚠️ Action Types:</strong> Ensure you use the correct action type. Invalid action types will result in a validation error.
+                        </div>
+
+                        <div class="subsection">
+                            <h4 class="subsection-title">Example Request</h4>
+                            <pre><code>{
+  "user_id": 1,
+  "action": "clock-in",
+  "timestamp": "2025-10-08 09:00:00"
+}</code></pre>
+                        </div>
+
+                        <div class="subsection">
+                            <h4 class="subsection-title">Success Response</h4>
+                            <div class="response-example">
+                                <span class="response-status status-200">200 OK</span>
+                                <pre><code>{
+  "error": false,
+  "message": "Log updated successfully.",
+  "data": {
+    "employeeId": 1,
+    "user_id": 1,
+    "action": "clock-in",
+    "timestamp": "2025-10-08 09:00:00"
+  }
+}</code></pre>
+                            </div>
+                        </div>
+
+                        <div class="subsection">
+                            <h4 class="subsection-title">Error Response</h4>
+                            <div class="response-example">
+                                <span class="response-status status-422">422 Validation Error</span>
+                                <pre><code>{
+  "error": true,
+  "message": "The given data was invalid.",
+  "data": {
+    "action": ["The selected action is invalid."]
+  }
+}</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Get Time Entries Endpoint -->
+                <div class="endpoint">
+                    <div class="endpoint-header">
+                        <div class="endpoint-method-url">
+                            <span class="endpoint-method method-get">GET</span>
+                            <span class="endpoint-url">/api/plugin/timetracker/time-entries</span>
+                        </div>
+                        <h3 class="endpoint-title">Get Time Entries</h3>
+                        <p class="endpoint-description">Retrieves the latest 100 time entries for the authenticated user.</p>
+                        <span class="badge badge-authenticated">🔒 Authenticated</span>
+                    </div>
+                    <div class="endpoint-body">
+                        <div class="subsection">
+                            <h4 class="subsection-title">Success Response</h4>
+                            <div class="response-example">
+                                <span class="response-status status-200">200 OK</span>
+                                <pre><code>{
+  "error": false,
+  "message": "Time entries fetched successfully.",
+  "data": [
+    {
+      "id": 1,
+      "user_id": 1,
+      "action": "clock-in",
+      "timestamp": "2025-10-08 09:00:00",
+      "metadata": null
+    },
+    {
+      "id": 2,
+      "user_id": 1,
+      "action": "clock-out",
+      "timestamp": "2025-10-08 17:00:00",
+      "metadata": null
+    }
+  ]
+}</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Get Activity Logs Endpoint -->
+                <div class="endpoint">
+                    <div class="endpoint-header">
+                        <div class="endpoint-method-url">
+                            <span class="endpoint-method method-get">GET</span>
+                            <span class="endpoint-url">/api/plugin/timetracker/activity-logs</span>
+                        </div>
+                        <h3 class="endpoint-title">Get Activity Logs</h3>
+                        <p class="endpoint-description">Retrieves activity logs with optional user filter.</p>
+                        <span class="badge badge-authenticated">🔒 Authenticated</span>
+                    </div>
+                    <div class="endpoint-body">
+                        <div class="subsection">
+                            <h4 class="subsection-title">Query Parameters</h4>
+                            <table class="params-table">
+                                <thead>
+                                    <tr>
+                                        <th>Parameter</th>
+                                        <th>Type</th>
+                                        <th>Required</th>
+                                        <th>Description</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><code>userId</code></td>
+                                        <td>integer</td>
+                                        <td><span class="badge badge-optional">Optional</span></td>
+                                        <td>Filter logs by user ID (defaults to authenticated user)</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="subsection">
+                            <h4 class="subsection-title">Success Response</h4>
+                            <div class="response-example">
+                                <span class="response-status status-200">200 OK</span>
+                                <pre><code>{
+  "error": false,
+  "message": "Activity logs fetched successfully.",
+  "data": [
+    {
+      "id": 1,
+      "user_id": 1,
+      "action": "clock-in",
+      "timestamp": "2025-10-08 09:00:00",
+      "metadata": null
+    }
+  ]
+}</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Configuration Section -->
+            <section class="section" id="configuration">
+                <h2 class="section-title">⚙️ Configuration</h2>
+                <p class="section-description">Manage time tracker configuration settings including screenshot intervals, idle thresholds, and break detection.</p>
+
+                <!-- Load Config Endpoint -->
+                <div class="endpoint">
+                    <div class="endpoint-header">
+                        <div class="endpoint-method-url">
+                            <span class="endpoint-method method-get">GET</span>
+                            <span class="endpoint-url">/api/plugin/timetracker/load-config</span>
+                        </div>
+                        <h3 class="endpoint-title">Load Configuration</h3>
+                        <p class="endpoint-description">Retrieves current time tracking configuration settings.</p>
+                    </div>
+                    <div class="endpoint-body">
+                        <div class="subsection">
+                            <h4 class="subsection-title">Success Response</h4>
+                            <div class="response-example">
+                                <span class="response-status status-200">200 OK</span>
+                                <pre><code>{
+  "error": false,
+  "message": "Config loaded successfully.",
+  "data": {
+    "screenshotInterval": 60000,
+    "idleTimeThreshold": 300000,
+    "breakTimeThreshold": 600000,
+    "maxDailyBreakTime": 3600000,
+    "manualTimeApprover": [1, 2, 3]
+  }
+}</code></pre>
+                            </div>
+                        </div>
+
+                        <div class="info-box info">
+                            <strong>ℹ️ Configuration Values:</strong> All time values are in milliseconds. For example, 60000ms = 60 seconds.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Store Config Endpoint -->
+                <div class="endpoint">
+                    <div class="endpoint-header">
+                        <div class="endpoint-method-url">
+                            <span class="endpoint-method method-put">PUT</span>
+                            <span class="endpoint-url">/timetracker/configuration/store</span>
+                        </div>
+                        <h3 class="endpoint-title">Store Configuration</h3>
+                        <p class="endpoint-description">Saves or updates time tracker configuration settings.</p>
+                        <span class="badge badge-authenticated">🔒 Authenticated</span>
+                    </div>
+                    <div class="endpoint-body">
+                        <div class="subsection">
+                            <h4 class="subsection-title">Request Body Parameters</h4>
+                            <table class="params-table">
+                                <thead>
+                                    <tr>
+                                        <th>Parameter</th>
+                                        <th>Type</th>
+                                        <th>Required</th>
+                                        <th>Description</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><code>screenshotInterval</code></td>
+                                        <td>integer</td>
+                                        <td><span class="badge badge-required">Required</span></td>
+                                        <td>Screenshot interval in seconds (min: 1)</td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>idleTimeThreshold</code></td>
+                                        <td>integer</td>
+                                        <td><span class="badge badge-required">Required</span></td>
+                                        <td>Idle time threshold in seconds (min: 1)</td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>breakTimeThreshold</code></td>
+                                        <td>integer</td>
+                                        <td><span class="badge badge-required">Required</span></td>
+                                        <td>Break time threshold in seconds (min: 1)</td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>maxDailyBreakTime</code></td>
+                                        <td>integer</td>
+                                        <td><span class="badge badge-required">Required</span></td>
+                                        <td>Maximum daily break time in seconds (min: 1)</td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>manualTimeApprover</code></td>
+                                        <td>array</td>
+                                        <td><span class="badge badge-optional">Optional</span></td>
+                                        <td>Array of user IDs who can approve manual time</td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>workDayStartTime</code></td>
+                                        <td>string</td>
+                                        <td><span class="badge badge-required">Required</span></td>
+                                        <td>Work day start time (format: H:i)</td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>auto_delete_screenshots_after_days</code></td>
+                                        <td>integer</td>
+                                        <td><span class="badge badge-optional">Optional</span></td>
+                                        <td>Auto-delete screenshots after N days (default: 30)</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="subsection">
+                            <h4 class="subsection-title">Example Request</h4>
+                            <pre><code>{
+  "screenshotInterval": 60,
+  "idleTimeThreshold": 300,
+  "breakTimeThreshold": 600,
+  "maxDailyBreakTime": 3600,
+  "manualTimeApprover": [1, 2],
+  "workDayStartTime": "09:00",
+  "auto_delete_screenshots_after_days": 30
+}</code></pre>
+                        </div>
+
+                        <div class="subsection">
+                            <h4 class="subsection-title">Success Response</h4>
+                            <div class="response-example">
+                                <span class="response-status status-200">200 OK</span>
+                                <pre><code>{
+  "error": false,
+  "message": "Config stored successfully.",
+  "data": {
+    "screenshotInterval": 60000,
+    "idleTimeThreshold": 300000,
+    "breakTimeThreshold": 600000,
+    "maxDailyBreakTime": 3600000,
+    "manualTimeApprover": [1, 2],
+    "workDayStartTime": "09:00",
+    "auto_delete_screenshots_after_days": 30
+  }
+}</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Dashboard Section -->
+            <section class="section" id="dashboard">
+                <h2 class="section-title">📊 Dashboard & Analytics</h2>
+                <p class="section-description">Get comprehensive productivity metrics, daily breakdowns, and user statistics.</p>
+
+                <!-- Dashboard Data Endpoint -->
+                <div class="endpoint">
+                    <div class="endpoint-header">
+                        <div class="endpoint-method-url">
+                            <span class="endpoint-method method-get">GET</span>
+                            <span class="endpoint-url">/timetracker/dashboard-data</span>
+                        </div>
+                        <h3 class="endpoint-title">Get Dashboard Data</h3>
+                        <p class="endpoint-description">Retrieves comprehensive productivity metrics including work time, active time, breaks, idle time, and utilization percentages.</p>
+                        <span class="badge badge-authenticated">🔒 Authenticated</span>
+                    </div>
+                    <div class="endpoint-body">
+                        <div class="subsection">
+                            <h4 class="subsection-title">Query Parameters</h4>
+                            <table class="params-table">
+                                <thead>
+                                    <tr>
+                                        <th>Parameter</th>
+                                        <th>Type</th>
+                                        <th>Required</th>
+                                        <th>Description</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><code>start_date</code></td>
+                                        <td>date</td>
+                                        <td><span class="badge badge-optional">Optional</span></td>
+                                        <td>Start date for metrics (default: current month start)</td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>end_date</code></td>
+                                        <td>date</td>
+                                        <td><span class="badge badge-optional">Optional</span></td>
+                                        <td>End date for metrics (default: current month end)</td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>user_id</code></td>
+                                        <td>array</td>
+                                        <td><span class="badge badge-optional">Optional</span></td>
+                                        <td>Filter by specific user IDs (admin only)</td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>comparison_start_date</code></td>
+                                        <td>date</td>
+                                        <td><span class="badge badge-optional">Optional</span></td>
+                                        <td>Comparison period start date</td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>comparison_end_date</code></td>
+                                        <td>date</td>
+                                        <td><span class="badge badge-optional">Optional</span></td>
+                                        <td>Comparison period end date</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="subsection">
+                            <h4 class="subsection-title">Success Response</h4>
+                            <div class="response-example">
+                                <span class="response-status status-200">200 OK</span>
+                                <pre><code>{
+  "data": {
+    "current_period": {
+      "start_date": "2025-10-01",
+      "end_date": "2025-10-08",
+      "metrics": {
+        "work_time": {
+          "minutes": 2400,
+          "display": "40:00 h",
+          "decimal_hours": 40.00
+        },
+        "active_time": {
+          "minutes": 2100,
+          "display": "35:00 h",
+          "decimal_hours": 35.00
+        },
+        "break_time": {
+          "minutes": 120,
+          "display": "2:00 h",
+          "decimal_hours": 2.00
+        },
+        "idle_time": {
+          "minutes": 180,
+          "display": "3:00 h",
+          "decimal_hours": 3.00
+        },
+        "manual_time": {
+          "minutes": 0,
+          "display": "0:00 h",
+          "decimal_hours": 0.00
+        },
+        "productive_time": {
+          "minutes": 2100,
+          "display": "35:00 h",
+          "decimal_hours": 35.00
+        },
+        "unproductive_time": {
+          "minutes": 300,
+          "display": "5:00 h",
+          "decimal_hours": 5.00
+        },
+        "utilization": {
+          "value": 87.5,
+          "display": "87.5%"
+        }
+      },
+      "daily_breakdown": [
+        {
+          "date": "2025-10-01",
+          "day_name": "Oct 1",
+          "active_time": 480,
+          "break_time": 30,
+          "manual_time": 0,
+          "idle_time": 20
+        }
+      ],
+      "activity_distribution": {
+        "active_time": {
+          "minutes": 2100,
+          "display": "35:00 h"
+        },
+        "manual_time": {
+          "minutes": 0,
+          "display": "0:00 h"
+        },
+        "break_time": {
+          "minutes": 120,
+          "display": "2:00 h"
+        },
+        "idle_time": {
+          "minutes": 180,
+          "display": "3:00 h"
+        }
+      }
+    },
+    "top_productive_users": [
+      {
+        "user_id": 1,
+        "name": "John Doe",
+        "initials": "JD",
+        "productive_minutes": 2100,
+        "productive_display": "35:00 h",
+        "utilization": 87.5,
+        "utilization_display": "87.5%",
+        "daily_productive_minutes": [480, 420, 450]
+      }
+    ],
+    "average_productive_hours_per_user": [
+      {
+        "user_id": 1,
+        "name": "John Doe",
+        "average_productive_minutes": 300,
+        "average_productive_hours": 5.00
+      }
+    ]
+  },
+  "employees": [
+    {
+      "id": 1,
+      "name": "John Doe",
+      "initials": "JD",
+      "selected": false
+    }
+  ],
+  "presets": {
+    "today": {
+      "label": "Today",
+      "start_date": "2025-10-08",
+      "end_date": "2025-10-08"
+    },
+    "this_week": {
+      "label": "This Week",
+      "start_date": "2025-10-06",
+      "end_date": "2025-10-12"
+    }
+  }
+}</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- API Dashboard Endpoint -->
+                <div class="endpoint">
+                    <div class="endpoint-header">
+                        <div class="endpoint-method-url">
+                            <span class="endpoint-method method-get">GET</span>
+                            <span class="endpoint-url">/api/plugin/timetracker/dashboard</span>
+                        </div>
+                        <h3 class="endpoint-title">API Dashboard (Simple)</h3>
+                        <p class="endpoint-description">Returns simplified dashboard metrics for the authenticated user only.</p>
+                        <span class="badge badge-authenticated">🔒 Authenticated</span>
+                    </div>
+                    <div class="endpoint-body">
+                        <div class="info-box info">
+                            <strong>ℹ️ Note:</strong> This endpoint returns metrics in the same format as the full dashboard but only for the authenticated user.
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Screenshots Section -->
+            <section class="section" id="screenshots">
+                <h2 class="section-title">📸 Screenshots Management</h2>
+                <p class="section-description">Upload, retrieve, and manage employee screenshots captured during work sessions.</p>
+
+                <!-- Upload Screenshot Endpoint -->
+                <div class="endpoint">
+                    <div class="endpoint-header">
+                        <div class="endpoint-method-url">
+                            <span class="endpoint-method method-post">POST</span>
+                            <span class="endpoint-url">/api/plugin/timetracker/upload-screenshot</span>
+                        </div>
+                        <h3 class="endpoint-title">Upload Screenshot</h3>
+                        <p class="endpoint-description">Uploads a screenshot file taken during time tracking. Supports PNG, JPG, and JPEG formats up to 5MB.</p>
+                        <span class="badge badge-authenticated">🔒 Authenticated</span>
+                    </div>
+                    <div class="endpoint-body">
+                        <div class="subsection">
+                            <h4 class="subsection-title">Request Body Parameters (multipart/form-data)</h4>
+                            <table class="params-table">
+                                <thead>
+                                    <tr>
+                                        <th>Parameter</th>
+                                        <th>Type</th>
+                                        <th>Required</th>
+                                        <th>Description</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><code>screenshot</code></td>
+                                        <td>file</td>
+                                        <td><span class="badge badge-required">Required</span></td>
+                                        <td>Screenshot image file (png, jpg, jpeg, max 5MB)</td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>metadata</code></td>
+                                        <td>array</td>
+                                        <td><span class="badge badge-optional">Optional</span></td>
+                                        <td>Additional metadata (JSON object)</td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>captured_at</code></td>
+                                        <td>datetime</td>
+                                        <td><span class="badge badge-optional">Optional</span></td>
+                                        <td>Custom capture timestamp</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="info-box warning">
+                            <strong>⚠️ File Size Limit:</strong> Screenshots must be under 5MB. Files larger than this will be rejected.
+                        </div>
+
+                        <div class="subsection">
+                            <h4 class="subsection-title">Success Response</h4>
+                            <div class="response-example">
+                                <span class="response-status status-200">200 OK</span>
+                                <pre><code>{
+  "error": false,
+  "message": "Screenshot uploaded successfully.",
+  "data": {
+    "id": 123,
+    "filename": "20251008_143022_abc123.png",
+    "url": "/storage/screenshots/20251008_143022_abc123.png",
+    "captured_at": "2025-10-08 14:30:22",
+    "file_size_kb": "1024.50 KB",
+    "metadata": {
+      "application": "Chrome",
+      "window_title": "Work Project"
+    }
+  }
+}</code></pre>
+                            </div>
+                        </div>
+
+                        <div class="subsection">
+                            <h4 class="subsection-title">Error Responses</h4>
+                            <div class="response-example">
+                                <span class="response-status status-400">400 Bad Request</span>
+                                <pre><code>{
+  "error": true,
+  "message": "No file uploaded.",
+  "data": []
+}</code></pre>
+                            </div>
+                            <div class="response-example">
+                                <span class="response-status status-422">422 Validation Error</span>
+                                <pre><code>{
+  "error": true,
+  "message": "Validation error.",
+  "errors": {
+    "screenshot": ["The screenshot must be an image."]
+  }
+}</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Get Screenshots Endpoint -->
+                <div class="endpoint">
+                    <div class="endpoint-header">
+                        <div class="endpoint-method-url">
+                            <span class="endpoint-method method-get">GET</span>
+                            <span class="endpoint-url">/api/plugin/timetracker/screenshots/{userId?}</span>
+                        </div>
+                        <h3 class="endpoint-title">Get Screenshots</h3>
+                        <p class="endpoint-description">Retrieves the latest 100 screenshots for a user.</p>
+                        <span class="badge badge-authenticated">🔒 Authenticated</span>
+                    </div>
+                    <div class="endpoint-body">
+                        <div class="subsection">
+                            <h4 class="subsection-title">URL Parameters</h4>
+                            <table class="params-table">
+                                <thead>
+                                    <tr>
+                                        <th>Parameter</th>
+                                        <th>Type</th>
+                                        <th>Required</th>
+                                        <th>Description</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><code>userId</code></td>
+                                        <td>integer</td>
+                                        <td><span class="badge badge-optional">Optional</span></td>
+                                        <td>User ID (defaults to authenticated user)</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="subsection">
+                            <h4 class="subsection-title">Success Response</h4>
+                            <div class="response-example">
+                                <span class="response-status status-200">200 OK</span>
+                                <pre><code>{
+  "error": false,
+  "message": "Screenshots fetched successfully.",
+  "data": [
+    {
+      "id": 123,
+      "filename": "20251008_143022_abc123.png",
+      "url": "/storage/screenshots/20251008_143022_abc123.png",
+      "captured_at": "2025-10-08 14:30:22",
+      "file_size_kb": "1024.50 KB",
+      "metadata": null
+    }
+  ]
+}</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Get Screenshots Data (Web) Endpoint -->
+                <div class="endpoint">
+                    <div class="endpoint-header">
+                        <div class="endpoint-method-url">
+                            <span class="endpoint-method method-get">GET</span>
+                            <span class="endpoint-url">/timetracker/screen-shots/data</span>
+                        </div>
+                        <h3 class="endpoint-title">Get Screenshots Data (Paginated)</h3>
+                        <p class="endpoint-description">Retrieves paginated screenshot data with filtering options.</p>
+                        <span class="badge badge-authenticated">🔒 Authenticated</span>
+                    </div>
+                    <div class="endpoint-body">
+                        <div class="subsection">
+                            <h4 class="subsection-title">Query Parameters</h4>
+                            <table class="params-table">
+                                <thead>
+                                    <tr>
+                                        <th>Parameter</th>
+                                        <th>Type</th>
+                                        <th>Required</th>
+                                        <th>Description</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><code>user_ids</code></td>
+                                        <td>array</td>
+                                        <td><span class="badge badge-optional">Optional</span></td>
+                                        <td>Filter by user IDs</td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>start_date</code></td>
+                                        <td>date</td>
+                                        <td><span class="badge badge-optional">Optional</span></td>
+                                        <td>Filter from date</td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>end_date</code></td>
+                                        <td>date</td>
+                                        <td><span class="badge badge-optional">Optional</span></td>
+                                        <td>Filter to date</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="subsection">
+                            <h4 class="subsection-title">Success Response</h4>
+                            <div class="response-example">
+                                <span class="response-status status-200">200 OK</span>
+                                <pre><code>{
+  "data": [
+    {
+      "id": 123,
+      "user_name": "John Doe",
+      "image_url": "https://example.com/storage/screenshots/...",
+      "captured_at": "Oct 08, 2025 02:30 PM",
+      "file_size_kb": "1024.50 KB",
+      "metadata": {}
+    }
+  ],
+  "pagination": {
+    "current_page": 1,
+    "last_page": 5,
+    "per_page": 24,
+    "total": 120
+  }
+}</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Manual Time Section -->
+            <section class="section" id="manual-time">
+                <h2 class="section-title">✏️ Manual Time Entry</h2>
+                <p class="section-description">Manage manual time entries that require approval from authorized users.</p>
+
+                <!-- Get Manual Time Data Endpoint -->
+                <div class="endpoint">
+                    <div class="endpoint-header">
+                        <div class="endpoint-method-url">
+                            <span class="endpoint-method method-get">GET</span>
+                            <span class="endpoint-url">/timetracker/manual-time/data</span>
+                        </div>
+                        <h3 class="endpoint-title">Get Manual Time Entries</h3>
+                        <p class="endpoint-description">Retrieves manual time entries with filtering, sorting, and pagination.</p>
+                        <span class="badge badge-authenticated">🔒 Authenticated</span>
+                    </div>
+                    <div class="endpoint-body">
+                        <div class="subsection">
+                            <h4 class="subsection-title">Query Parameters</h4>
+                            <table class="params-table">
+                                <thead>
+                                    <tr>
+                                        <th>Parameter</th>
+                                        <th>Type</th>
+                                        <th>Required</th>
+                                        <th>Description</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><code>user_id</code></td>
+                                        <td>array</td>
+                                        <td><span class="badge badge-optional">Optional</span></td>
+                                        <td>Filter by user IDs</td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>start_date</code></td>
+                                        <td>date</td>
+                                        <td><span class="badge badge-optional">Optional</span></td>
+                                        <td>Start date filter</td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>end_date</code></td>
+                                        <td>date</td>
+                                        <td><span class="badge badge-optional">Optional</span></td>
+                                        <td>End date filter</td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>search</code></td>
+                                        <td>string</td>
+                                        <td><span class="badge badge-optional">Optional</span></td>
+                                        <td>Search by employee name</td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>sort</code></td>
+                                        <td>string</td>
+                                        <td><span class="badge badge-optional">Optional</span></td>
+                                        <td>Sort field (default: timestamp)</td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>order</code></td>
+                                        <td>string</td>
+                                        <td><span class="badge badge-optional">Optional</span></td>
+                                        <td>Sort order: asc or desc (default: asc)</td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>limit</code></td>
+                                        <td>integer</td>
+                                        <td><span class="badge badge-optional">Optional</span></td>
+                                        <td>Items per page (default: 10)</td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>offset</code></td>
+                                        <td>integer</td>
+                                        <td><span class="badge badge-optional">Optional</span></td>
+                                        <td>Pagination offset (default: 0)</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="subsection">
+                            <h4 class="subsection-title">Success Response</h4>
+                            <div class="response-example">
+                                <span class="response-status status-200">200 OK</span>
+                                <pre><code>{
+  "total": 25,
+  "rows": [
+    {
+      "id": 45,
+      "employee_name": "John Doe",
+      "date": "Oct 08, 2025",
+      "start_time": "09:00 AM",
+      "end_time": "05:00 PM",
+      "duration": "08:00",
+      "status": "Pending",
+      "approved_at": "N/A",
+      "approver": "N/A",
+      "reason": "Working on project X",
+      "remarks": "N/A",
+      "actions": "<button>Approve</button>"
+    }
+  ]
+}</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Store Manual Time Endpoint -->
+                <div class="endpoint">
+                    <div class="endpoint-header">
+                        <div class="endpoint-method-url">
+                            <span class="endpoint-method method-post">POST</span>
+                            <span class="endpoint-url">/timetracker/manual-time/store</span>
+                        </div>
+                        <h3 class="endpoint-title">Create Manual Time Entry</h3>
+                        <p class="endpoint-description">Creates a new manual time entry that requires approval.</p>
+                        <span class="badge badge-authenticated">🔒 Authenticated</span>
+                    </div>
+                    <div class="endpoint-body">
+                        <div class="subsection">
+                            <h4 class="subsection-title">Request Body Parameters</h4>
+                            <table class="params-table">
+                                <thead>
+                                    <tr>
+                                        <th>Parameter</th>
+                                        <th>Type</th>
+                                        <th>Required</th>
+                                        <th>Description</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><code>user_id</code></td>
+                                        <td>integer</td>
+                                        <td><span class="badge badge-optional">Optional</span></td>
+                                        <td>User ID (admin/approver only)</td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>date</code></td>
+                                        <td>date</td>
+                                        <td><span class="badge badge-required">Required</span></td>
+                                        <td>Date of manual time entry</td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>start_time</code></td>
+                                        <td>time</td>
+                                        <td><span class="badge badge-required">Required</span></td>
+                                        <td>Start time (H:i format)</td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>end_time</code></td>
+                                        <td>time</td>
+                                        <td><span class="badge badge-required">Required</span></td>
+                                        <td>End time (must be after start_time)</td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>reason</code></td>
+                                        <td>string</td>
+                                        <td><span class="badge badge-required">Required</span></td>
+                                        <td>Reason for manual entry (max 255 chars)</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="subsection">
+                            <h4 class="subsection-title">Example Request</h4>
+                            <pre><code>{
+  "date": "2025-10-08",
+  "start_time": "09:00",
+  "end_time": "17:00",
+  "reason": "Worked on client project without desktop app"
+}</code></pre>
+                        </div>
+
+                        <div class="subsection">
+                            <h4 class="subsection-title">Success Response</h4>
+                            <div class="response-example">
+                                <span class="response-status status-200">200 OK</span>
+                                <pre><code>{
+  "message": "Manual time added successfully."
+}</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Approve Manual Time Endpoint -->
+                <div class="endpoint">
+                    <div class="endpoint-header">
+                        <div class="endpoint-method-url">
+                            <span class="endpoint-method method-post">POST</span>
+                            <span class="endpoint-url">/timetracker/manual-time/approve</span>
+                        </div>
+                        <h3 class="endpoint-title">Approve/Reject Manual Time</h3>
+                        <p class="endpoint-description">Approves or rejects a manual time entry. Only authorized approvers can perform this action.</p>
+                        <span class="badge badge-authenticated">🔒 Authenticated</span>
+                        <span class="badge badge-authenticated">👔 Approver Only</span>
+                    </div>
+                    <div class="endpoint-body">
+                        <div class="subsection">
+                            <h4 class="subsection-title">Request Body Parameters</h4>
+                            <table class="params-table">
+                                <thead>
+                                    <tr>
+                                        <th>Parameter</th>
+                                        <th>Type</th>
+                                        <th>Required</th>
+                                        <th>Description</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><code>manual_time_id</code></td>
+                                        <td>integer</td>
+                                        <td><span class="badge badge-required">Required</span></td>
+                                        <td>ID of the manual time entry</td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>status</code></td>
+                                        <td>string</td>
+                                        <td><span class="badge badge-required">Required</span></td>
+                                        <td>approved or rejected</td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>remarks</code></td>
+                                        <td>string</td>
+                                        <td><span class="badge badge-optional">Optional</span></td>
+                                        <td>Rejection remarks (max 250 chars)</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="subsection">
+                            <h4 class="subsection-title">Example Request</h4>
+                            <pre><code>{
+  "manual_time_id": 45,
+  "status": "approved"
+}</code></pre>
+                        </div>
+
+                        <div class="subsection">
+                            <h4 class="subsection-title">Success Response</h4>
+                            <div class="response-example">
+                                <span class="response-status status-200">200 OK</span>
+                                <pre><code>{
+  "success": true,
+  "message": "Manual time approved successfully."
+}</code></pre>
+                            </div>
+                        </div>
+
+                        <div class="subsection">
+                            <h4 class="subsection-title">Error Response</h4>
+                            <div class="response-example">
+                                <span class="response-status status-403">403 Forbidden</span>
+                                <pre><code>{
+  "error": true,
+  "message": "Unauthorized Action. You are not authorized to perform this action."
+}</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Fetch Manual Time Endpoint -->
+                <div class="endpoint">
+                    <div class="endpoint-header">
+                        <div class="endpoint-method-url">
+                            <span class="endpoint-method method-get">GET</span>
+                            <span class="endpoint-url">/timetracker/manual-time/fetch</span>
+                        </div>
+                        <h3 class="endpoint-title">Fetch Manual Time Entry</h3>
+                        <p class="endpoint-description">Retrieves details of a specific manual time entry by ID.</p>
+                        <span class="badge badge-authenticated">🔒 Authenticated</span>
+                    </div>
+                    <div class="endpoint-body">
+                        <div class="subsection">
+                            <h4 class="subsection-title">Query Parameters</h4>
+                            <table class="params-table">
+                                <thead>
+                                    <tr>
+                                        <th>Parameter</th>
+                                        <th>Type</th>
+                                        <th>Required</th>
+                                        <th>Description</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><code>id</code></td>
+                                        <td>integer</td>
+                                        <td><span class="badge badge-required">Required</span></td>
+                                        <td>Manual time entry ID</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="subsection">
+                            <h4 class="subsection-title">Success Response</h4>
+                            <div class="response-example">
+                                <span class="response-status status-200">200 OK</span>
+                                <pre><code>{
+  "id": 45,
+  "employee_name": "John Doe",
+  "date": "2025-10-08",
+  "start_time": "09:00",
+  "end_time": "17:00",
+  "reason": "Worked on project X"
+}</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Time and Attendance Section -->
+            <section class="section" id="attendance">
+                <h2 class="section-title">📅 Time & Attendance</h2>
+                <p class="section-description">Track and analyze employee attendance, work hours, and daily timelines.</p>
+
+                <!-- Time and Attendance Data Endpoint -->
+                <div class="endpoint">
+                    <div class="endpoint-header">
+                        <div class="endpoint-method-url">
+                            <span class="endpoint-method method-get">GET</span>
+                            <span class="endpoint-url">/timetracker/time-and-attendance/data</span>
+                        </div>
+                        <h3 class="endpoint-title">Get Time & Attendance Data</h3>
+                        <p class="endpoint-description">Retrieves comprehensive attendance data including clock-in/out times, work hours, breaks, and utilization.</p>
+                        <span class="badge badge-authenticated">🔒 Authenticated</span>
+                    </div>
+                    <div class="endpoint-body">
+                        <div class="subsection">
+                            <h4 class="subsection-title">Query Parameters</h4>
+                            <table class="params-table">
+                                <thead>
+                                    <tr>
+                                        <th>Parameter</th>
+                                        <th>Type</th>
+                                        <th>Required</th>
+                                        <th>Description</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><code>user_id</code></td>
+                                        <td>integer</td>
+                                        <td><span class="badge badge-optional">Optional</span></td>
+                                        <td>Filter by specific user ID</td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>start_date</code></td>
+                                        <td>date</td>
+                                        <td><span class="badge badge-optional">Optional</span></td>
+                                        <td>Start date (default: 7 days ago)</td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>end_date</code></td>
+                                        <td>date</td>
+                                        <td><span class="badge badge-optional">Optional</span></td>
+                                        <td>End date (default: today)</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="subsection">
+                            <h4 class="subsection-title">Success Response</h4>
+                            <div class="response-example">
+                                <span class="response-status status-200">200 OK</span>
+                                <pre><code>{
+  "data": [
+    {
+      "employee": "John Doe",
+      "user_id": 1,
+      "date": "Oct 08, 2025",
+      "clock_in": "09:00 AM",
+      "clock_out": "05:30 PM",
+      "work_time": "08:30",
+      "active_time": "07:45",
+      "manual_time": "00:00",
+      "pending_manual_time": "00:00",
+      "break_time": "00:30",
+      "idle_time": "00:15",
+      "utilization": "91.2%",
+      "status": "Completed"
+    }
+  ],
+  "summary": {
+    "total_employees": 5,
+    "total_records": 35,
+    "total_work_hours": "168:30",
+    "total_break_time": "10:30",
+    "total_idle_time": "05:15",
+    "total_pending_manual_time": "02:00",
+    "average_utilization": "88.5%"
+  },
+  "filters": {
+    "start_date": "2025-10-01",
+    "end_date": "2025-10-08"
+  }
+}</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Timeline Endpoint -->
+                <div class="endpoint">
+                    <div class="endpoint-header">
+                        <div class="endpoint-method-url">
+                            <span class="endpoint-method method-get">GET</span>
+                            <span class="endpoint-url">/timetracker/time-and-attendance/timeline</span>
+                        </div>
+                        <h3 class="endpoint-title">Get Daily Timeline</h3>
+                        <p class="endpoint-description">Retrieves a detailed timeline of all activities for a specific user on a specific date.</p>
+                        <span class="badge badge-authenticated">🔒 Authenticated</span>
+                    </div>
+                    <div class="endpoint-body">
+                        <div class="subsection">
+                            <h4 class="subsection-title">Query Parameters</h4>
+                            <table class="params-table">
+                                <thead>
+                                    <tr>
+                                        <th>Parameter</th>
+                                        <th>Type</th>
+                                        <th>Required</th>
+                                        <th>Description</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><code>user_id</code></td>
+                                        <td>integer</td>
+                                        <td><span class="badge badge-required">Required</span></td>
+                                        <td>User ID to get timeline for</td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>date</code></td>
+                                        <td>date</td>
+                                        <td><span class="badge badge-required">Required</span></td>
+                                        <td>Date to get timeline for</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="subsection">
+                            <h4 class="subsection-title">Success Response</h4>
+                            <div class="response-example">
+                                <span class="response-status status-200">200 OK</span>
+                                <pre><code>{
+  "sessions": [
+    {
+      "start": "2025-10-08 09:00:00",
+      "end": "2025-10-08 12:00:00",
+      "type": "active"
+    },
+    {
+      "start": "2025-10-08 12:00:00",
+      "end": "2025-10-08 12:30:00",
+      "type": "break"
+    },
+    {
+      "start": "2025-10-08 12:30:00",
+      "end": "2025-10-08 14:00:00",
+      "type": "active"
+    },
+    {
+      "start": "2025-10-08 14:00:00",
+      "end": "2025-10-08 14:15:00",
+      "type": "idle"
+    },
+    {
+      "start": "2025-10-08 14:15:00",
+      "end": "2025-10-08 17:30:00",
+      "type": "active"
+    },
+    {
+      "start": "2025-10-08 09:30:00",
+      "end": "2025-10-08 10:30:00",
+      "type": "manual"
+    },
+    {
+      "start": "2025-10-08 15:00:00",
+      "end": "2025-10-08 16:00:00",
+      "type": "pending_manual"
+    }
+  ]
+}</code></pre>
+                            </div>
+                        </div>
+
+                        <div class="info-box info">
+                            <strong>ℹ️ Session Types:</strong><br>
+                            • <strong>active</strong> - Active work time<br>
+                            • <strong>break</strong> - Break time<br>
+                            • <strong>idle</strong> - Idle/inactive time<br>
+                            • <strong>manual</strong> - Approved manual time entry<br>
+                            • <strong>pending_manual</strong> - Pending approval manual time
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Error Handling Section -->
+            <section class="section" id="error-handling">
+                <h2 class="section-title">⚠️ Error Handling</h2>
+                <p class="section-description">The TimeTracker API uses standard HTTP response codes to indicate the success or failure of requests.</p>
+
+                <div class="info-box info">
+                    <strong>HTTP Status Codes</strong><br><br>
+                    <strong>200 OK</strong> - Request succeeded<br>
+                    <strong>400 Bad Request</strong> - Invalid request format or missing required parameters<br>
+                    <strong>401 Unauthorized</strong> - Authentication failed or token is invalid<br>
+                    <strong>403 Forbidden</strong> - User doesn't have permission to access the resource<br>
+                    <strong>404 Not Found</strong> - Resource not found<br>
+                    <strong>422 Unprocessable Entity</strong> - Validation errors<br>
+                    <strong>500 Internal Server Error</strong> - Server error
+                </div>
+
+                <div class="subsection">
+                    <h4 class="subsection-title">Error Response Format</h4>
+                    <pre><code>{
+  "error": true,
+  "message": "Error description",
+  "data": {
+    "field_name": ["Validation error message"]
+  }
+}</code></pre>
+                </div>
+            </section>
+
+            <!-- Response Format Section -->
+            <section class="section" id="response-format">
+                <h2 class="section-title">📋 Response Format</h2>
+                <p class="section-description">All API responses follow a consistent JSON structure for easy parsing and error handling.</p>
+
+                <div class="subsection">
+                    <h4 class="subsection-title">Success Response Structure</h4>
+                    <pre><code>{
+  "error": false,
+  "message": "Success message",
+  "data": {
+    // Response data object or array
+  }
+}</code></pre>
+                </div>
+
+                <div class="subsection">
+                    <h4 class="subsection-title">Error Response Structure</h4>
+                    <pre><code>{
+  "error": true,
+  "message": "Error message",
+  "data": {
+    // Optional error details
+  }
+}</code></pre>
+                </div>
+
+                <div class="info-box success">
+                    <strong>✅ Best Practices:</strong><br>
+                    • Always check the <code>error</code> field first<br>
+                    • Use the <code>message</code> field for user-facing notifications<br>
+                    • Parse the <code>data</code> object for detailed information<br>
+                    • Handle all HTTP status codes appropriately<br>
+                    • Implement proper error logging and monitoring
+                </div>
+            </section>
+
+            <!-- Footer -->
+            <div class="footer">
+                <p><strong>TimeTracker Plugin API Documentation v1.0</strong></p>
+                <p>Built with Laravel • Powered by Sanctum Authentication</p>
+                <p style="margin-top: 1rem; color: #9ca3af;">© 2025 Taskify. All rights reserved.</p>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Theme Toggle Functionality
+        function toggleTheme() {
+            const body = document.body;
+            const currentTheme = body.getAttribute('data-hp-theme-mode');
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            body.setAttribute('data-hp-theme-mode', newTheme);
+            localStorage.setItem('theme', newTheme);
+        }
+
+        // Load saved theme
+        document.addEventListener('DOMContentLoaded', function() {
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            document.body.setAttribute('data-hp-theme-mode', savedTheme);
+
+            // Active link tracking
+            const links = document.querySelectorAll('.sidebar-link');
+            const sections = document.querySelectorAll('.section');
+
+            function updateActiveLink() {
+                let current = '';
+                sections.forEach(section => {
+                    const sectionTop = section.offsetTop;
+                    const sectionHeight = section.clientHeight;
+                    if (window.pageYOffset >= sectionTop - 100) {
+                        current = section.getAttribute('id');
+                    }
+                });
+
+                links.forEach(link => {
+                    link.classList.remove('active');
+                    if (link.getAttribute('href') === '#' + current) {
+                        link.classList.add('active');
+                    }
+                });
+            }
+
+            window.addEventListener('scroll', updateActiveLink);
+            updateActiveLink();
+        });
+    </script>
+</body>
+</html>
+

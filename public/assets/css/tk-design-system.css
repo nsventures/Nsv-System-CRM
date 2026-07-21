@@ -1,0 +1,510 @@
+/* ============================================================================
+   TASKIFY — DESIGN-SYSTEM HELPER  (tk-design-system.css)
+   ----------------------------------------------------------------------------
+   A reusable, PREFIXED component library so views can be built from classes
+   instead of writing bespoke CSS in custom.css every time.
+
+   • Every class is namespaced "tk-" so it can NEVER collide with Bootstrap /
+     Sneat (whose .btn/.card/.input we intentionally leave alone).
+   • Colours/spacing/radius come from the design tokens defined on :root in
+     custom.css (--bg-*, --fg-*, --line, --signal, --ok/warn/err/info, --r-*,
+     --fs-*, --shadow-*, --t-*). They are theme-aware, so every component here
+     flips automatically in dark mode ([data-theme="dark"]).
+
+   Load AFTER the Sneat/vendor CSS (it is, via layout.blade.php).
+   ============================================================================ */
+
+/* ----------------------------------------------------------------------------
+   1. PRIMITIVES / UTILITIES
+   ---------------------------------------------------------------------------- */
+.tk-stack   { display: flex; flex-direction: column; gap: var(--tk-gap, 12px); }
+.tk-cluster { display: flex; align-items: center; gap: var(--tk-gap, 8px); flex-wrap: wrap; }
+.tk-between { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.tk-grid-2  { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.tk-grid-3  { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.tk-grow    { flex: 1 1 auto; min-width: 0; }
+.tk-spacer  { flex: 1 1 auto; }
+
+.tk-mono    { font-family: var(--font-mono); }
+.tk-muted   { color: var(--fg-3) !important; }
+.tk-fg-1    { color: var(--fg-1) !important; }
+.tk-fg-0    { color: var(--fg-0) !important; }
+.tk-eyebrow {
+    font-size: var(--fs-xs); text-transform: uppercase; letter-spacing: 0.05em;
+    color: var(--fg-3); font-weight: 600;
+}
+.tk-divider { border: 0; height: 1px; background: var(--line); margin: 16px 0; }
+.tk-noscroll { scrollbar-width: none; -ms-overflow-style: none; }
+.tk-noscroll::-webkit-scrollbar { width: 0; height: 0; display: none; }
+
+/* ----------------------------------------------------------------------------
+   2. SURFACES — panel / card / tile
+   ---------------------------------------------------------------------------- */
+.tk-panel {
+    background: var(--bg-1); border: 1px solid var(--line);
+    border-radius: var(--r-2); box-shadow: var(--shadow-1);
+}
+.tk-card {
+    background: var(--bg-1); border: 1px solid var(--line);
+    border-radius: var(--r-2); overflow: hidden;
+    display: flex; flex-direction: column;
+}
+.tk-card-head {
+    display: flex; align-items: flex-start; justify-content: space-between; gap: 12px;
+    padding: 13px 14px 10px;
+}
+.tk-card-title { font-size: 13px; font-weight: 600; color: var(--fg-0); margin: 0; }
+.tk-card-body { padding: 14px; }
+.tk-card-foot {
+    padding: 10px 14px; border-top: 1px solid var(--line);
+    display: flex; align-items: center; justify-content: flex-end; gap: 8px;
+}
+/* tile = compact elevated surface (a softer card, good for stat/meta blocks) */
+.tk-tile {
+    background: var(--bg-2); border: 1px solid var(--line);
+    border-radius: var(--r-2); padding: 11px 13px;
+}
+
+/* ----------------------------------------------------------------------------
+   3. BUTTONS
+   ---------------------------------------------------------------------------- */
+.tk-btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+    height: var(--ctrl-h-md); padding: 0 13px;
+    border: 1px solid transparent; border-radius: var(--r-2);
+    font-size: var(--fs-base); font-weight: 500; line-height: 1; white-space: nowrap;
+    cursor: pointer; user-select: none; text-decoration: none;
+    transition: background var(--t-1) var(--ease), color var(--t-1) var(--ease),
+                border-color var(--t-1) var(--ease), box-shadow var(--t-1) var(--ease);
+}
+.tk-btn:focus-visible { outline: none; box-shadow: var(--shadow-focus); }
+.tk-btn[disabled], .tk-btn.is-disabled { opacity: 0.55; pointer-events: none; }
+.tk-btn .tk-ic { width: 15px; height: 15px; }
+
+.tk-btn-primary   { background: var(--signal); color: #fff; }
+.tk-btn-primary:hover { filter: brightness(1.05); color: #fff; }
+.tk-btn-secondary { background: var(--bg-2); border-color: var(--line); color: var(--fg-0); }
+.tk-btn-secondary:hover { background: var(--bg-3); color: var(--fg-0); }
+.tk-btn-ghost     { background: transparent; color: var(--fg-2); }
+.tk-btn-ghost:hover { background: var(--bg-2); color: var(--fg-0); }
+.tk-btn-danger    { background: var(--err); color: #fff; }
+.tk-btn-danger:hover { filter: brightness(1.05); color: #fff; }
+.tk-btn-outline   { background: transparent; border-color: var(--line); color: var(--fg-1); }
+.tk-btn-outline:hover { background: var(--bg-2); color: var(--fg-0); }
+
+.tk-btn-sm { height: var(--ctrl-h-sm, 28px); padding: 0 10px; font-size: var(--fs-sm); }
+.tk-btn-lg { height: var(--ctrl-h-lg, 38px); padding: 0 18px; font-size: var(--fs-md); }
+.tk-btn-block { width: 100%; }
+
+/* icon-only button */
+.tk-iconbtn {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 28px; height: 28px; border: 0; background: transparent;
+    border-radius: var(--r-1); color: var(--fg-2); cursor: pointer;
+    transition: background var(--t-1) var(--ease), color var(--t-1) var(--ease);
+}
+.tk-iconbtn:hover { background: var(--bg-2); color: var(--fg-0); }
+.tk-iconbtn .tk-ic { width: 16px; height: 16px; }
+
+/* ----------------------------------------------------------------------------
+   4. FORM CONTROLS
+   ---------------------------------------------------------------------------- */
+.tk-field { display: flex; flex-direction: column; gap: 5px; }
+.tk-label {
+    font-size: var(--fs-xs); text-transform: uppercase; letter-spacing: 0.05em;
+    color: var(--fg-3); font-weight: 600;
+}
+.tk-input, .tk-select, .tk-textarea .tk-input {
+    width: 100%; height: var(--ctrl-h-md); padding: 0 11px;
+    background: var(--bg-2); border: 1px solid var(--line); border-radius: var(--r-2);
+    color: var(--fg-0); font-size: var(--fs-base); font-family: inherit;
+    transition: border-color var(--t-1) var(--ease);
+}
+.tk-textarea { height: auto; min-height: 76px; padding: 9px 11px; resize: vertical; }
+.tk-input::placeholder, .tk-textarea::placeholder { color: var(--fg-3); }
+.tk-input:hover, .tk-select:hover, .tk-textarea:hover {
+    border-color: var(--line-2);
+}
+.tk-input:focus, .tk-select:focus, .tk-textarea:focus {
+    outline: none; border-color: var(--line-2); box-shadow: none;
+}
+/* input with a leading icon */
+.tk-inputgroup {
+    display: inline-flex; align-items: center; gap: 0; width: 100%;
+    height: var(--ctrl-h-md); padding: 0 11px;
+    background: var(--bg-2); border: 1px solid var(--line); border-radius: var(--r-2);
+    transition: border-color var(--t-1) var(--ease);
+}
+.tk-inputgroup:hover {
+    border-color: var(--line-2);
+}
+.tk-inputgroup:focus-within {
+    border-color: var(--line-2);
+}
+.tk-inputgroup .tk-ic { color: var(--fg-3); flex: none; }
+.tk-inputgroup input { flex: 1; border: 0; background: transparent; outline: none; color: var(--fg-0); font-size: var(--fs-base); padding: 0; height: 100%; }
+.tk-inputgroup > span { display: inline-flex; align-items: center; padding: 0 4px; color: var(--fg-3); flex: none; font-size: 1.1rem; }
+.tk-inputgroup > span:hover { color: var(--fg-0); }
+
+/* ----------------------------------------------------------------------------
+   5. BADGES / TAGS / STATUS PILLS / CHIPS
+   ---------------------------------------------------------------------------- */
+.tk-badge {
+    display: inline-flex; align-items: center; gap: 4px;
+    padding: 2px 8px; border-radius: 999px;
+    font-size: var(--fs-xs); font-weight: 600; line-height: 1.5;
+    background: var(--bg-3); color: var(--fg-1);
+}
+.tk-badge-primary { background: oklch(from var(--signal) l c h / 0.16); color: var(--signal); }
+.tk-badge-success { background: oklch(from var(--ok) l c h / 0.16);   color: var(--ok); }
+.tk-badge-warning { background: oklch(from var(--warn) l c h / 0.16); color: var(--warn); }
+.tk-badge-danger  { background: oklch(from var(--err) l c h / 0.16);  color: var(--err); }
+.tk-badge-info    { background: oklch(from var(--info) l c h / 0.16); color: var(--info); }
+
+.tk-badge-counter {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 16px;
+    height: 16px;
+    padding: 0 4px;
+    border-radius: 999px;
+    font-size: 9px;
+    font-weight: 700;
+    line-height: 1;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: middle;
+    box-sizing: border-box;
+    z-index: 3;
+    flex: 0 0 auto !important;
+}
+.tk-badge-counter-danger {
+    background-color: var(--err, #ff3e1d) !important;
+    color: #ffffff !important;
+}
+.tk-badge-counter-success {
+    background-color: var(--ok, #71dd37) !important;
+    color: #ffffff !important;
+}
+.tk-badge-counter-nav {
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    border: 1.5px solid var(--bg-1, #ffffff) !important;
+}
+.tk-badge-counter-rail {
+    position: absolute;
+    top: 1px;
+    right: 1px;
+}
+
+.tk-tag {
+    display: inline-flex; align-items: center; gap: 4px;
+    padding: 2px 7px; border: 1px solid var(--line); border-radius: var(--r-1);
+    font-size: var(--fs-sm); color: var(--fg-2); background: var(--bg-1);
+}
+.tk-chip {
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 3px 10px; border: 1px solid var(--line); border-radius: 999px;
+    font-size: var(--fs-sm); color: var(--fg-1); background: var(--bg-1); cursor: pointer;
+}
+.tk-chip.is-active { background: oklch(from var(--signal) l c h / 0.14); border-color: transparent; color: var(--signal); }
+
+.tk-status { display: inline-flex; align-items: center; gap: 5px; font-size: var(--fs-sm); font-weight: 600; color: var(--fg-1); }
+.tk-status .tk-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--fg-3); }
+.tk-status-progress .tk-dot { background: var(--signal); }
+.tk-status-done     .tk-dot { background: var(--ok); }
+.tk-status-review   .tk-dot { background: var(--warn); }
+.tk-status-blocked  .tk-dot { background: var(--err); }
+
+/* ----------------------------------------------------------------------------
+   6. TABS  (inset active indicator so it survives an overflow:hidden scroller)
+   ---------------------------------------------------------------------------- */
+.tk-tabs {
+    display: flex; gap: 2px; border-bottom: 1px solid var(--line);
+    overflow-x: auto; scrollbar-width: none;
+}
+.tk-tabs::-webkit-scrollbar { display: none; }
+.tk-tab {
+    flex: 0 0 auto; display: inline-flex; align-items: center; gap: 5px;
+    padding: 8px 11px; border: 0; background: transparent; cursor: pointer;
+    font-size: 12px; font-weight: 500; line-height: 1; white-space: nowrap;
+    color: var(--fg-2); border-radius: var(--r-1) var(--r-1) 0 0;
+    transition: background var(--t-1) var(--ease), color var(--t-1) var(--ease);
+}
+.tk-tab:hover { color: var(--fg-0); background: var(--bg-2); }
+.tk-tab.is-active {
+    color: var(--fg-0); background: var(--bg-2);
+    box-shadow: inset 0 -2px 0 0 var(--signal);
+}
+.tk-tab .tk-ic { width: 14px; height: 14px; }
+
+/* ----------------------------------------------------------------------------
+   7. META GRID  (label / value rows)  +  FACTS GRID (icon tiles)
+   ---------------------------------------------------------------------------- */
+.tk-meta { display: grid; grid-template-columns: 92px 1fr; gap: 9px 16px; align-items: center; font-size: var(--fs-base); }
+.tk-meta dt, .tk-meta .tk-meta-k {
+    font-size: var(--fs-xs); text-transform: uppercase; letter-spacing: 0.05em;
+    color: var(--fg-3); font-weight: 600; margin: 0;
+}
+.tk-meta dd, .tk-meta .tk-meta-v { color: var(--fg-1); margin: 0; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+
+.tk-facts { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.tk-fact { display: flex; align-items: center; gap: 9px; min-width: 0; padding: 9px 11px; border: 1px solid var(--line); border-radius: var(--r-2); background: var(--bg-2); }
+.tk-fact > .tk-ic { color: var(--fg-3); flex: none; }
+.tk-fact-txt { display: flex; flex-direction: column; min-width: 0; }
+.tk-fact-k { font-size: 9.5px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--fg-3); font-weight: 600; }
+.tk-fact-v { font-size: 13px; color: var(--fg-0); font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+/* ----------------------------------------------------------------------------
+   8. AVATARS
+   ---------------------------------------------------------------------------- */
+.tk-avatar {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 28px; height: 28px; border-radius: 50%; overflow: hidden;
+    background: var(--bg-3); color: var(--fg-2); font-size: 11px; font-weight: 600;
+    flex: none; border: 1px solid var(--bg-1);
+}
+.tk-avatar img { width: 100%; height: 100%; object-fit: cover; color: transparent; font-size: 0; }
+.tk-avstack { display: inline-flex; align-items: center; }
+.tk-avstack > .tk-avatar { margin-left: -7px; }
+.tk-avstack > .tk-avatar:first-child { margin-left: 0; }
+.tk-avstack .tk-avatar-more { background: var(--bg-3); color: var(--fg-2); font-size: 10px; }
+
+/* ----------------------------------------------------------------------------
+   9. EMPTY STATE / SKELETON
+   ---------------------------------------------------------------------------- */
+.tk-empty {
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 10px; padding: 28px 16px; text-align: center; color: var(--fg-3);
+}
+.tk-empty .tk-ic { opacity: 0.6; }
+.tk-empty p { margin: 0; font-size: var(--fs-base); }
+.tk-skel { height: 12px; border-radius: 6px; background: var(--bg-3); margin-bottom: 10px; animation: tkSkelPulse 1.1s ease-in-out infinite; }
+@keyframes tkSkelPulse { 0%,100% { opacity: 0.45; } 50% { opacity: 0.85; } }
+
+/* ----------------------------------------------------------------------------
+   10. DRAWER / DOCK (sticky side panel)
+   ---------------------------------------------------------------------------- */
+.tk-dock {
+    display: flex; flex-direction: column; align-self: stretch;
+    background: var(--bg-1); border: 1px solid var(--line); border-radius: var(--r-2);
+    box-shadow: var(--shadow-1); overflow: hidden;
+}
+.tk-dock-head {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 9px 12px 9px 14px; border-bottom: 1px solid var(--line); flex: none;
+}
+.tk-dock-title { display: inline-flex; align-items: center; gap: 6px; font-size: 12.5px; font-weight: 600; color: var(--fg-0); }
+.tk-dock-body { flex: 1 1 auto; overflow-y: auto; padding: 16px; scrollbar-width: none; }
+.tk-dock-body::-webkit-scrollbar { display: none; }
+
+/* ----------------------------------------------------------------------------
+   11. TABLE  — design-system skin for <x-tk-table> (over bootstrap-table).
+   Scoped to .tk-table so it never touches other tables. !important is needed
+   because the bootstrap-table vendor CSS loads after this file.
+   ---------------------------------------------------------------------------- */
+.tk-table { width: 100%; }
+
+/* --- toolbar (search · refresh · column-toggle) --- */
+.tk-table .fixed-table-toolbar { padding: 0 0 12px; min-height: var(--ctrl-h-md); }
+.tk-table .fixed-table-toolbar .bs-bars,
+.tk-table .fixed-table-toolbar .columns,
+.tk-table .fixed-table-toolbar .search { margin: 0; }
+.tk-table .fixed-table-toolbar .search { float: right; position: relative; }
+.tk-table .fixed-table-toolbar .search .form-control,
+.tk-table .fixed-table-toolbar .search input {
+    height: var(--ctrl-h-md); min-width: 220px; padding: 0 12px !important;
+    background: var(--bg-2) !important; border: 1px solid var(--line) !important;
+    border-radius: var(--r-2) !important; color: var(--fg-0) !important;
+    font-size: var(--fs-base) !important; box-shadow: none !important;
+    transition: border-color var(--t-1) var(--ease) !important;
+}
+.tk-table .fixed-table-toolbar .search .form-control:hover,
+.tk-table .fixed-table-toolbar .search input:hover {
+    border-color: var(--line-2) !important;
+}
+.tk-table .fixed-table-toolbar .search .form-control:focus,
+.tk-table .fixed-table-toolbar .search input:focus {
+    border-color: var(--fg-1) !important; box-shadow: none !important; outline: none !important;
+}
+.tk-table .fixed-table-toolbar .btn,
+.tk-table .fixed-table-toolbar .button > .btn {
+    height: var(--ctrl-h-md); min-width: var(--ctrl-h-md); padding: 0 9px !important;
+    display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+    background: var(--bg-2) !important; border: 1px solid var(--line) !important;
+    border-radius: var(--r-2) !important; color: var(--fg-2) !important; box-shadow: none !important;
+    font-size: var(--fs-base);
+}
+.tk-table .fixed-table-toolbar .btn:hover { background: var(--bg-3) !important; color: var(--fg-0) !important; }
+.tk-table .fixed-table-toolbar .btn i { font-size: 17px; }
+
+/* Table Toolbar Button Specific Overrides */
+.tk-table .fixed-table-toolbar .btn.delete-selected {
+    background: transparent !important;
+    border-color: oklch(from var(--err) l c h / 0.40) !important;
+    color: var(--err) !important;
+    transition: background-color var(--t-1) var(--ease), border-color var(--t-1) var(--ease) !important;
+}
+.tk-table .fixed-table-toolbar .btn.delete-selected:hover {
+    background: oklch(from var(--err) l c h / 0.10) !important;
+    border-color: var(--err) !important;
+    color: var(--err) !important;
+}
+.tk-table .fixed-table-toolbar .btn.delete-selected:focus {
+    border-color: var(--err) !important;
+    box-shadow: none !important;
+    outline: none !important;
+}
+
+.tk-table .fixed-table-toolbar .btn.save-column-visibility {
+    background: transparent !important;
+    border-color: var(--line-2) !important;
+    color: var(--fg-0) !important;
+    transition: background-color var(--t-1) var(--ease), border-color var(--t-1) var(--ease) !important;
+}
+.tk-table .fixed-table-toolbar .btn.save-column-visibility:hover {
+    background: var(--signal-soft) !important;
+    border-color: var(--signal) !important;
+    color: var(--fg-0) !important;
+}
+.tk-table .fixed-table-toolbar .btn.save-column-visibility:focus {
+    border-color: var(--signal) !important;
+    box-shadow: none !important;
+    outline: none !important;
+}
+
+
+/* --- container --- */
+.tk-table .fixed-table-container {
+    border: 1px solid var(--line) !important; border-radius: var(--r-2); overflow: hidden;
+    background: var(--bg-1);
+}
+.tk-table .fixed-table-body { background: var(--bg-1); }
+
+/* --- the table --- */
+.tk-table table { width: 100%; margin: 0; color: var(--fg-1); border-collapse: collapse; }
+.tk-table thead th {
+    background: var(--bg-2) !important; color: var(--fg-3) !important;
+    font-size: var(--fs-xs) !important; font-weight: 600 !important;
+    text-transform: uppercase; letter-spacing: 0.04em;
+    padding: 11px 14px !important; vertical-align: middle; white-space: nowrap;
+    border: 0 !important; border-bottom: 1px solid var(--line) !important;
+}
+.tk-table thead th .th-inner { padding: 0 !important; }
+.tk-table tbody td {
+    padding: 11px 14px !important; color: var(--fg-1) !important; vertical-align: middle;
+    background: transparent !important;
+    border: 0 !important; border-bottom: 1px solid var(--line) !important;
+}
+.tk-table tbody tr { transition: background var(--t-1) var(--ease); }
+.tk-table tbody tr:hover td { background: var(--bg-2) !important; }
+.tk-table tbody tr:last-child td { border-bottom: 1px solid var(--line) !important; }
+.tk-table tbody tr.selected td { background: oklch(from var(--signal) l c h / 0.10) !important; }
+
+/* sort indicators */
+.tk-table th.sortable { cursor: pointer; }
+.tk-table th.sortable:hover { color: var(--fg-1) !important; }
+.tk-table .sortable .both,
+.tk-table .sortable .asc,
+.tk-table .sortable .desc { opacity: 0.6; }
+
+/* checkbox column */
+.tk-table .bs-checkbox { width: 44px; text-align: center; }
+.tk-table input[type="checkbox"] { width: 15px; height: 15px; accent-color: var(--signal); cursor: pointer; vertical-align: middle; }
+
+/* empty state */
+.tk-table .no-records-found td {
+    color: var(--fg-3) !important; text-align: center; padding: 30px 14px !important; font-size: var(--fs-base);
+}
+
+/* --- pagination --- */
+.tk-table .fixed-table-pagination { padding-top: 12px; font-size: var(--fs-sm); color: var(--fg-2); }
+.tk-table .fixed-table-pagination .pagination-detail { color: var(--fg-3); }
+.tk-table .fixed-table-pagination .page-list .dropdown-toggle {
+    background: var(--bg-2) !important; border: 1px solid var(--line) !important;
+    color: var(--fg-1) !important; border-radius: var(--r-1) !important; box-shadow: none !important;
+}
+.tk-table .pagination { gap: 3px; margin: 0; }
+.tk-table .pagination .page-link {
+    min-width: 30px; height: 30px; display: inline-flex; align-items: center; justify-content: center;
+    padding: 0 7px; border: 1px solid var(--line) !important; background: var(--bg-1) !important;
+    color: var(--fg-1) !important; border-radius: var(--r-1) !important; font-size: var(--fs-sm);
+    transition: background var(--t-1) var(--ease);
+}
+.tk-table .pagination .page-link:hover { background: var(--bg-2) !important; color: var(--fg-0) !important; }
+.tk-table .pagination .page-item.active .page-link {
+    background: var(--signal) !important; border-color: var(--signal) !important; color: var(--signal-fg, #fff) !important;
+}
+.tk-table .pagination .page-item.disabled .page-link { color: var(--fg-3) !important; opacity: 0.5; }
+
+/* ----------------------------------------------------------------------------
+   12. PAGINATION
+   ---------------------------------------------------------------------------- */
+.tk-pagination {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin: 16px 0 0;
+    padding: 0;
+    list-style: none;
+}
+.tk-pagination-btn {
+    border: 1px solid var(--line);
+    background: var(--bg-1);
+    color: var(--fg-1);
+    border-radius: var(--r-1);
+    min-width: 30px;
+    height: 30px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: var(--fs-sm);
+    font-weight: 500;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background var(--t-1) var(--ease), border-color var(--t-1) var(--ease), color var(--t-1) var(--ease);
+    box-sizing: border-box;
+    padding: 0 6px;
+}
+.tk-pagination-btn:hover:not([disabled]):not(.is-disabled) {
+    background: var(--bg-2);
+    color: var(--fg-0);
+    border-color: var(--line-2);
+}
+.tk-pagination-btn.is-active,
+.tk-pagination-btn.on {
+    background: var(--signal) !important;
+    border-color: var(--signal) !important;
+    color: #ffffff !important;
+    font-weight: 600;
+}
+.tk-pagination-btn[disabled],
+.tk-pagination-btn.is-disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+    background: var(--bg-2);
+    border-color: var(--line);
+}
+
+/* iti phone input — match tk-input appearance */
+.iti { width: 100%; }
+.iti input.iti__tel-input {
+    background: var(--bg-2) !important;
+    border: 1px solid var(--line) !important;
+    border-radius: var(--r-2) !important;
+    color: var(--fg-0) !important;
+    font-size: var(--fs-base) !important;
+    height: var(--ctrl-h-md) !important;
+    box-shadow: none !important;
+    transition: border-color var(--t-1) var(--ease) !important;
+}
+.iti input.iti__tel-input:hover {
+    border-color: var(--line-2) !important;
+}
+.iti input.iti__tel-input:focus {
+    border-color: var(--line-2) !important;
+    box-shadow: none !important;
+    outline: none !important;
+}

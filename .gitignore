@@ -1,0 +1,32 @@
+# Dependencies
+/vendor/
+node_modules/
+
+# Environment
+.env
+.env.*
+
+# PHPUnit
+.phpunit.result.cache
+
+# Demo SQL dumps
+public/assets/demo_data/demo_data_taskify.sql
+
+# Ignore ONLY screenshots
+storage/app/public/screenshots/
+
+# Ignore generated files
+public/storage
+storage/*.key
+storage/framework/cache/*
+storage/framework/sessions/*
+storage/framework/testing/*
+storage/framework/views/*
+storage/logs/*
+
+# Bootstrap cache
+bootstrap/cache/*.php
+
+# OS files
+.DS_Store
+Thumbs.db

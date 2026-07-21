@@ -1,0 +1,467 @@
+{
+  "info": {
+    "name": "Time Tracker Plugin API",
+    "_postman_id": "3a1f5e5c-2030-4d1a-9d70-5b0b6c6c9d1f",
+    "description": "Postman collection for the Time Tracker plugin APIs. Update the `base_url`, `auth_token`, and `current_user_id` variables before running the requests.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost"
+    },
+    {
+      "key": "auth_token",
+      "value": ""
+    },
+    {
+      "key": "current_user_id",
+      "value": ""
+    },
+    {
+      "key": "target_user_id",
+      "value": ""
+    },
+    {
+      "key": "fcm_token",
+      "value": ""
+    }
+  ],
+  "item": [
+    {
+      "name": "Authentication",
+      "description": "Endpoints for obtaining and validating Sanctum API tokens.",
+      "item": [
+        {
+          "name": "Log In",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"email\": \"user@example.com\",\n    \"password\": \"secret\",\n    \"isApi\": true,\n    \"fcm_token\": \"{{fcm_token}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/plugin/timetracker/login",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "plugin",
+                "timetracker",
+                "login"
+              ]
+            },
+            "description": "Authenticate with user credentials. If successful, the response includes a Sanctum token; copy it into the `auth_token` variable to access protected endpoints. Set `isApi` to `true` to bypass browser-only checks such as reCAPTCHA."
+          },
+          "response": []
+        },
+        {
+          "name": "Validate Token",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{auth_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/api/plugin/timetracker/validate-token",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "plugin",
+                "timetracker",
+                "validate-token"
+              ]
+            },
+            "description": "Verifies the active Sanctum token and returns the associated user context."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Configuration",
+      "description": "Read-only configuration endpoints for the desktop tracker.",
+      "item": [
+        {
+          "name": "Load Config",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/plugin/timetracker/load-config",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "plugin",
+                "timetracker",
+                "load-config"
+              ]
+            },
+            "description": "Returns tracker configuration such as screenshot interval, idle threshold, and configured timezone. No authentication required."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Time Tracking",
+      "description": "Core protected endpoints for recording and retrieving tracker data.",
+      "item": [
+        {
+          "name": "Log Update",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{auth_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"user_id\": {{current_user_id}},\n    \"action\": \"clock-in\",\n    \"timestamp\": \"2025-11-13T09:00:00\",\n    \"timestamp_timezone\": \"UTC\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/plugin/timetracker/log-update",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "plugin",
+                "timetracker",
+                "log-update"
+              ]
+            },
+            "description": "Creates a time tracker activity log entry (e.g., `clock-in`, `clock-out`, `idle-start`). Timestamps are parsed using the optional `timestamp_timezone` and stored in UTC."
+          },
+          "response": []
+        },
+        {
+          "name": "Upload Screenshot",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{auth_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "screenshot",
+                  "type": "file",
+                  "src": "sample_screenshot.png"
+                },
+                {
+                  "key": "captured_at",
+                  "value": "2025-11-13T09:05:00",
+                  "type": "text"
+                },
+                {
+                  "key": "captured_at_timezone",
+                  "value": "UTC",
+                  "type": "text"
+                },
+                {
+                  "key": "metadata",
+                  "value": "{\"activeWindow\":\"Google Chrome\"}",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/api/plugin/timetracker/upload-screenshot",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "plugin",
+                "timetracker",
+                "upload-screenshot"
+              ]
+            },
+            "description": "Uploads a tracker screenshot for the authenticated user. Supports optional capture metadata and timezone-aware timestamps (defaults to system timezone when omitted)."
+          },
+          "response": []
+        },
+        {
+          "name": "List Time Entries",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{auth_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/api/plugin/timetracker/time-entries",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "plugin",
+                "timetracker",
+                "time-entries"
+              ]
+            },
+            "description": "Retrieves the 100 most recent tracker activity entries for the authenticated user, along with the workspace timezone."
+          },
+          "response": []
+        },
+        {
+          "name": "List Activity Logs",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{auth_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/api/plugin/timetracker/activity-logs?userId={{target_user_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "plugin",
+                "timetracker",
+                "activity-logs"
+              ],
+              "query": [
+                {
+                  "key": "userId",
+                  "value": "{{target_user_id}}",
+                  "description": "Optional. Defaults to the authenticated user when omitted."
+                }
+              ]
+            },
+            "description": "Lists the latest tracker actions for the specified user (or current user when `userId` is empty)."
+          },
+          "response": []
+        },
+        {
+          "name": "List Screenshots (Current User)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{auth_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/api/plugin/timetracker/screenshots",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "plugin",
+                "timetracker",
+                "screenshots"
+              ]
+            },
+            "description": "Returns up to 100 most recent screenshots captured for the authenticated user, including download URLs and localized timestamps."
+          },
+          "response": []
+        },
+        {
+          "name": "List Screenshots (By User)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{auth_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/api/plugin/timetracker/screenshots/{{target_user_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "plugin",
+                "timetracker",
+                "screenshots",
+                "{{target_user_id}}"
+              ]
+            },
+            "description": "Admin-only helper to fetch screenshots for another user by ID."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Dashboard",
+      "description": "Aggregated productivity metrics derived from tracker activity logs.",
+      "item": [
+        {
+          "name": "Productivity Metrics",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{auth_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/api/plugin/timetracker/dashboard",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "plugin",
+                "timetracker",
+                "dashboard"
+              ]
+            },
+            "description": "Returns calculated productivity metrics, daily breakdowns, and distribution for the authenticated user based on recent activity logs."
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}

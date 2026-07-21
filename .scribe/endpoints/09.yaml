@@ -1,0 +1,686 @@
+name: 'Milestone Management'
+description: ''
+endpoints:
+  -
+    httpMethods:
+      - POST
+    uri: api/milestones/store
+    metadata:
+      groupName: 'Milestone Management'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Store a new milestone.'
+      description: 'This endpoint creates a new milestone for a specified project. The user must be authenticated and have permission to create milestones.'
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Accept: application/json
+      workspace_id: 1
+      Content-Type: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      project_id:
+        name: project_id
+        description: 'The ID of the project to which the milestone belongs.'
+        required: true
+        example: 13
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+      title:
+        name: title
+        description: 'The title of the milestone.'
+        required: true
+        example: commodi
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+      status:
+        name: status
+        description: 'The status of the milestone.'
+        required: true
+        example: quis
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+      start_date:
+        name: start_date
+        description: 'optional The start date of the milestone (YYYY-MM-DD).'
+        required: false
+        example: et
+        type: date
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+      end_date:
+        name: end_date
+        description: 'optional The end date of the milestone (YYYY-MM-DD).'
+        required: false
+        example: unde
+        type: date
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+      cost:
+        name: cost
+        description: 'The cost of the milestone.'
+        required: true
+        example: placeat
+        type: numeric
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+      description:
+        name: description
+        description: 'optional A description of the milestone.'
+        required: false
+        example: 'Accusamus doloribus eum accusamus aliquid.'
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+    cleanBodyParameters:
+      project_id: 13
+      title: commodi
+      status: quis
+      start_date: et
+      end_date: unde
+      cost: placeat
+      description: 'Accusamus doloribus eum accusamus aliquid.'
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+            "error": false,
+            "message": "Milestone created successfully.",
+            "id": 12,
+            "type": "milestone",
+            "parent_type": "project",
+            "parent_id": 438
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 422
+        content: |-
+          {
+            "error": true,
+            "message": "Validation errors occurred",
+            "errors": {
+              "project_id": ["The selected project_id is invalid."],
+              "title": ["The title field is required."],
+              "cost": ["The cost format is invalid."]
+            }
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 500
+        content: |-
+          {
+            "error": true,
+            "message": "Milestone couldn't be created."
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6kVv65ceDdbh1ga34aPZE8f'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: 'api/milestones/{id?}'
+    metadata:
+      groupName: 'Milestone Management'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Get a list of milestones for a project.'
+      description: |-
+        This endpoint retrieves all milestones associated with a given project.
+        It supports searching, filtering, and sorting functionalities.
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Accept: application/json
+      workspace_id: 1
+    urlParameters:
+      id:
+        name: id
+        description: 'The ID of the project whose milestones are to be retrieved.'
+        required: true
+        example: 12
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+    cleanUrlParameters:
+      id: 12
+    queryParameters:
+      search:
+        name: search
+        description: 'optional Search for milestones by title, ID, cost, or description.'
+        required: false
+        example: nesciunt
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+      sort:
+        name: sort
+        description: 'optional Field to sort by (default: "id").'
+        required: false
+        example: dolor
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+      order:
+        name: order
+        description: 'optional Sorting order (ASC/DESC, default: "DESC").'
+        required: false
+        example: aperiam
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+      statuses:
+        name: statuses
+        description: 'optional Filter by milestone statuses.'
+        required: false
+        example:
+          - sunt
+        type: 'string[]'
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+      date_between_from:
+        name: date_between_from
+        description: 'date optional Filter milestones starting from this date.'
+        required: false
+        example: nostrum
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+      date_between_to:
+        name: date_between_to
+        description: 'date optional Filter milestones ending at this date.'
+        required: false
+        example: molestiae
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+      start_date_from:
+        name: start_date_from
+        description: 'date optional Filter milestones with a start date after this date.'
+        required: false
+        example: est
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+      start_date_to:
+        name: start_date_to
+        description: 'date optional Filter milestones with a start date before this date.'
+        required: false
+        example: molestiae
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+      end_date_from:
+        name: end_date_from
+        description: 'date optional Filter milestones with an end date after this date.'
+        required: false
+        example: soluta
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+      end_date_to:
+        name: end_date_to
+        description: 'date optional Filter milestones with an end date before this date.'
+        required: false
+        example: expedita
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+      limit:
+        name: limit
+        description: 'optional Number of records per page.'
+        required: false
+        example: 5
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+    cleanQueryParameters:
+      search: nesciunt
+      sort: dolor
+      order: aperiam
+      statuses:
+        - sunt
+      date_between_from: nostrum
+      date_between_to: molestiae
+      start_date_from: est
+      start_date_to: molestiae
+      end_date_from: soluta
+      end_date_to: expedita
+      limit: 5
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+            "data": [
+              {
+                "id": 12,
+                "title": "Design Phase",
+                "status": Complete,
+                "progress": "75",
+                "cost": "₹1,500.00",
+                "start_date": "2025-03-10",
+                "end_date": "2025-03-20",
+                "created_by": "John Doe",
+                "description": "Initial design phase for the project.",
+                "created_at": "2025-03-01",
+                "updated_at": "2025-03-05",
+
+              }
+            ],
+            "total": 1
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 404
+        content: |-
+          {
+            "error": true,
+            "message": "Project not found."
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6Zfc135EPdDah6bv8gae4kV'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: 'api/milestones/get/{id?}'
+    metadata:
+      groupName: 'Milestone Management'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Get details of a specific milestone.'
+      description: 'This endpoint retrieves details of a specific milestone by its ID.'
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Accept: application/json
+      workspace_id: 1
+    urlParameters:
+      id:
+        name: id
+        description: 'The ID of the milestone to retrieve.'
+        required: true
+        example: 2
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+    cleanUrlParameters:
+      id: 2
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+            "error": false,
+            "milestone": {
+              "id": 12,
+              "title": "Design Phase",
+              "status": "In Progress",
+              "cost": "₹1,500.00",
+              "start_date": "2025-03-10",
+              "end_date": "2025-03-20",
+              "description": "Initial design phase for the project.",
+              "created_at": "2025-03-01",
+              "updated_at": "2025-03-05"
+            }
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 404
+        content: |-
+          {
+            "error": true,
+            "message": "Milestone not found."
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 5kD6dPZa3fec4bah61vEVg8'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/milestones/update
+    metadata:
+      groupName: 'Milestone Management'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Update an existing milestone.'
+      description: 'This endpoint updates a specified milestone. The user must be authenticated and have permission to modify the milestone.'
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Accept: application/json
+      workspace_id: 1
+      Content-Type: application/json
+    urlParameters:
+      id:
+        name: id
+        description: 'The ID of the milestone to be updated.'
+        required: true
+        example: 12
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+    cleanUrlParameters:
+      id: 12
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      title:
+        name: title
+        description: 'The updated title of the milestone.'
+        required: true
+        example: beatae
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+      status:
+        name: status
+        description: 'The updated status of the milestone.'
+        required: true
+        example: ut
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+      start_date:
+        name: start_date
+        description: 'optional The updated start date of the milestone (YYYY-MM-DD).'
+        required: false
+        example: nobis
+        type: date
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+      end_date:
+        name: end_date
+        description: 'optional The updated end date of the milestone (YYYY-MM-DD).'
+        required: false
+        example: tempora
+        type: date
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+      cost:
+        name: cost
+        description: 'The updated cost of the milestone.'
+        required: true
+        example: magni
+        type: numeric
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+      progress:
+        name: progress
+        description: 'The updated progress percentage of the milestone.'
+        required: true
+        example: 15
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+      description:
+        name: description
+        description: 'optional An updated description of the milestone.'
+        required: false
+        example: 'Nihil est assumenda sapiente itaque et.'
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+    cleanBodyParameters:
+      title: beatae
+      status: ut
+      start_date: nobis
+      end_date: tempora
+      cost: magni
+      progress: 15
+      description: 'Nihil est assumenda sapiente itaque et.'
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+            "error": false,
+            "message": "Milestone updated successfully.",
+            "id": 12,
+            "type": "milestone",
+            "parent_type": "project",
+            "parent_id": 438
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 404
+        content: |-
+          {
+            "error": true,
+            "message": "Milestone not found."
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 422
+        content: |-
+          {
+            "error": true,
+            "message": "Validation errors occurred",
+            "errors": {
+              "title": ["The title field is required."],
+              "cost": ["The cost format is invalid."],
+              "progress": ["The progress field is required."]
+            }
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 500
+        content: |-
+          {
+            "error": true,
+            "message": "Milestone couldn't be updated."
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer c5EVfPa8634kvbheg6dDZ1a'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - DELETE
+    uri: 'api/milestones/destroy/{id}'
+    metadata:
+      groupName: 'Milestone Management'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Delete a milestone.'
+      description: 'This endpoint deletes a specified milestone. The user must be authenticated and have permission to delete milestones.'
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Accept: application/json
+      workspace_id: 1
+    urlParameters:
+      id:
+        name: id
+        description: 'The ID of the milestone to delete.'
+        required: true
+        example: 8
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+    cleanUrlParameters:
+      id: 8
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+            "error": false,
+            "message": "Milestone deleted successfully.",
+            "id": 12,
+            "title": "Design Phase",
+            "type": "milestone",
+            "parent_type": "project",
+            "parent_id": 438
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 404
+        content: |-
+          {
+            "error": true,
+            "message": "Milestone not found."
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 500
+        content: |-
+          {
+            "error": true,
+            "message": "Milestone couldn't be deleted."
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 5agVP6DhEfacZ63bv1k8ed4'
+    controller: null
+    method: null
+    route: null
+    custom: []

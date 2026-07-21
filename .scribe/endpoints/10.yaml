@@ -1,0 +1,438 @@
+name: 'Project Comments'
+description: ''
+endpoints:
+  -
+    httpMethods:
+      - POST
+    uri: 'api/projects/{id}/comments'
+    metadata:
+      groupName: 'Project Comments'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Add a comment.'
+      description: |-
+        This endpoint allows authenticated users to add comments to a specific model (e.g., tasks, projects).
+        Users can also attach files and mention other users.
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Accept: application/json
+      workspace_id: 1
+      Content-Type: multipart/form-data
+    urlParameters:
+      id:
+        name: id
+        description: 'The ID of the project to add a comment to.'
+        required: true
+        example: 14
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+    cleanUrlParameters:
+      id: 14
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      model_type:
+        name: model_type
+        description: 'The type of model being commented on (e.g., "Task", "Project").'
+        required: true
+        example: qui
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+      model_id:
+        name: model_id
+        description: 'The ID of the model being commented on.'
+        required: true
+        example: 6
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+      content:
+        name: content
+        description: 'The comment text.'
+        required: true
+        example: iste
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+      parent_id:
+        name: parent_id
+        description: 'optional The ID of the parent comment (for replies).'
+        required: false
+        example: 16
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+      'attachments[]':
+        name: 'attachments[]'
+        description: 'optional An array of files to attach to the comment. Maximum file size is defined in the config.'
+        required: false
+        example: null
+        type: file
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+    cleanBodyParameters:
+      model_type: qui
+      model_id: 6
+      content: iste
+      parent_id: 16
+    fileParameters:
+      'attachments[]': null
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+            "success": true,
+            "message": "Comment Added Successfully",
+            "comment": {
+              "id": 45,
+              "commentable_type": "App\Models\Project",
+              "commentable_id": 438,
+              "content": "This is a sample comment with a mention @JohnDoe",
+              "commenter_id": 7,
+              "commenter_type": "App\\Models\\User",
+              "parent_id": null,
+              "created_at": "2 minutes ago",
+              "attachments": [
+                {
+                  "id": 1,
+                  "file_name": "document.pdf",
+                  "file_path": "comment_attachments/document.pdf",
+                  "file_type": "application/pdf"
+                }
+              ]
+            },
+            "user": {
+              "id": 7,
+              "name": "John Doe"
+            }
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 422
+        content: |-
+          {
+            "success": false,
+            "message": "Validation errors occurred",
+            "errors": {
+              "content": ["Please enter a comment."]
+            }
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 500
+        content: |-
+          {
+            "success": false,
+            "message": "Comment could not be added."
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer eVa6bhE4f8Z3avdk6Pg5c1D'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: 'api/projects/comments/get/{id}'
+    metadata:
+      groupName: 'Project Comments'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Get details of a specific comment.'
+      description: 'This endpoint retrieves details of a specific comment by its ID, including any attachments.'
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Accept: application/json
+      workspace_id: 1
+    urlParameters:
+      id:
+        name: id
+        description: 'The ID of the comment to retrieve.'
+        required: true
+        example: 3
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+    cleanUrlParameters:
+      id: 3
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+            "error": false,
+            "comment": {
+              "id": 45,
+              "commentable_type": "App\\Models\\Project",
+              "commentable_id": 438,
+              "content": "This is a sample comment with a mention @JohnDoe",
+              "commenter_id": 7,
+              "commenter_type": "App\\Models\\User",
+              "parent_id": null,
+              "created_at": "2025-03-03 14:00:00",
+              "updated_at": "2025-03-03 16:00:00",
+              "attachments": [
+                {
+                  "id": 1,
+                  "file_name": "document.pdf",
+                  "file_path": "comment_attachments/document.pdf",
+                  "file_type": "application/pdf"
+                }
+              ]
+            }
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 404
+        content: |-
+          {
+            "error": true,
+            "message": "Comment not found."
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer P3hgefda6c6EV48Z5bD1vka'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/projects/comments/update
+    metadata:
+      groupName: 'Project Comments'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Update a comment.'
+      description: 'This endpoint updates a specified comment. The user must be authenticated and have permission to modify the comment.'
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Accept: application/json
+      workspace_id: 1
+      Content-Type: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      comment_id:
+        name: comment_id
+        description: 'The ID of the comment to be updated.'
+        required: true
+        example: 16
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+      content:
+        name: content
+        description: 'The updated content of the comment.'
+        required: true
+        example: autem
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+    cleanBodyParameters:
+      comment_id: 16
+      content: autem
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+            "error": false,
+            "message": "Comment updated successfully.",
+            "id": 45,
+            "type": "project"
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 404
+        content: |-
+          {
+            "error": true,
+            "message": "Comment not found."
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 422
+        content: |-
+          {
+            "error": true,
+            "message": "Validation errors occurred",
+            "errors": {
+              "content": ["Please enter a comment."]
+            }
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 500
+        content: |-
+          {
+            "error": true,
+            "message": "Comment couldn't be updated."
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer aPe5E6bZ3fvkgh86d1V4acD'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - DELETE
+    uri: api/projects/comments/destroy
+    metadata:
+      groupName: 'Project Comments'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Delete a comment.'
+      description: |-
+        This endpoint deletes a specified comment and removes its attachments from storage.
+        The user must be authenticated and have permission to delete comments.
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Accept: application/json
+      workspace_id: 1
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters:
+      comment_id:
+        name: comment_id
+        description: 'The ID of the comment to delete.'
+        required: true
+        example: 6
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+    cleanQueryParameters:
+      comment_id: 6
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+            "error": false,
+            "message": "Comment deleted successfully.",
+            "id": 45,
+            "type": "project"
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 404
+        content: |-
+          {
+            "error": true,
+            "message": "Comment not found."
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 422
+        content: |-
+          {
+            "error": true,
+            "message": "Validation errors occurred",
+            "errors": {
+              "comment_id": ["The comment_id field is required."]
+            }
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 500
+        content: |-
+          {
+            "error": true,
+            "message": "Comment couldn't be deleted."
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 866Zv3ebd4gcP5DEaVfa1hk'
+    controller: null
+    method: null
+    route: null
+    custom: []

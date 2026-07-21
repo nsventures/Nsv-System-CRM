@@ -1,0 +1,698 @@
+name: 'Meeting Management'
+description: ''
+endpoints:
+  -
+    httpMethods:
+      - POST
+    uri: api/meetings/store
+    metadata:
+      groupName: 'Meeting Management'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Create a new meeting.'
+      description: 'This endpoint creates a new meeting with the provided details. The user must be authenticated to perform this action. The request validates various fields, including title, start and end dates, start and end times, and participant IDs.'
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Accept: application/json
+      workspace_id: 1
+      Content-Type: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      title:
+        name: title
+        description: 'The title of the meeting.'
+        required: true
+        example: 'Project Kickoff'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      start_date:
+        name: start_date
+        description: 'The start date of the meeting in the format specified in the general settings.'
+        required: true
+        example: 25-07-2024
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      end_date:
+        name: end_date
+        description: 'The end date of the meeting in the format specified in the general settings.'
+        required: true
+        example: 25-07-2024
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      start_time:
+        name: start_time
+        description: 'The start time of the meeting in the format HH:MM.'
+        required: true
+        example: '10:00'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      end_time:
+        name: end_time
+        description: 'The end time of the meeting in the format HH:MM.'
+        required: true
+        example: '11:00'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      user_ids:
+        name: user_ids
+        description: 'nullable An array of user IDs to be assigned to the meeting.'
+        required: false
+        example:
+          - 1
+          - 2
+          - 3
+        type: 'string[]'
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      client_ids:
+        name: client_ids
+        description: 'nullable An array of client IDs to be assigned to the meeting.'
+        required: false
+        example:
+          - 4
+          - 5
+        type: 'string[]'
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanBodyParameters:
+      title: 'Project Kickoff'
+      start_date: 25-07-2024
+      end_date: 25-07-2024
+      start_time: '10:00'
+      end_time: '11:00'
+      user_ids:
+        - 1
+        - 2
+        - 3
+      client_ids:
+        - 4
+        - 5
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "error": false,
+          "message": "Meeting created successfully.",
+          "id": 119,
+          "data": {
+            "id": 119,
+            "title": "From API",
+            "start_date": "25-07-2024",
+            "start_time": "15:00:00",
+            "end_date": "25-08-2024",
+            "end_time": "11:41:05",
+            "users": [
+              {
+                "id": 7,
+                "first_name": "Madhavan",
+                "last_name": "Vaidya",
+                "photo": "https://test-taskify.infinitietech.com/storage/photos/yxNYBlFLALdLomrL0JzUY2USPLILL9Ocr16j4n2o.png"
+              }
+            ],
+            "clients": [
+              {
+                "id": 173,
+                "first_name": "666",
+                "last_name": "666",
+                "photo": "https://test-taskify.infinitietech.com/storage/photos/no-image.jpg"
+              }
+            ],
+            "status": "Ongoing",
+            "created_at": "07-08-2024 17:11:05",
+            "updated_at": "07-08-2024 17:11:05"
+          }
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 422
+        content: |-
+          {
+           "error": true,
+           "message": "Validation errors occurred",
+           "errors": {
+             "title": ["The title field is required."],
+             "start_date": ["The start date field is required."],
+             ...
+           }
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 500
+        content: |-
+          {
+           "error": true,
+           "message": "An error occurred while creating the meeting."
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 81cVdb6Dga4Efa6e5hZvk3P'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: 'api/meetings/{id?}'
+    metadata:
+      groupName: 'Meeting Management'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'List or search meetings.'
+      description: 'This endpoint retrieves a list of meetings based on various filters. The user must be authenticated to perform this action. The request allows filtering by status, user, client, date ranges, and other parameters.'
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Accept: application/json
+      workspace_id: 1
+    urlParameters:
+      id:
+        name: id
+        description: 'optional The ID of the meeting to retrieve.'
+        required: false
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanUrlParameters:
+      id: 1
+    queryParameters:
+      search:
+        name: search
+        description: 'optional The search term to filter meetings by title or id.'
+        required: false
+        example: Meeting
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      sort:
+        name: sort
+        description: 'optional The field to sort by. Defaults to "id". Sortable fields include: id, title, start_date_time, end_date_time, created_at, and updated_at.'
+        required: false
+        example: title
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      order:
+        name: order
+        description: 'optional The sort order, either "ASC" or "DESC". Defaults to "DESC".'
+        required: false
+        example: ASC
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      status:
+        name: status
+        description: 'optional The status of the meeting to filter by. Can be "ongoing", "ended", or "yet_to_start".'
+        required: false
+        example: ongoing
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      user_id:
+        name: user_id
+        description: 'optional The user ID to filter meetings by.'
+        required: false
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      client_id:
+        name: client_id
+        description: 'optional The client ID to filter meetings by.'
+        required: false
+        example: 5
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      start_date_from:
+        name: start_date_from
+        description: "optional The start date range's start in YYYY-MM-DD format."
+        required: false
+        example: '2024-01-01'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      start_date_to:
+        name: start_date_to
+        description: "optional The start date range's end in YYYY-MM-DD format."
+        required: false
+        example: '2024-12-31'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      end_date_from:
+        name: end_date_from
+        description: "optional The end date range's start in YYYY-MM-DD format."
+        required: false
+        example: '2024-01-01'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      end_date_to:
+        name: end_date_to
+        description: "optional The end date range's end in YYYY-MM-DD format."
+        required: false
+        example: '2024-12-31'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      limit:
+        name: limit
+        description: 'optional The number of meetings per page for pagination.'
+        required: false
+        example: 10
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      offset:
+        name: offset
+        description: 'optional The offset for pagination, indicating the starting point of results.'
+        required: false
+        example: 0
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanQueryParameters:
+      search: Meeting
+      sort: title
+      order: ASC
+      status: ongoing
+      user_id: 1
+      client_id: 5
+      start_date_from: '2024-01-01'
+      start_date_to: '2024-12-31'
+      end_date_from: '2024-01-01'
+      end_date_to: '2024-12-31'
+      limit: 10
+      offset: 0
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+            "error": false,
+            "message": "Meetings retrieved successfully",
+            "total": 1,
+            "data": [
+              {
+                "id": 351,
+                "title": "Project Kickoff",
+                "start_date": "2024-07-01",
+                "start_time": "10:00:00",
+                "end_date": "2024-07-01",
+                "end_time": "11:00:00",
+                "users": [
+                  {
+                    "id": 7,
+                    "first_name": "Madhavan",
+                    "last_name": "Vaidya",
+                    "photo": "https://test-taskify.infinitietech.com/storage/photos/yxNYBlFLALdLomrL0JzUY2USPLILL9Ocr16j4n2o.png"
+                  }
+                ],
+                "clients": [],
+                "status": "Ongoing",
+                "created_at": "14-06-2024 17:50:09",
+                "updated_at": "17-06-2024 19:08:16"
+              }
+            ]
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 200
+        content: |-
+          {
+            "error": true,
+            "message": "Meeting not found",
+            "total": 0,
+            "data": []
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 200
+        content: |-
+          {
+            "error": true,
+            "message": "Meetings not found",
+            "total": 0,
+            "data": []
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6ab4dagPVev1DfhEkc3856Z'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/meetings/update
+    metadata:
+      groupName: 'Meeting Management'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Update an existing meeting.'
+      description: 'This endpoint updates an existing meeting with the provided details. The user must be authenticated to perform this action. The request validates various fields, including title, dates, and times.'
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Accept: application/json
+      workspace_id: 1
+      Content-Type: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      id:
+        name: id
+        description: 'The ID of the meeting to update.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      title:
+        name: title
+        description: 'The title of the meeting.'
+        required: true
+        example: 'Updated Meeting Title'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      start_date:
+        name: start_date
+        description: 'The start date of the meeting in the format specified in the general settings.'
+        required: true
+        example: '2024-08-01'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      end_date:
+        name: end_date
+        description: 'The end date of the meeting in the format specified in the general settings.'
+        required: true
+        example: '2024-08-31'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      start_time:
+        name: start_time
+        description: 'The start time of the meeting.'
+        required: true
+        example: '09:00'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      end_time:
+        name: end_time
+        description: 'The end time of the meeting.'
+        required: true
+        example: '10:00'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      user_ids:
+        name: user_ids
+        description: 'optional Array of user IDs to be associated with the meeting.'
+        required: false
+        example: '[2, 3]'
+        type: array|null
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      client_ids:
+        name: client_ids
+        description: 'optional Array of client IDs to be associated with the meeting.'
+        required: false
+        example: '[5, 6]'
+        type: array|null
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanBodyParameters:
+      id: 1
+      title: 'Updated Meeting Title'
+      start_date: '2024-08-01'
+      end_date: '2024-08-31'
+      start_time: '09:00'
+      end_time: '10:00'
+      user_ids: '[2, 3]'
+      client_ids: '[5, 6]'
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "error": false,
+          "message": "Meeting updated successfully.",
+          "id": 119,
+          "data": {
+            "id": 119,
+            "title": "From API",
+            "start_date": "25-07-2024",
+            "start_time": "15:00:00",
+            "end_date": "25-08-2024",
+            "end_time": "11:45:15",
+            "users": [
+              {
+                "id": 7,
+                "first_name": "Madhavan",
+                "last_name": "Vaidya",
+                "photo": "https://test-taskify.infinitietech.com/storage/photos/yxNYBlFLALdLomrL0JzUY2USPLILL9Ocr16j4n2o.png"
+              }
+            ],
+            "clients": [
+              {
+                "id": 173,
+                "first_name": "666",
+                "last_name": "666",
+                "photo": "https://test-taskify.infinitietech.com/storage/photos/no-image.jpg"
+              }
+            ],
+            "status": "Ongoing",
+            "created_at": "07-08-2024 17:11:05",
+            "updated_at": "07-08-2024 17:15:15"
+          }
+
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 422
+        content: |-
+          {
+            "error": true,
+            "message": "Validation errors occurred",
+            "errors": {
+              "id": [
+                "The meeting ID is required.",
+                "The meeting ID does not exist in our records."
+              ],
+              "start_date": [
+                "The start date must be before or equal to the end date."
+              ],
+              "start_time": [
+                "The start time field is required."
+              ],
+              "end_time": [
+                "The end time field is required."
+              ]
+            }
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 500
+        content: |-
+          {
+            "error": true,
+            "message": "An error occurred while updating the meeting."
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6DbE8av4d3fPk6ZagV1h5ec'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - DELETE
+    uri: 'api/meetings/destroy/{id}'
+    metadata:
+      groupName: 'Meeting Management'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Remove the specified meeting.'
+      description: 'This endpoint deletes a meeting based on the provided ID. The user must be authenticated to perform this action.'
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Accept: application/json
+      workspace_id: 1
+    urlParameters:
+      id:
+        name: id
+        description: 'The ID of the meeting to be deleted.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanUrlParameters:
+      id: 1
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+            "error": false,
+            "message": "Meeting deleted successfully.",
+            "id": 1,
+            "title": "Meeting Title",
+            "data": []
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 200
+        content: |-
+          {
+            "error": true,
+            "message": "Meeting not found.",
+            "data": []
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 500
+        content: |-
+          {
+            "error": true,
+            "message": "An error occurred while deleting the meeting."
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6aPh3cbZkvdEea1f8V5g6D4'
+    controller: null
+    method: null
+    route: null
+    custom: []
