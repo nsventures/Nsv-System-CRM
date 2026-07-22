@@ -333,10 +333,24 @@ class AppServiceProvider extends ServiceProvider
      */
     private function configureAppDefaults(array $settings): void
     {
-        // Application timezone
+        // Application DISPLAY timezone. format_date() and various controllers read
+        // config('app.timezone') to render dates in the user's local zone.
         if (!empty($settings['general']['timezone'])) {
             config(['app.timezone' => $settings['general']['timezone']]);
         }
+
+        // Timestamps are STORED in UTC, so PHP's default timezone must stay UTC —
+        // Eloquent builds Carbon instances from raw DB strings using the PHP default,
+        // so a non-UTC default makes it read stored UTC values as if they were local
+        // (shifting every displayed time by the offset).
+        //
+        // This must be re-asserted here because `php artisan config:cache` boots the
+        // app before serializing config, baking the mutated display timezone above
+        // into bootstrap/cache/config.php. Laravel then applies THAT at bootstrap via
+        // date_default_timezone_set(), flipping the default away from UTC. Re-setting
+        // it on every boot keeps storage interpretation correct whether or not the
+        // config is cached.
+        date_default_timezone_set('UTC');
 
         // Media library max file size
         config(['media-library.max_file_size' => 1024 * 1024 * $settings['general']['allowed_max_upload_size']]);
