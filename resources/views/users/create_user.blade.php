@@ -132,13 +132,13 @@
                         <label class="form-label" for=""><?= get_label('status', 'Status') ?> (<small class="text-muted mt-2"><?= get_label('deactivated_user_login_restricted', 'If Deactivated, the User Won\'t Be Able to Log In to Their Account') ?></small>)</label>
                         <div class="d-flex gap-3 mt-2">
                             <div class="form-check">
-                                <input class="form-check-input" type="radio" name="status" id="user_active" value="1" {{ old('status') == '1' ? 'checked' : '' }}>
+                                <input class="form-check-input" type="radio" name="status" id="user_active" value="1" {{ old('status') == '1' || old('status') === null ? 'checked' : '' }}>
                                 <label class="form-check-label" for="user_active">
                                     <?= get_label('active', 'Active') ?>
                                 </label>
                             </div>
                             <div class="form-check">
-                                <input class="form-check-input" type="radio" name="status" id="user_deactive" value="0" {{ old('status') === null || old('status') == '0' ? 'checked' : '' }}>
+                                <input class="form-check-input" type="radio" name="status" id="user_deactive" value="0" {{ old('status') === '0' ? 'checked' : '' }}>
                                 <label class="form-check-label" for="user_deactive">
                                     <?= get_label('deactive', 'Deactive') ?>
                                 </label>
@@ -152,13 +152,13 @@
                         </label>
                         <div class="d-flex gap-3 mt-2">
                             <div class="form-check">
-                                <input class="form-check-input" type="radio" name="require_ev" id="require_ev_yes" value="1" {{ old('require_ev') == '1' || old('require_ev') === null ? 'checked' : '' }}>
+                                <input class="form-check-input" type="radio" name="require_ev" id="require_ev_yes" value="1" {{ old('require_ev') == '1' ? 'checked' : '' }}>
                                 <label class="form-check-label" for="require_ev_yes">
                                     <?= get_label('yes', 'Yes') ?>
                                 </label>
                             </div>
                             <div class="form-check">
-                                <input class="form-check-input" type="radio" name="require_ev" id="require_ev_no" value="0" {{ old('require_ev') == '0' ? 'checked' : '' }}>
+                                <input class="form-check-input" type="radio" name="require_ev" id="require_ev_no" value="0" {{ old('require_ev') === '0' || old('require_ev') === null ? 'checked' : '' }}>
                                 <label class="form-check-label" for="require_ev_no">
                                     <?= get_label('no', 'No') ?>
                                 </label>

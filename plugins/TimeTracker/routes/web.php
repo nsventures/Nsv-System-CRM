@@ -27,6 +27,7 @@ Route::middleware(['web', 'auth'])->prefix('timetracker')->group(function () {
         Route::get('/data', [TimeAndAttendanceController::class, 'timeAndAttendanceData'])->name('time_and_attendance.data');
         Route::get('/users', [TimeAndAttendanceController::class, 'getUsers'])->name('time_and_attendance.users');
         Route::get('/timeline', [TimeAndAttendanceController::class, 'timeline'])->name('attendance.timeline');
+        Route::post('/force-clockout', [TimeAndAttendanceController::class, 'forceClockout'])->middleware(['customRole:admin'])->name('attendance.force_clockout');
     });
 
     // Screenshot Management Routes

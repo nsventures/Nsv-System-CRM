@@ -15,16 +15,15 @@ return new class extends Migration
     {
         Schema::create('todos', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('workspace_id')->nullable();
             $table->string('title');
             $table->text('description')->nullable();
+            $table->string('priority')->default('medium')->nullable();
             $table->boolean('is_completed')->default(false);
-            $table->unsignedBigInteger('user_id');
+            $table->unsignedBigInteger('creator_id')->nullable();
+            $table->string('creator_type')->nullable();
+            $table->unsignedBigInteger('user_id')->nullable();
             $table->timestamps();
-
-            $table->foreign('user_id')
-                ->references('id')
-                ->on('users')
-                ->onDelete('cascade');
         });
     }
 

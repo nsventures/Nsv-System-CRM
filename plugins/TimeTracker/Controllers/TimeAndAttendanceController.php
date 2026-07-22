@@ -6,12 +6,16 @@ use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use Plugins\TimeTracker\Concerns\HandlesTimeTrackerLogs;
 use Plugins\TimeTracker\Models\TimeTrackerActivityLog;
 use Plugins\TimeTracker\Models\TimeTrackerConfig;
 
 class TimeAndAttendanceController extends Controller
 {
+    use HandlesTimeTrackerLogs;
+
     public function index()
     {
         $workDayStartTime = $this->loadConfig()['workDayStartTime'] ?? '09:00:00'; // Default to 9 AM if not set
@@ -421,8 +425,8 @@ class TimeAndAttendanceController extends Controller
 
         foreach ($sortedLogs as $log) {
             $timestamp = $log->timestamp instanceof Carbon
-                ? $log->timestamp->copy()
-                : Carbon::parse($log->timestamp);
+                ? $log->timestamp->copy()->setTimezone($timezone)
+                : Carbon::parse($log->timestamp, $timezone);
 
             switch ($log->action) {
                 case 'clock-in':
@@ -460,6 +464,7 @@ class TimeAndAttendanceController extends Controller
                     }
                     $this->closeAllOpenStates($currentShift, $timestamp);
                     $currentShift['clock_out'] = $timestamp;
+                    $currentShift['clock_out_reason'] = $log->reason ?? null; // §2.9 forced vs voluntary
                     $currentShift['effective_end'] = $timestamp;
                     $currentShift['status'] = 'completed';
                     $shifts[] = $this->formatTimelineShift($currentShift, $timezone, $shiftIndex++);
@@ -665,12 +670,12 @@ class TimeAndAttendanceController extends Controller
         }
 
         $start = $shift['open_states'][$state];
-        if ($endTime->lessThan($start)) {
+        if ($endTime->lessThanOrEqualTo($start)) {
             $shift['open_states'][$state] = null;
             return;
         }
 
-        $duration = $start->diffInSeconds($endTime);
+        $duration = max(0, $start->diffInSeconds($endTime, false));
         $shift['durations'][$state] += $duration;
 
         $shift['segments'][] = [
@@ -723,6 +728,7 @@ class TimeAndAttendanceController extends Controller
             'clock_out' => $clockOutLocal ? $clockOutLocal->toIso8601String() : null,
             'clock_in_display' => $clockInLocal->format('h:i A'),
             'clock_out_display' => $clockOutLocal ? $clockOutLocal->format('h:i A') : '--',
+            'clock_out_reason' => $shift['clock_out_reason'] ?? null, // §2.9 surface reason
             'status' => $shift['status'] ?? ($clockOutLocal ? 'completed' : 'ongoing'),
             'effective_end' => $effectiveEndLocal->toIso8601String(),
             'duration_seconds' => $totalSeconds,
@@ -736,5 +742,55 @@ class TimeAndAttendanceController extends Controller
                 'idle_seconds' => $shift['durations']['idle'],
             ],
         ];
+    }
+
+    public function forceClockout(Request $request)
+    {
+        $request->validate([
+            'user_id' => 'required|exists:users,id',
+            'date' => 'nullable|date',
+        ]);
+
+        $userId = (int) $request->input('user_id');
+
+        // §2.1 — all day math in the workspace timezone; store UTC.
+        $timezone = $this->workspaceTimezone();
+        $date = $request->input('date', Carbon::now($timezone)->format('Y-m-d'));
+
+        $targetDate = Carbon::parse($date, $timezone);
+        // "Now" for today; otherwise the end of that day in the workspace zone (NOT UTC).
+        $clockOutTimestamp = $targetDate->isSameDay(Carbon::now($timezone))
+            ? Carbon::now('UTC')
+            : $targetDate->copy()->endOfDay()->utc();
+
+        // §2.6 — no-op if the user is already clocked out for that day, so clicking
+        // the button twice never writes a second row. §2.7 — lock the read-check-insert.
+        $written = DB::transaction(function () use ($userId, $clockOutTimestamp, $timezone) {
+            $lastLog = $this->lastLogAtOrBefore($userId, $clockOutTimestamp, $timezone, true);
+
+            if ($this->isClockedOut($lastLog)) {
+                return false; // already clocked out (or never clocked in) — nothing to do
+            }
+
+            $now = now();
+            TimeTrackerActivityLog::insertOrIgnore([
+                'user_id'    => $userId,
+                'action'     => 'clock-out',
+                'reason'     => 'Forcefully clocked out by administrator', // §2.9 — distinguishable
+                'timestamp'  => $clockOutTimestamp->format('Y-m-d H:i:s'),
+                'created_at' => $now,
+                'updated_at' => $now,
+            ]);
+
+            return true;
+        });
+
+        return response()->json([
+            'error'   => false,
+            'message' => $written
+                ? get_label('user_clocked_out_successfully', 'User clocked out successfully.')
+                : get_label('user_already_clocked_out', 'User is already clocked out.'),
+            'data'    => ['written' => $written],
+        ]);
     }
 }

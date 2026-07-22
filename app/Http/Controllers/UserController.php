@@ -151,14 +151,9 @@ class UserController extends Controller
         $isApi = request()->get('isApi', false);
 
 
-        $require_ev = $request->has('require_ev') ? $request->input('require_ev') : 1;
+        $require_ev = $request->has('require_ev') ? (int)$request->input('require_ev') : 0;
         if ($require_ev == 1 && !isEmailConfigured()) {
-            return response()->json(
-                [
-                    'error' => true,
-                    'message' => get_label('email_settings_not_configured_for_verification', 'Email settings are not configured. Please configure email settings to enable email verification.')
-                ]
-            );
+            $require_ev = 0;
         }
 
         // Validate the request
@@ -269,8 +264,8 @@ class UserController extends Controller
                 'photos/no-image.jpg';
 
             // Determine email verification and status
-            $require_ev = isAdminOrHasAllDataAccess() && $request->has('require_ev') && $request->input('require_ev') == 0 ? 0 : 1;
-            $status = isAdminOrHasAllDataAccess() && $request->has('status') && $request->input('status') == 1 ? 1 : 0;
+            $require_ev = (isAdminOrHasAllDataAccess() && $request->has('require_ev') && $request->input('require_ev') == 0) || !isEmailConfigured() ? 0 : 1;
+            $status = isAdminOrHasAllDataAccess() && $request->has('status') ? (int)$request->input('status') : 1;
             $formFields['email_verified_at'] = $require_ev == 0 ? now()->tz(config('app.timezone')) : null;
             $formFields['status'] = $status;
 
@@ -288,15 +283,16 @@ class UserController extends Controller
 
                 // Attach user to the workspace
                 $workspace = Workspace::find(getWorkspaceId());
-                $workspace->users()->attach($user->id);
-
-                // Refresh workspace to ensure relationship is loaded
-                $workspace->refresh();
+                if ($workspace) {
+                    $workspace->users()->syncWithoutDetaching([$user->id]);
+                    $workspace->refresh();
+                }
 
                 // Initialize leave balances for the new user
                 try {
                     $leaveBalanceService = new LeaveBalanceService();
-                    $balance = $leaveBalanceService->getOrCreateBalance($user->id, $workspace->id);
+                    $workspaceId = $workspace ? $workspace->id : getWorkspaceId();
+                    $balance = $leaveBalanceService->getOrCreateBalance($user->id, $workspaceId);
                     // Verify balance was created
                     if (!$balance) {
                         Log::warning('Leave balance creation returned null for user ' . $user->id . ' in workspace ' . $workspace->id);
@@ -348,10 +344,14 @@ class UserController extends Controller
                 $user->delete();
                 return response()->json(['error' => true, 'message' => get_label('user_not_created_email_settings_operational', "User couldn't be created, please make sure email settings are operational.")], 500);
             } catch (Throwable $e) {
+                // Log the exact error for debugging
+                Log::error('User creation failed: ' . $e->getMessage(), ['trace' => $e->getTraceAsString()]);
                 // Rollback user creation on other errors
-                $user->delete();
+                if (isset($user) && $user->exists) {
+                    $user->delete();
+                }
 
-                return response()->json(['error' => true, 'message' => get_label('user_not_created_try_again_later', "User couldn't be created, please try again later.")], 500);
+                return response()->json(['error' => true, 'message' => get_label('user_not_created_try_again_later', "User couldn't be created, please try again later.") . ' Details: ' . $e->getMessage()], 500);
             }
         } catch (ValidationException $e) {
             return formatApiValidationError($isApi, $e->errors());

@@ -76,6 +76,9 @@
         ]
     },
     "extra": {
+        "google/apiclient-services": [
+            "Calendar"
+        ],
         "laravel": {
             "dont-discover": []
         }

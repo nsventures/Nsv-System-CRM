@@ -604,22 +604,27 @@ if (!function_exists('get_current_version')) {
 if (!function_exists('isAdminOrHasAllDataAccess')) {
     function isAdminOrHasAllDataAccess($type = null, $id = null)
     {
-        // Get authenticated user
         $authenticatedUser = getAuthenticatedUser();
+        $checkPermission = function ($model) {
+            if (!$model) return false;
+            if (method_exists($model, 'hasRole') && $model->hasRole('admin')) {
+                return true;
+            }
+            try {
+                return $model->can('access_all_data');
+            } catch (\Throwable $e) {
+                return false;
+            }
+        };
+
         if ($type == 'user' && $id !== null) {
             $user = User::find($id);
-            if ($user) {
-                return $user->hasRole('admin') || $user->can('access_all_data');
-            }
+            return $checkPermission($user);
         } elseif ($type == 'client' && $id !== null) {
             $client = Client::find($id);
-            if ($client) {
-                return $client->hasRole('admin') || $client->can('access_all_data');
-            }
+            return $checkPermission($client);
         } elseif ($type === null && $id === null) {
-            if ($authenticatedUser) {
-                return $authenticatedUser->hasRole('admin') || $authenticatedUser->can('access_all_data');
-            }
+            return $checkPermission($authenticatedUser);
         }
         return false;
     }
@@ -1044,11 +1049,20 @@ if (!function_exists('getWorkspaceId')) {
         $workspaceId = 0;
         $authenticatedUser = getAuthenticatedUser();
         if ($authenticatedUser) {
-            if (session()->has('workspace_id')) {
-                // dd(getAuthenticatedUser());
-                $workspaceId = session('workspace_id'); // Retrieve workspace_id from session
-            } else {
+            if (session()->has('workspace_id') && session('workspace_id')) {
+                $workspaceId = session('workspace_id');
+            } elseif (request()->header('workspace_id')) {
                 $workspaceId = request()->header('workspace_id');
+            } elseif (!empty($authenticatedUser->default_workspace_id)) {
+                $workspaceId = $authenticatedUser->default_workspace_id;
+            } elseif (method_exists($authenticatedUser, 'workspaces') && $authenticatedUser->workspaces()->exists()) {
+                $workspaceId = $authenticatedUser->workspaces()->first()->id;
+            }
+        }
+        if (!$workspaceId) {
+            $firstWorkspace = Workspace::first();
+            if ($firstWorkspace) {
+                $workspaceId = $firstWorkspace->id;
             }
         }
         return $workspaceId;

@@ -241,6 +241,9 @@
                                 <th>{{ get_label('idle_time','Idle Time') }}</th>
                                 <th>{{ get_label('utilization','Utilization') }}</th>
                                 <th>{{ get_label('status','Status') }}</th>
+                                @if(isAdminOrHasAllDataAccess())
+                                <th>{{ get_label('actions','Actions') }}</th>
+                                @endif
                             </tr>
                         </thead>
 
@@ -289,6 +292,8 @@
         const timeAndAttendanceDataUrl = "{{ route('time_and_attendance.data') }}";
         const attendanceTimelineUrl = "{{ route('attendance.timeline') }}";
         const attendanceUsersUrl = "{{ route('time_and_attendance.users') }}";
+        const forceClockoutUrl = "{{ route('attendance.force_clockout') }}";
+        const isAdmin = {{ isAdminOrHasAllDataAccess() ? 'true' : 'false' }};
         const WorkDayStartTime = "{{ $workDayStartTime ?? '09:00:00' }}";
         var label_today = @json(get_label('today','Today'));
         var label_yesterday = @json(get_label('yesterday','Yesterday'));

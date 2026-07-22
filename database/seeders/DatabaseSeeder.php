@@ -24,17 +24,21 @@ class DatabaseSeeder extends Seeder
         $modules = ['payments', 'taxes', 'units', 'items'];
         $actions = ['create', 'manage', 'edit', 'delete'];
 
-        // Permission::create(['name' => 'all_data_access', 'guard_name' => 'client']);
+        Permission::firstOrCreate(['name' => 'access_all_data', 'guard_name' => 'web']);
+        Permission::firstOrCreate(['name' => 'access_all_data', 'guard_name' => 'client']);
 
         foreach ($modules as $module) {
             foreach ($actions as $action) {
                 $permissionName = "{$action}_{$module}";
-                Permission::create(['name' => $permissionName, 'guard_name' => 'web']);
+                Permission::firstOrCreate(['name' => $permissionName, 'guard_name' => 'web']);
             }
         }
 
         // Assign permissions to a role
         // $adminRole = Role::findByName('admin');
         // $adminRole->syncPermissions(Permission::all());
+
+        // Seed a default candidate hiring pipeline (idempotent).
+        $this->call(CandidateStatusSeeder::class);
     }
 }

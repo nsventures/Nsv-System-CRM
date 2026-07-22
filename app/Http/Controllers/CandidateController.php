@@ -1378,30 +1378,31 @@ class CandidateController extends Controller
       ->get()
       ->map(function ($candidate) use ($canDelete, $canEdit) {
 
-        $actions = '-';
-        if ($canEdit || $canDelete) {
-            $actions = '<div class="dropdown">';
-            $actions .= '<button class="btn p-0 dropdown-toggle hide-arrow" type="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">';
-            $actions .= '<i class="bx bx-dots-vertical-rounded fs-5"></i>';
-            $actions .= '</button>';
-            $actions .= '<ul class="dropdown-menu">';
+        $actions = '<div class="dropdown">';
+        $actions .= '<button class="btn p-0 dropdown-toggle hide-arrow" type="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">';
+        $actions .= '<i class="bx bx-dots-vertical-rounded fs-5"></i>';
+        $actions .= '</button>';
+        $actions .= '<ul class="dropdown-menu">';
 
-            if ($canEdit) {
-                $actions .= '<li><a href="javascript:void(0);" class="dropdown-item edit-candidate-btn d-block" data-candidate=\'' . htmlspecialchars(json_encode($candidate), ENT_QUOTES, 'UTF-8') . '\'>';
-                $actions .= '<i class="bx bx-edit text-primary me-2"></i>' . get_label('update', 'Update') . '</a></li>';
-            }
+        // View is always available — it opens the candidate profile, where the
+        // resume / attachments are shown (and download/view them from there).
+        $actions .= '<li><a href="' . route('candidate.show', ['id' => $candidate->id]) . '" target="_blank" class="dropdown-item d-block">';
+        $actions .= '<i class="bx bx-show text-info me-2"></i>' . get_label('view', 'View') . '</a></li>';
 
-            if ($canDelete) {
-                if ($canEdit) {
-                    $actions .= '<li><hr class="dropdown-divider"></li>';
-                }
-                $actions .= '<li><a href="javascript:void(0);" class="dropdown-item delete text-danger d-block" data-id="' . $candidate->id . '" data-type="candidate" data-table="candidates_table">';
-                $actions .= '<i class="bx bx-trash me-2"></i>' . get_label('delete', 'Delete') . '</a></li>';
-            }
-
-            $actions .= '</ul>';
-            $actions .= '</div>';
+        if ($canEdit) {
+            $actions .= '<li><hr class="dropdown-divider"></li>';
+            $actions .= '<li><a href="javascript:void(0);" class="dropdown-item edit-candidate-btn d-block" data-candidate=\'' . htmlspecialchars(json_encode($candidate), ENT_QUOTES, 'UTF-8') . '\'>';
+            $actions .= '<i class="bx bx-edit text-primary me-2"></i>' . get_label('update', 'Update') . '</a></li>';
         }
+
+        if ($canDelete) {
+            $actions .= '<li><hr class="dropdown-divider"></li>';
+            $actions .= '<li><a href="javascript:void(0);" class="dropdown-item delete text-danger d-block" data-id="' . $candidate->id . '" data-type="candidate" data-table="candidates_table">';
+            $actions .= '<i class="bx bx-trash me-2"></i>' . get_label('delete', 'Delete') . '</a></li>';
+        }
+
+        $actions .= '</ul>';
+        $actions .= '</div>';
 
 
         // Generate interview preview button

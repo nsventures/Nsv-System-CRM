@@ -52,6 +52,7 @@ class AppServiceProvider extends ServiceProvider
             'timezone' => '',
             'recaptcha_site_key' => '',
             'recaptcha_secret_key' => '',
+            'footer_text' => 'Taskify',
         ],
         'pusher' => [
             'pusher_app_id' => '',
@@ -333,7 +334,9 @@ class AppServiceProvider extends ServiceProvider
     private function configureAppDefaults(array $settings): void
     {
         // Application timezone
-        config(['app.timezone' => $settings['general']['timezone']]);
+        if (!empty($settings['general']['timezone'])) {
+            config(['app.timezone' => $settings['general']['timezone']]);
+        }
 
         // Media library max file size
         config(['media-library.max_file_size' => 1024 * 1024 * $settings['general']['allowed_max_upload_size']]);

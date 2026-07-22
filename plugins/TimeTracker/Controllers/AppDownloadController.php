@@ -32,11 +32,14 @@ class AppDownloadController extends Controller
     public function store(Request $request)
     {
         $isApi = $request->get('isApi', false);
+        // Relaxed: any setup/file may be uploaded. Platform/version are optional
+        // (only meaningful for OS installer builds); a title labels general files.
         $validator = Validator::make($request->all(), [
-            'platform' => 'required|in:windows,mac,linux',
-            'arch' => 'nullable|string',
-            'version' => 'required|string|regex:/^\d+\.\d+\.\d+(-[a-zA-Z0-9]+)*$/', // Semantic versioning
-            'file' => 'required|file|max:512000|mimes:exe,dmg,deb,rpm,appimage,zip,tar,gz,msi,pkg', // 500MB with file types
+            'title' => 'nullable|string|max:255',
+            'platform' => 'nullable|in:windows,mac,linux',
+            'arch' => 'nullable|string|max:50',
+            'version' => 'nullable|string|max:50',
+            'file' => 'required|file|max:512000', // 500MB, any type (see denylist below)
             'changelog' => 'nullable|string|max:1000',
         ]);
 
@@ -52,7 +55,18 @@ class AppDownloadController extends Controller
                 return formatApiResponse(true, 'File upload failed. Please try again.');
             }
 
-            $fileType = $uploadedFile->getClientOriginalExtension();
+            $fileType = strtolower($uploadedFile->getClientOriginalExtension());
+
+            // Security: these are served publicly from the web-accessible disk, so refuse
+            // server-executable / inline-scriptable types (they could run on your domain).
+            $blockedExtensions = [
+                'php', 'php3', 'php4', 'php5', 'php7', 'php8', 'phtml', 'phps', 'phar', 'pht',
+                'cgi', 'pl', 'py', 'rb', 'sh', 'bash', 'asp', 'aspx', 'jsp', 'jspx',
+                'htaccess', 'html', 'htm', 'xhtml', 'svg', 'xml',
+            ];
+            if (in_array($fileType, $blockedExtensions, true)) {
+                return formatApiResponse(true, "For security, .{$fileType} files cannot be uploaded here.");
+            }
 
             // Generate unique filename to prevent conflicts
             $originalName = pathinfo($uploadedFile->getClientOriginalName(), PATHINFO_FILENAME);
@@ -68,9 +82,10 @@ class AppDownloadController extends Controller
             }
 
             $appDownload = AppDownload::create([
-                'platform' => $request->platform,
-                'arch' => $request->arch,
-                'version' => $request->version,
+                'title' => $request->title ?: pathinfo($uploadedFile->getClientOriginalName(), PATHINFO_FILENAME),
+                'platform' => $request->platform ?: null,
+                'arch' => $request->arch ?: null,
+                'version' => $request->version ?: null,
                 'file_path' => $filePath,
                 'file_type' => $fileType,
                 'changelog' => $request->changelog,
@@ -135,7 +150,8 @@ class AppDownloadController extends Controller
         $app = AppDownload::findOrFail($id);
         $app->increment('download_count');
 
-        return Storage::download($app->file_path);
+        // Files live on the public disk (storage/app/public/app_downloads).
+        return Storage::disk('public')->download($app->file_path);
     }
 
     public function destroy(Request $request, $id)

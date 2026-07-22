@@ -5584,12 +5584,18 @@
                                 @endforeach
                             </select>
                         @else
-                            <h6 class="text-danger">{{ get_label('no_status_found', 'No Statuses found') }}</h6>
+                            <div class="alert alert-warning py-2 px-3 mb-0 small" role="alert">
+                                {{ get_label('no_status_found', 'No Statuses found') }}.
+                                <a href="{{ route('candidate.status.index') }}" class="alert-link">
+                                    {{ get_label('create_a_status_first', 'Create a status first') }}
+                                </a>
+                            </div>
                         @endif
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button id="submit_btn" class="btn btn-primary">{{ get_label('create', 'Create') }}</button>
+                    <button id="submit_btn" class="btn btn-primary"
+                        @if (!(isset($statuses) && $statuses->isNotEmpty())) disabled title="{{ get_label('create_a_status_first', 'Create a status first') }}" @endif>{{ get_label('create', 'Create') }}</button>
                     <button type="button" class="btn btn-secondary"
                         data-bs-dismiss="modal">{{ get_label('cancel', 'Cancel') }}</button>
                 </div>
@@ -5669,7 +5675,12 @@
                                 @endforeach
                             </select>
                         @else
-                            <h6 class="text-danger">{{ get_label('no_status_found', 'No Statuses found') }}</h6>
+                            <div class="alert alert-warning py-2 px-3 mb-0 small" role="alert">
+                                {{ get_label('no_status_found', 'No Statuses found') }}.
+                                <a href="{{ route('candidate.status.index') }}" class="alert-link">
+                                    {{ get_label('create_a_status_first', 'Create a status first') }}
+                                </a>
+                            </div>
                         @endif
                     </div>
                 </div>

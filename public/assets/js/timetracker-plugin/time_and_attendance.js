@@ -896,6 +896,18 @@ function updateTable(data) {
             const status = getAttendanceStatus(entry);
             const statusClass = status === 'Present' ? 'bg-label-success' :
                 status === 'Late' ? 'bg-label-warning' : 'bg-label-danger';
+
+            let actionsTd = '';
+            if (typeof isAdmin !== 'undefined' && isAdmin) {
+                let forceBtn = '';
+                if (entry.has_ongoing_shift || entry.status === 'Active' || entry.clock_out === '--') {
+                    forceBtn = `<button type="button" class="btn btn-xs btn-danger force-clockout-btn" data-user-id="${entry.user_id}" data-date="${entry.date}" title="Force Clock-out"><i class="bx bx-power-off me-1"></i>Force Clock-out</button>`;
+                } else {
+                    forceBtn = `<span class="text-muted small">--</span>`;
+                }
+                actionsTd = `<td>${forceBtn}</td>`;
+            }
+
             html += `
             <tr class="clickable-row" data-user-id="${entry.user_id}" data-date="${entry.date}" data-employee-name="${entry.employee}">
                 <td><strong>${entry.employee}</strong></td>
@@ -910,14 +922,49 @@ function updateTable(data) {
                 <td>${entry.idle_time}</td>
                 <td>${entry.utilization}</td>
                 <td><span class="badge ${statusClass}">${status}</span></td>
+                ${actionsTd}
             </tr>`;
         });
     } else {
+        const colSpan = (typeof isAdmin !== 'undefined' && isAdmin) ? 13 : 12;
         html =
-            `<tr><td colspan="12" class="text-center">No attendance records found for the selected filters.</td></tr>`;
+            `<tr><td colspan="${colSpan}" class="text-center">No attendance records found for the selected filters.</td></tr>`;
     }
     $('#attendance-body').html(html);
 }
+
+$(document).on('click', '.force-clockout-btn', function (e) {
+    e.stopPropagation();
+    const userId = $(this).data('user-id');
+    const date = $(this).data('date');
+    if (confirm('Are you sure you want to force clock-out this employee?')) {
+        $.ajax({
+            url: forceClockoutUrl,
+            type: 'POST',
+            data: {
+                _token: $('meta[name="csrf-token"]').attr('content'),
+                user_id: userId,
+                date: date
+            },
+            success: function (res) {
+                if (typeof toastr !== 'undefined') {
+                    toastr.success(res.message || 'User clocked out successfully');
+                } else {
+                    alert(res.message || 'User clocked out successfully');
+                }
+                loadAttendanceData();
+            },
+            error: function (xhr) {
+                const msg = xhr.responseJSON?.message || 'Error performing force clock-out';
+                if (typeof toastr !== 'undefined') {
+                    toastr.error(msg);
+                } else {
+                    alert(msg);
+                }
+            }
+        });
+    }
+});
 
 function getAttendanceStatus(entry) {
     if (entry.clock_in === '--') return 'Absent';
@@ -954,7 +1001,7 @@ function exportToCSV() {
         success: function (response) {
             const data = response.data;
             const csvContent = "data:text/csv;charset=utf-8," +
-                "Employee,Date,Clock In,Clock Out,Work Time,Active Time,Break Time,Utilization,Status,Manual Time, Ideal Time\n" +
+                "Employee,Date,Clock In,Clock Out,Work Time,Active Time,Break Time,Utilization,Status,Manual Time,Ideal Time\n" +
                 data.map(row =>
                     `${row.employee},${row.date},${row.clock_in},${row.clock_out},${row.work_time},${row.active_time},${row.break_time},${row.utilization},${row.status},${row.manual_time},${row.ideal_time}`
                 ).join("\n");

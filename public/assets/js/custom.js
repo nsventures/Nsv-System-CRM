@@ -10002,3 +10002,42 @@ $(document).ready(function () {
         if (saved === "1") setCollapsed(true);
     });
 })();
+
+/**
+ * Fix: action dropdowns inside scrollable tables (.tk-table / bootstrap-table's
+ * .fixed-table-body) get clipped by the container's overflow, so the menu appears
+ * empty or cut off — most visible on short tables with few rows. While a dropdown
+ * is open, allow the scroll containers to overflow; restore on close so horizontal
+ * scrolling still works normally.
+ */
+(function ($) {
+    if (typeof $ === "undefined") return;
+
+    var CLIP_SELECTOR = ".tk-table, .tk-table .fixed-table-container, .tk-table .fixed-table-body";
+
+    $(document).on("show.bs.dropdown", ".tk-table .dropdown", function () {
+        $(this)
+            .closest(".tk-table")
+            .find(".fixed-table-container, .fixed-table-body")
+            .addBack()
+            .each(function () {
+                // Remember the inline value (if any) so we can restore it exactly.
+                if (this.getAttribute("data-prev-overflow") === null) {
+                    this.setAttribute("data-prev-overflow", this.style.overflow || "");
+                }
+                this.style.overflow = "visible";
+            });
+    });
+
+    $(document).on("hide.bs.dropdown", ".tk-table .dropdown", function () {
+        $(this)
+            .closest(".tk-table")
+            .find(".fixed-table-container, .fixed-table-body")
+            .addBack()
+            .each(function () {
+                var prev = this.getAttribute("data-prev-overflow");
+                this.style.overflow = prev === null ? "" : prev;
+                this.removeAttribute("data-prev-overflow");
+            });
+    });
+})(window.jQuery || window.$);

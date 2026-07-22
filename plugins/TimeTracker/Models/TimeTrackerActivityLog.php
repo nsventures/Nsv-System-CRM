@@ -12,6 +12,7 @@ class TimeTrackerActivityLog extends Model
     protected $fillable = [
         'user_id',
         'action',
+        'reason',    // Why the punch happened (typed manual reason, force/graceful clock-out, or 'default')
         'timestamp',
         'metadata',  // Store additional data as JSON
         // add other fields as required

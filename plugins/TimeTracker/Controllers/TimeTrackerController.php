@@ -11,12 +11,15 @@ use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
+use Plugins\TimeTracker\Concerns\HandlesTimeTrackerLogs;
 use Plugins\TimeTracker\Models\Screenshot;
 use Plugins\TimeTracker\Models\TimeTrackerActivityLog;
 use Plugins\TimeTracker\Models\TimeTrackerConfig;
 
 class TimeTrackerController extends Controller
 {
+    use HandlesTimeTrackerLogs;
+
     /**
      * Log Update - Records employee activity logs.
      *
@@ -213,122 +216,120 @@ class TimeTrackerController extends Controller
     {
         $isApi = $request->get('isApi', false);
 
-        // ===== DEBUGGING: Log authentication context =====
-        Log::info('========== LOG UPDATE REQUEST START ==========');
-
-        // ... [Keep your existing debug logging code] ...
-
-        if (!$request->has('user_id')) {
-            $mergedUserId = getAuthenticatedUser()->id;
-            Log::info('USER_ID MERGED:', [
-                'merged_user_id' => $mergedUserId,
-                'reason' => 'user_id not provided in request',
-            ]);
-            $request->merge(['user_id' => $mergedUserId]);
+        if (! $request->has('user_id')) {
+            $request->merge(['user_id' => getAuthenticatedUser()->id]);
         }
 
         try {
             $data = $request->validate([
                 'user_id' => 'required|integer|exists:users,id',
-                'action' => 'required|string|in:clock-in,clock-out,idle-start,idle-stop,break-start,break-stop,manual-start,manual-stop,manual-processing-start,manual-processing-stop',
-                'timestamp' => 'required|date',
-                'timestamp_timezone' => 'nullable|string', // Optional: timezone of incoming timestamp
+                'action' => 'required|string|in:clock-in,clock-out,idle-start,idle-stop,break-start,break-stop,manual-processing-start,manual-processing-stop',
+                'timestamp' => 'required|date', // accepts naive "Y-m-d H:i:s" and ISO-8601 w/ offset
+                'timestamp_timezone' => 'nullable|string', // Optional override of the workspace zone
             ]);
 
-            // Get timezone from general settings FIRST
-            $general_settings = get_settings('general_settings');
-            $systemTimezone = $general_settings['timezone'] ?? 'UTC';
+            $userId = (int) $data['user_id'];
+            $action = $data['action'];
+            // Never reject a valid punch over a long reason — truncate rather than validate.
+            $reason = $request->filled('reason')
+                ? mb_substr((string) $request->input('reason'), 0, 1000)
+                : null;
 
-            Log::info('TIMEZONE CONFIGURATION:', [
-                'system_timezone' => $systemTimezone,
-                'provided_timezone' => $data['timestamp_timezone'] ?? null,
-            ]);
+            // §2.1 — interpret the naive client timestamp in the workspace timezone,
+            // store UTC. Day-boundary math (below) is also done in the workspace zone.
+            $tz = $data['timestamp_timezone'] ?? $this->workspaceTimezone();
+            $ts = $this->parseClientTimestamp($data['timestamp'], $tz);
 
-            // Determine which timezone to use for parsing the incoming timestamp
-            // Priority: 1. Provided timezone, 2. System timezone from settings
-            $incomingTimezone = $data['timestamp_timezone'] ?? $systemTimezone;
-
-            Log::info('VALIDATED DATA:', [
-                'user_id' => $data['user_id'],
-                'action' => $data['action'],
-                'timestamp' => $data['timestamp'],
-                'incoming_timezone' => $incomingTimezone,
-            ]);
-
-            // Parse the timestamp assuming it's in the incoming timezone, then convert to UTC
-            try {
-                $timestampUTC = \Carbon\Carbon::parse($data['timestamp'], $incomingTimezone)->setTimezone('UTC');
-
-                Log::info('TIMESTAMP CONVERSION:', [
-                    'original_timestamp' => $data['timestamp'],
-                    'parsed_timezone' => $incomingTimezone,
-                    'converted_utc' => $timestampUTC->format('Y-m-d H:i:s'),
-                ]);
-            } catch (\Exception $e) {
-                Log::error('Timestamp parsing failed:', [
-                    'timestamp' => $data['timestamp'],
-                    'timezone' => $incomingTimezone,
-                    'error' => $e->getMessage(),
-                ]);
-                throw new \Exception('Invalid timestamp format: ' . $e->getMessage());
+            // Guard the MySQL TIMESTAMP range (1970..2038). A wildly-wrong client clock
+            // would otherwise be silently stored as 0000-00-00 by insertOrIgnore, which
+            // then poisons day queries. Reject as a terminal no-op (never a retryable 4xx).
+            if ($ts->year < 1971 || $ts->year > 2037) {
+                Log::warning('log-update rejected: timestamp out of range', ['user_id' => $userId, 'raw' => $data['timestamp']]);
+                return formatApiResponse(false, 'Punch timestamp is out of the supported range.', ['code' => 'REJECTED']);
             }
 
-            // Fetch and log the user details from database
-            $userFromDb = \App\Models\User::find($data['user_id']);
-            if ($userFromDb) {
-                Log::info('USER FROM DATABASE:', [
-                    'user_id' => $userFromDb->id,
-                    'user_name' => $userFromDb->first_name . ' ' . $userFromDb->last_name,
-                    'user_email' => $userFromDb->email,
+            // §2.7 — serialize read-check-insert for this user with a row lock so two
+            // near-simultaneous punches can't both pass the gate.
+            $result = DB::transaction(function () use ($userId, $action, $ts, $tz, $reason) {
+                // §2.4 — evaluate the gate against the punch timestamp, not "now",
+                // so replayed/backfilled punches are judged against the correct state.
+                $lastLog = $this->lastLogAtOrBefore($userId, $ts, $tz, true);
+
+                // §2.2/§2.4 — force-clockout gate: activity actions require an open shift.
+                if (in_array($action, $this->activityActions(), true) && $this->isClockedOut($lastLog)) {
+                    return ['type' => 'force_clockout'];
+                }
+
+                // §2.6 — reject redundant / out-of-order transitions as a no-op.
+                if (! $this->isValidTransition($lastLog, $action)) {
+                    return ['type' => 'noop', 'last' => $lastLog->action ?? null];
+                }
+
+                // §2.5 — idempotent insert; the unique index makes a lost-response
+                // retry a no-op rather than a duplicate row.
+                $now = now();
+                $inserted = TimeTrackerActivityLog::insertOrIgnore([
+                    'user_id'    => $userId,
+                    'action'     => $action,
+                    'reason'     => $reason,
+                    'timestamp'  => $ts->format('Y-m-d H:i:s'),
+                    'created_at' => $now,
+                    'updated_at' => $now,
                 ]);
-            } else {
-                Log::warning('USER NOT FOUND IN DATABASE for ID: ' . $data['user_id']);
+
+                return ['type' => $inserted > 0 ? 'stored' : 'duplicate'];
+            });
+
+            // §2.3 — every response carries the full envelope (error + message).
+            if ($result['type'] === 'force_clockout') {
+                Log::warning('log-update rejected: FORCE_CLOCKOUT', ['user_id' => $userId, 'action' => $action]);
+                return formatApiResponse(
+                    true,
+                    'You have been clocked out by an administrator.',
+                    ['code' => 'FORCE_CLOCKOUT'],
+                    403 // 403 — NEVER 401 (§1: 401 logs the user fully out)
+                );
             }
 
-            Log::info('CREATING ACTIVITY LOG:', [
-                'user_id' => $data['user_id'],
-                'action' => $data['action'],
-                'timestamp_utc' => $timestampUTC->format('Y-m-d H:i:s'),
+            if ($result['type'] === 'noop') {
+                // 200 no-op so the client does NOT retry forever (§1/§2.6).
+                return formatApiResponse(false, 'Punch ignored (redundant or out-of-order transition).', [
+                    'code' => 'NOOP',
+                    'data' => ['action' => $action, 'last_action' => $result['last']],
+                ]);
+            }
+
+            $message = $result['type'] === 'duplicate'
+                ? 'Punch already recorded.'
+                : 'Log updated successfully.';
+
+            return formatApiResponse(false, $message, [
+                'data' => [
+                    'user_id'       => $userId,
+                    'action'        => $action,
+                    'reason'        => $reason,
+                    'timestamp_utc' => $ts->format('Y-m-d H:i:s'),
+                    'timestamp'     => $ts->copy()->setTimezone($tz)->format('Y-m-d H:i:s'),
+                    'timezone'      => $tz,
+                    'duplicate'     => $result['type'] === 'duplicate',
+                ],
             ]);
-
-            // Store the activity log entry in UTC
-            $activityLog = TimeTrackerActivityLog::create([
-                'user_id' => $data['user_id'],
-                'action' => $data['action'],
-                'timestamp' => $timestampUTC, // Store in UTC
-            ]);
-
-            Log::info('ACTIVITY LOG CREATED:', [
-                'log_id' => $activityLog->id,
-                'stored_user_id' => $activityLog->user_id,
-                'stored_action' => $activityLog->action,
-            ]);
-            Log::info('========== LOG UPDATE REQUEST END ==========');
-
-            // Return timestamp in system timezone for confirmation
-            $timestampSystemTZ = $timestampUTC->setTimezone($systemTimezone)->format('Y-m-d H:i:s');
-
-            return formatApiResponse(
-                false,
-                'Log updated successfully.',
-                [
-                    'data' => [
-                        'employeeId' => $data['user_id'],
-                        'user_id' => $data['user_id'],
-                        'action' => $data['action'],
-                        'timestamp' => $timestampSystemTZ, // Return in system timezone
-                        'timestamp_utc' => $timestampUTC->format('Y-m-d H:i:s'), // Also include UTC for verification
-                        'timezone' => $systemTimezone,
-                    ],
-                ]
-            );
         } catch (\Illuminate\Validation\ValidationException $e) {
-            return formatApiValidationError($isApi, $e->errors());
+            // Unrecoverable bad payload (unknown action, unparseable timestamp, missing
+            // user). Retrying can't fix it, so return a TERMINAL 200 no-op (error:false)
+            // and let the client drop it cleanly — never a permanent 4xx (§1 principle).
+            Log::warning('log-update rejected (validation).', ['errors' => $e->errors()]);
+            return formatApiResponse(false, 'Punch rejected: ' . implode(' ', \Illuminate\Support\Arr::flatten($e->errors())), [
+                'code' => 'REJECTED',
+                'errors' => $e->errors(),
+            ]);
         } catch (Exception $e) {
+            // Unexpected/transient server error — return 5xx so the client RETRIES (this
+            // is recoverable), rather than a 4xx that would be dropped.
             Log::error('Log update failed: ' . $e->getMessage());
             return formatApiResponse(true, 'Failed to update log - ' . $e->getMessage(), [
                 'data' => [],
-            ]);
+            ], 500);
         }
     }
     /**
@@ -549,11 +550,9 @@ class TimeTrackerController extends Controller
             // ... [Keep your existing debug logging code] ...
 
             if (!$request->hasFile('screenshot')) {
-                return response()->json([
-                    'error' => true,
-                    'message' => 'No file uploaded.',
-                    'data' => [],
-                ], 400);
+                // Unrecoverable (no file in the multipart) — terminal 200 no-op so the
+                // client drops it instead of a permanent 4xx.
+                return formatApiResponse(false, 'No file uploaded.', ['code' => 'REJECTED']);
             }
 
             // Handle metadata if sent as JSON string in form-data
@@ -580,6 +579,32 @@ class TimeTrackerController extends Controller
                 'captured_at' => 'nullable|date', // allow custom captured_at
                 'captured_at_timezone' => 'nullable|string', // Optional: timezone of captured_at
             ]);
+
+            // §2.2 — the force-clockout gate MUST run here too. /log-update only fires
+            // on state transitions, so a normally-working user sends none; screenshots
+            // are the only regular traffic, so this is where enforcement actually kicks
+            // in (within one screenshot interval). Reject BEFORE storing the file.
+            //
+            // Operational kill-switch: set TIMETRACKER_SCREENSHOT_GATE=false to disable
+            // ONLY this gate (the /log-update gate stays on) — an immediate unblock if it
+            // ever misfires, without a redeploy.
+            $screenshotGateEnabled = filter_var(config('timetracker.screenshot_gate', true), FILTER_VALIDATE_BOOL);
+            $ssUserId = (int) (getAuthenticatedUser(true) ?? Auth::id() ?? 0);
+            $ssTz = $data['captured_at_timezone'] ?? $this->workspaceTimezone();
+            // Client sends `timestamp`; older code used `captured_at` — honour either.
+            $ssAt = $this->parseClientTimestamp(
+                $request->input('captured_at') ?? $request->input('timestamp'),
+                $ssTz
+            );
+            if ($screenshotGateEnabled && $ssUserId > 0 && $this->isClockedOut($this->lastLogAtOrBefore($ssUserId, $ssAt, $ssTz))) {
+                Log::warning('upload-screenshot rejected: FORCE_CLOCKOUT', ['user_id' => $ssUserId]);
+                return formatApiResponse(
+                    true,
+                    'You have been clocked out by an administrator.',
+                    ['code' => 'FORCE_CLOCKOUT'],
+                    403 // 403 — NEVER 401 (§1)
+                );
+            }
 
             $file = $request->file('screenshot');
 
@@ -687,18 +712,17 @@ class TimeTrackerController extends Controller
                 ],
             ]);
         } catch (\Illuminate\Validation\ValidationException $e) {
-            return response()->json([
-                'error' => true,
-                'message' => 'Validation error.',
+            // Unrecoverable payload (not an image, too large, etc.) — terminal 200 no-op
+            // (error:false) so the client drops it cleanly rather than a permanent 4xx.
+            Log::warning('upload-screenshot rejected (validation).', ['errors' => $e->errors()]);
+            return formatApiResponse(false, 'Screenshot rejected: ' . implode(' ', \Illuminate\Support\Arr::flatten($e->errors())), [
+                'code' => 'REJECTED',
                 'errors' => $e->errors(),
-            ], 422);
+            ]);
         } catch (Exception $e) {
+            // Transient/unexpected server error — 5xx so the client RETRIES (recoverable).
             Log::error('Screenshot upload failed: ' . $e->getMessage());
-            return response()->json([
-                'error' => true,
-                'message' => 'Failed to upload screenshot.',
-                'data' => [],
-            ], 500);
+            return formatApiResponse(true, 'Failed to upload screenshot.', ['data' => []], 500);
         }
     }
     /**
@@ -725,7 +749,7 @@ class TimeTrackerController extends Controller
      *   "message": "Failed to load configuration"
      * }
      */
-    public function loadConfig(Request $request)
+    public function loadConfig(Request $request = null)
     {
         try {
             // Try to load from database first
@@ -733,14 +757,28 @@ class TimeTrackerController extends Controller
             $general_settings = get_settings('general_settings');
             $timezone = $general_settings['timezone'] ?? 'UTC';
 
-            $config = [
+            $fullLogo = isset($general_settings['full_logo']) && !empty($general_settings['full_logo'])
+                ? asset('storage/' . $general_settings['full_logo'])
+                : asset('assets/img/logo.png');
+
+            $halfLogo = isset($general_settings['half_logo']) && !empty($general_settings['half_logo'])
+                ? asset('storage/' . $general_settings['half_logo'])
+                : asset('assets/img/logo-half.png');
+
+            $companyTitle = $general_settings['company_title'] ?? 'NS Ventures';
+
+            $config = array_merge([
                 'screenshotInterval' => (int) ($configData['screenshotInterval'] ?? '60000'), // Default to 60 seconds
                 'idleTimeThreshold' => (int) ($configData['idleTimeThreshold'] ?? '300000'), // Default to 5 minutes
                 'breakTimeThreshold' => (int) ($configData['breakTimeThreshold'] ?? '600000'), // Default to 10 minutes
                 'maxDailyBreakTime' => (int) ($configData['maxDailyBreakTime'] ?? '3600000'), // Default to 1 hour
                 'manualTimeApprover' => $configData['manualTimeApprover'] ?? [],
-                'timezone' => $timezone, // Include dynamic timezone from general settings for desktop app
-            ];
+                'timezone' => $timezone,
+                'company_title' => $companyTitle,
+                'full_logo' => $fullLogo,
+                'half_logo' => $halfLogo,
+            ], is_array($configData) ? $configData : []);
+
             return formatApiResponse(
                 false,
                 'Config loaded successfully.',

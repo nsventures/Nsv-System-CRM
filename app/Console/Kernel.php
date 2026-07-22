@@ -30,6 +30,11 @@ class Kernel extends ConsoleKernel
 
         $schedule->command('recurring-tasks:generate')->daily()->at('00:00')->withoutOverlapping();
 
+        // §2.8 — close time-tracker shifts left open on a previous day. Runs after
+        // midnight in most workspace zones (20:00 UTC = 01:30 IST); the command
+        // itself computes the cutoff in the workspace timezone and is idempotent.
+        $schedule->command('timetracker:auto-close-shifts')->dailyAt('20:00')->withoutOverlapping();
+
         // reset Database
         $schedule->command('demo:reset')->everyTwoHours();
 

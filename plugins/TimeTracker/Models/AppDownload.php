@@ -10,14 +10,31 @@ class AppDownload extends Model
 
 
     protected $fillable = [
-        'platform',     // 'windows', 'mac', 'linux'
+        'title',        // human-friendly label (used for general files)
+        'platform',     // 'windows', 'mac', 'linux' (optional)
         'arch',         // 'x64', 'arm64', 'm1', 'intel', etc.
-        'version',      // '1.0.0'
+        'version',      // '1.0.0' (optional)
         'file_path',    // path to the file in storage
         'file_type',    // 'exe', 'dmg', 'tar.gz', etc.
-        'changelog',    // optional release notes
+        'changelog',    // optional release notes / description
         'download_count',
     ];
+
+    /**
+     * A display name for the entry: the title, else "<Platform> App", else the
+     * stored file's base name.
+     */
+    public function getDisplayNameAttribute(): string
+    {
+        if (! empty($this->title)) {
+            return $this->title;
+        }
+        if (! empty($this->platform)) {
+            return ucfirst($this->platform) . ' App';
+        }
+
+        return basename((string) $this->file_path);
+    }
 
     // Optional: Cast download_count to integer
     protected $casts = [

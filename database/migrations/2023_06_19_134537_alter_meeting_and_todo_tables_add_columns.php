@@ -13,9 +13,11 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::table('todos', function (Blueprint $table) {
-            $table->unsignedBigInteger('workspace_id')->after('id');
-        });
+        if (!Schema::hasColumn('todos', 'workspace_id')) {
+            Schema::table('todos', function (Blueprint $table) {
+                $table->unsignedBigInteger('workspace_id')->after('id')->nullable();
+            });
+        }
 
         Schema::table('meetings', function (Blueprint $table) {
             $table->unsignedBigInteger('workspace_id')->after('id');

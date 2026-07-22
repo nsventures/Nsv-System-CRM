@@ -2591,7 +2591,7 @@ html:not([dir="rtl"]) .timeline-item {
 
 .paid-leave-timeline .list-group-item.active .timeline-index {
     background-color: var(--signal);
-    color: var(--signal-fg, #fff);
+    color: #ffffff;
     box-shadow: 0 2px 8px oklch(from var(--signal) l c h / 0.3);
 }
 
@@ -2791,7 +2791,7 @@ html:not([dir="rtl"]) .timeline-item {
    body.v2-shell, so non-chrome pages (login, print) are untouched.
    ===================================================================== */
 :root {
-    --signal: oklch(81.99% 0.11932 142.474);
+    --signal: #05335B;
     --signal-fg: oklch(0.18 0.02 130);
     --signal-glow: color-mix(in srgb, var(--signal) 35%, transparent);
     --ok: oklch(0.70 0.16 155);
@@ -3723,7 +3723,7 @@ body.v2-shell .layout-page {
 }
 
 #globalSearchModal .search-tabs .nav-link.active {
-    color: var(--signal-fg) !important;
+    color: #ffffff !important;
     background: var(--signal) !important;
 }
 
@@ -3736,7 +3736,7 @@ body.v2-shell .layout-page {
 
 #globalSearchModal .search-tabs .nav-link.active .badge {
     background: oklch(0 0 0 / 0.18) !important;
-    color: var(--signal-fg) !important;
+    color: #ffffff !important;
 }
 
 #globalSearchModal .search-tabs .border-bottom {
@@ -3800,7 +3800,7 @@ body.v2-shell .layout-page {
 
 #globalSearchModal .search-category-header .badge {
     background: var(--signal) !important;
-    color: var(--signal-fg) !important;
+    color: #ffffff !important;
 }
 
 #globalSearchModal .search-result-item {
@@ -5034,7 +5034,7 @@ body.v2-shell .badge.badge-info {
 /* primary (solid/soft) */
 body.v2-shell .badge.badge-primary {
     background: var(--signal) !important;
-    color: var(--signal-fg) !important;
+    color: #ffffff !important;
 }
 
 /* Design System - Chips, Tags, Status Pills, KBD, and Dots */

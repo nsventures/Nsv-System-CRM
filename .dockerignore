@@ -1,0 +1,8 @@
+.git
+.gitignore
+node_modules
+vendor
+storage/*.key
+.env
+.env.*
+!.env.example

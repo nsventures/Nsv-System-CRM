@@ -17,6 +17,8 @@ return new class extends Migration
             $table->foreign('client_id')->references('id')->on('clients')->onDelete('cascade');
             $table->foreign('notification_id')->references('id')->on('notifications')->onDelete('cascade');
             $table->timestamp('read_at')->nullable();
+            $table->tinyInteger('is_system')->default(1)->nullable();
+            $table->tinyInteger('is_push')->default(0)->nullable();
             $table->primary(['client_id', 'notification_id']);
         });
     }

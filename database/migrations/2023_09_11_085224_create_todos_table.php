@@ -13,18 +13,20 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('todos', function (Blueprint $table) {
-            $table->id();
-            $table->unsignedBigInteger('workspace_id');
-            $table->string('title');
-            $table->text('description')->nullable();
-            $table->string('priority');
-            $table->boolean('is_completed')->default(false);
-            $table->unsignedBigInteger('creator_id');
-            $table->string('creator_type'); // Polymorphic relationship
+        if (!Schema::hasTable('todos')) {
+            Schema::create('todos', function (Blueprint $table) {
+                $table->id();
+                $table->unsignedBigInteger('workspace_id');
+                $table->string('title');
+                $table->text('description')->nullable();
+                $table->string('priority');
+                $table->boolean('is_completed')->default(false);
+                $table->unsignedBigInteger('creator_id');
+                $table->string('creator_type'); // Polymorphic relationship
 
-            $table->timestamps();
-        });
+                $table->timestamps();
+            });
+        }
     }
 
     public function down()

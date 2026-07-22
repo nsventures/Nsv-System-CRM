@@ -26,12 +26,12 @@
                     <div class="card-header d-flex justify-content-between align-items-center">
                         <div>
                             <h5 class="card-title mb-0">{{ get_label('downloads', 'Downloads') }}</h5>
-                            <small class="text-muted">Download desktop applications for team monitoring</small>
+                            <small class="text-muted">{{ get_label('downloads_subtitle', 'Setups, installers and files available to download') }}</small>
                         </div>
                         @if (isAdminOrHasAllDataAccess())
                             <a href="{{ route('timetracker.downloads.upload') }}" class="btn btn-primary">
                                 <i class="bx bx-plus me-1"></i>
-                                <span class="d-none d-sm-inline-block">{{ get_label('upload_app', 'Upload App') }}</span>
+                                <span class="d-none d-sm-inline-block">{{ get_label('upload_file', 'Upload File') }}</span>
                             </a>
                         @endif
                     </div>
@@ -56,33 +56,36 @@
                                             @elseif($file->platform == 'linux')
                                                 <i class="bx bxl-tux bx-sm"></i>
                                             @else
-                                                <i class="bx bx-mobile-alt bx-sm"></i>
+                                                <i class="bx bx-file bx-sm"></i>
                                             @endif
                                         </span>
                                     </div>
                                     <div class="flex-grow-1">
-                                        <h6 class="mb-1">{{ ucfirst($file->platform) }} App</h6>
-                                        <small class="text-muted">{{ get_label('desktop_application','Desktop Application') }}</small>
+                                        <h6 class="mb-1">{{ $file->display_name }}</h6>
+                                        <small class="text-muted">{{ $file->platform ? get_label('desktop_application','Desktop Application') : strtoupper($file->file_type ?? 'file') . ' ' . get_label('file','file') }}</small>
                                     </div>
                                 </div>
                                 <!-- App Info -->
                                 <div class="info-container">
                                     <ul class="list-unstyled mb-4">
-                                        <li class="d-flex align-items-center mb-2">
-                                            <i class="bx bx-check-shield text-success me-2"></i>
-                                            <span class="fw-medium me-2">{{ get_label('version','Version') }}:</span>
-                                            <span class="badge bg-label-success">v{{ $file->version }}</span>
-                                        </li>
-                                        <li class="d-flex align-items-center mb-2">
-                                            <i class="bx bx-chip text-info me-2"></i>
-                                            <span class="fw-medium me-2">{{ get_label('architecture','Architecture') }}:</span>
-                                            <span
-                                                class="badge bg-label-info">{{ strtoupper($file->arch ?? 'Universal') }}</span>
-                                        </li>
+                                        @if ($file->version)
+                                            <li class="d-flex align-items-center mb-2">
+                                                <i class="bx bx-check-shield text-success me-2"></i>
+                                                <span class="fw-medium me-2">{{ get_label('version','Version') }}:</span>
+                                                <span class="badge bg-label-success">v{{ $file->version }}</span>
+                                            </li>
+                                        @endif
+                                        @if ($file->arch)
+                                            <li class="d-flex align-items-center mb-2">
+                                                <i class="bx bx-chip text-info me-2"></i>
+                                                <span class="fw-medium me-2">{{ get_label('architecture','Architecture') }}:</span>
+                                                <span class="badge bg-label-info">{{ strtoupper($file->arch) }}</span>
+                                            </li>
+                                        @endif
                                         <li class="d-flex align-items-center mb-2">
                                             <i class="bx bx-file text-warning me-2"></i>
                                             <span class="fw-medium me-2">Type:</span>
-                                            <span class="badge bg-label-warning">{{ strtoupper($file->file_type) }}</span>
+                                            <span class="badge bg-label-warning">{{ strtoupper($file->file_type ?? '—') }}</span>
                                         </li>
                                         <li class="d-flex align-items-center">
                                             <i class="bx bx-calendar text-secondary me-2"></i>
@@ -120,7 +123,7 @@
                                                     <form class="form-submit-event"
                                                         action="{{ route('timetracker.downloads.destroy', $file->id) }}"
                                                         method="POST" class="d-inline w-100"
-                                                        onsubmit="return confirm('⚠️ WARNING: This will permanently delete {{ ucfirst($file->platform) }} v{{ $file->version }} ({{ strtoupper($file->arch ?? 'Universal') }}).\n\nUsers will no longer be able to download this version.\n\nAre you absolutely sure?')">
+                                                        onsubmit="return confirm('⚠️ WARNING: This will permanently delete &quot;{{ $file->display_name }}&quot;.\n\nThe file will be removed and its download link will stop working.\n\nAre you absolutely sure?')">
                                                         @csrf
                                                         @method('DELETE')
                                                         <button type="submit" class="dropdown-item text-danger">

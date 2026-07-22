@@ -93,11 +93,23 @@ class DashboardController extends Controller
         return $changes;
     }
 
+    /**
+     * The configured display timezone (from general settings). Timestamps are stored in UTC;
+     * day boundaries and grouping must use this timezone to match the timeline.
+     */
+    private function settingsTimezone(): string
+    {
+        $general_settings = get_settings('general_settings');
+        return $general_settings['timezone'] ?? 'UTC';
+    }
+
     private function calculateMetrics($startDate, $endDate, $userIds = null): array
     {
-        // Fix date range - ensure we include the entire end date
-        $startDateTime = Carbon::parse($startDate)->startOfDay();
-        $endDateTime = Carbon::parse($endDate)->endOfDay();
+        // Parse the range in the configured timezone, then convert to UTC for the query so the
+        // day boundaries line up with the stored UTC timestamps (and with the timeline view).
+        $tz = $this->settingsTimezone();
+        $startDateTime = Carbon::parse($startDate, $tz)->startOfDay()->setTimezone('UTC');
+        $endDateTime = Carbon::parse($endDate, $tz)->endOfDay()->setTimezone('UTC');
 
         $query = TimeTrackerActivityLog::whereBetween('timestamp', [$startDateTime, $endDateTime]);
 
@@ -197,7 +209,7 @@ class DashboardController extends Controller
                     break;
                 case 'clock-out':
                     if ($activeSessionStart && $timestamp->greaterThanOrEqualTo($activeSessionStart)) {
-                        $metrics['work_time'] += $activeSessionStart->diffInMinutes($timestamp);
+                        $metrics['work_time'] += $activeSessionStart->diffInSeconds($timestamp);
                         $activeSessionStart = null;
                     }
                     break;
@@ -206,7 +218,7 @@ class DashboardController extends Controller
                     break;
                 case 'break-stop':
                     if ($breakStartTime && $timestamp->greaterThanOrEqualTo($breakStartTime)) {
-                        $metrics['break_time'] += $breakStartTime->diffInMinutes($timestamp);
+                        $metrics['break_time'] += $breakStartTime->diffInSeconds($timestamp);
                         $breakStartTime = null;
                     }
                     break;
@@ -215,7 +227,7 @@ class DashboardController extends Controller
                     break;
                 case 'idle-stop':
                     if ($idleStartTime && $timestamp->greaterThanOrEqualTo($idleStartTime)) {
-                        $metrics['idle_time'] += $idleStartTime->diffInMinutes($timestamp);
+                        $metrics['idle_time'] += $idleStartTime->diffInSeconds($timestamp);
                         $idleStartTime = null;
                     }
                     break;
@@ -224,7 +236,7 @@ class DashboardController extends Controller
                     break;
                 case 'manual-stop':
                     if ($manualStartTime && $timestamp->greaterThanOrEqualTo($manualStartTime)) {
-                        $metrics['manual_time'] += $manualStartTime->diffInMinutes($timestamp);
+                        $metrics['manual_time'] += $manualStartTime->diffInSeconds($timestamp);
                         $manualStartTime = null;
                     }
                     break;
@@ -233,7 +245,7 @@ class DashboardController extends Controller
                     break;
                 case 'manual-processing-stop':
                     if ($manualProcessingStartTime && $timestamp->greaterThanOrEqualTo($manualProcessingStartTime)) {
-                        $metrics['manual_processing_time'] += $manualProcessingStartTime->diffInMinutes($timestamp);
+                        $metrics['manual_processing_time'] += $manualProcessingStartTime->diffInSeconds($timestamp);
                         $manualProcessingStartTime = null;
                     }
                     break;
@@ -241,23 +253,48 @@ class DashboardController extends Controller
         }
 
         if ($activeSessionStart && $referenceNow->greaterThanOrEqualTo($activeSessionStart)) {
-            $metrics['work_time'] += $activeSessionStart->diffInMinutes($referenceNow);
+            $lastActivityLog = $sortedLogs->last();
+            $lastActivityTs = $lastActivityLog ? ($lastActivityLog->timestamp instanceof Carbon ? $lastActivityLog->timestamp->copy() : Carbon::parse($lastActivityLog->timestamp)) : $activeSessionStart->copy();
+
+            // Check latest screenshot timestamp for today
+            $latestScreenshot = \Plugins\TimeTracker\Models\Screenshot::when(!empty($userIds), function ($q) use ($userIds) {
+                return $q->whereIn('user_id', (array) $userIds);
+            })->whereDate('created_at', Carbon::today()->format('Y-m-d'))
+              ->latest('created_at')
+              ->first();
+
+            if ($latestScreenshot) {
+                $ssTs = Carbon::parse($latestScreenshot->created_at);
+                if ($ssTs->greaterThan($lastActivityTs)) {
+                    $lastActivityTs = $ssTs;
+                }
+            }
+
+            // If user has been inactive for > 15 minutes, cap time at last activity
+            $effectiveNow = $referenceNow;
+            if ($referenceNow->diffInSeconds($lastActivityTs) > 15 * 60) {
+                $effectiveNow = $lastActivityTs;
+            }
+
+            if ($effectiveNow->greaterThanOrEqualTo($activeSessionStart)) {
+                $metrics['work_time'] += $activeSessionStart->diffInSeconds($effectiveNow);
+            }
         }
 
         if ($breakStartTime && $referenceNow->greaterThanOrEqualTo($breakStartTime)) {
-            $metrics['break_time'] += $breakStartTime->diffInMinutes($referenceNow);
+            $metrics['break_time'] += $breakStartTime->diffInSeconds($referenceNow);
         }
 
         if ($idleStartTime && $referenceNow->greaterThanOrEqualTo($idleStartTime)) {
-            $metrics['idle_time'] += $idleStartTime->diffInMinutes($referenceNow);
+            $metrics['idle_time'] += $idleStartTime->diffInSeconds($referenceNow);
         }
 
         if ($manualStartTime && $referenceNow->greaterThanOrEqualTo($manualStartTime)) {
-            $metrics['manual_time'] += $manualStartTime->diffInMinutes($referenceNow);
+            $metrics['manual_time'] += $manualStartTime->diffInSeconds($referenceNow);
         }
 
         if ($manualProcessingStartTime && $referenceNow->greaterThanOrEqualTo($manualProcessingStartTime)) {
-            $metrics['manual_processing_time'] += $manualProcessingStartTime->diffInMinutes($referenceNow);
+            $metrics['manual_processing_time'] += $manualProcessingStartTime->diffInSeconds($referenceNow);
         }
 
         // Calculate active time - subtract all tracked activities from work time
@@ -272,9 +309,10 @@ class DashboardController extends Controller
 
     private function getDailyBreakdown($startDate, $endDate, $userIds = []): array
     {
-        // Fix date range - ensure we include the entire end date
-        $startDateTime = Carbon::parse($startDate)->startOfDay();
-        $endDateTime = Carbon::parse($endDate)->endOfDay();
+        // Parse the range in the configured timezone, then convert to UTC for the query.
+        $tz = $this->settingsTimezone();
+        $startDateTime = Carbon::parse($startDate, $tz)->startOfDay()->setTimezone('UTC');
+        $endDateTime = Carbon::parse($endDate, $tz)->endOfDay()->setTimezone('UTC');
 
         $query = TimeTrackerActivityLog::whereBetween('timestamp', [$startDateTime, $endDateTime]);
 
@@ -299,15 +337,20 @@ class DashboardController extends Controller
                 if (isset($days[$dateStr])) {
                     $dayMetrics = $this->calculateDayMetrics($days[$dateStr]);
                     foreach ($metrics as $key => $val) {
-                        $metrics[$key] += $dayMetrics[$key];
+                        $metrics[$key] += $dayMetrics[$key]; // seconds
                     }
                 }
             }
 
+            // calculateDayMetrics returns seconds; the frontend expects minutes.
             $data[] = [
                 'date' => $dateStr,
                 'day_name' => $date->format('M j'),
-                ...$metrics,
+                'active_time' => round($metrics['active_time'] / 60, 2),
+                'break_time' => round($metrics['break_time'] / 60, 2),
+                'manual_time' => round($metrics['manual_time'] / 60, 2),
+                'manual_processing_time' => round($metrics['manual_processing_time'] / 60, 2),
+                'idle_time' => round($metrics['idle_time'] / 60, 2),
             ];
         }
 
@@ -331,10 +374,13 @@ class DashboardController extends Controller
     private function groupLogsByUserAndDay(Collection $logs): array
     {
         $grouped = [];
+        $tz = $this->settingsTimezone();
 
         foreach ($logs as $log) {
             $userId = $log->user_id;
-            $date = Carbon::parse($log->timestamp)->format('Y-m-d');
+            // Timestamps are stored in UTC; group by the calendar day in the configured
+            // timezone so day buckets match the timeline (and the requested range).
+            $date = Carbon::parse($log->timestamp)->setTimezone($tz)->format('Y-m-d');
             $grouped[$userId][$date][] = $log;
         }
 
@@ -351,12 +397,16 @@ class DashboardController extends Controller
                     'display' => round($val, 1) . '%',
                 ];
             } else {
-                $hours = floor($val / 60);
-                $minutes = $val % 60;
+                // Values are accumulated in seconds; convert to minutes here (once), so
+                // sub-minute intervals aggregate correctly instead of each rounding to zero.
+                $seconds = (int) round($val);
+                $totalMinutes = intdiv($seconds, 60);
+                $hours = intdiv($totalMinutes, 60);
+                $minutes = $totalMinutes % 60;
                 $formatted[$key] = [
-                    'minutes' => $val,
+                    'minutes' => $totalMinutes,
                     'display' => sprintf('%d:%02d h', $hours, $minutes),
-                    'decimal_hours' => round($val / 60, 2),
+                    'decimal_hours' => round($seconds / 3600, 2),
                 ];
             }
         }
@@ -458,8 +508,9 @@ class DashboardController extends Controller
 
     private function getTopProductiveUsers($startDate, $endDate, $limit = 5)
     {
-        $startDateTime = Carbon::parse($startDate)->startOfDay();
-        $endDateTime = Carbon::parse($endDate)->endOfDay();
+        $tz = $this->settingsTimezone();
+        $startDateTime = Carbon::parse($startDate, $tz)->startOfDay()->setTimezone('UTC');
+        $endDateTime = Carbon::parse($endDate, $tz)->endOfDay()->setTimezone('UTC');
 
         $query = TimeTrackerActivityLog::whereBetween('timestamp', [$startDateTime, $endDateTime]);
 
@@ -512,8 +563,9 @@ class DashboardController extends Controller
 
     private function getAverageProductiveHoursPerUser($startDate, $endDate, $userIds = null)
     {
-        $startDateTime = Carbon::parse($startDate)->startOfDay();
-        $endDateTime = Carbon::parse($endDate)->endOfDay();
+        $tz = $this->settingsTimezone();
+        $startDateTime = Carbon::parse($startDate, $tz)->startOfDay()->setTimezone('UTC');
+        $endDateTime = Carbon::parse($endDate, $tz)->endOfDay()->setTimezone('UTC');
 
         $query = TimeTrackerActivityLog::whereBetween('timestamp', [$startDateTime, $endDateTime]);
 

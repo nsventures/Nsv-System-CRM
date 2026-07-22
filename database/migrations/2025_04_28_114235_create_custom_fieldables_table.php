@@ -24,7 +24,7 @@ return new class extends Migration
                 ->on('custom_fields')
                 ->onDelete('cascade');
 
-            $table->index(['custom_fieldable_id', 'custom_fieldable_type']);
+            $table->index(['custom_fieldable_id', 'custom_fieldable_type'], 'cf_fieldable_id_type_idx');
         });
     }
 

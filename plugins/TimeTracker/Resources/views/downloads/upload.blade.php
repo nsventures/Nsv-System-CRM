@@ -25,24 +25,30 @@
             </div>
         </div>
         <div class="alert alert-primary" role="alert">
-            {{ get_label('app_download_info', 'You can upload different versions of the Time Tracker App for Windows, macOS (Intel/M1), and Linux. Users will be able to download the latest version from index page.') }}
+            {{ get_label('file_upload_info', 'Upload any setup or file (installers, archives, documents, etc.). Give it a title so it is easy to find. Platform / version are optional — fill them only for OS app builds. Uploaded files get a shareable public download link.') }}
         </div>
         <div class="card">
             <div class="card-body">
                 <form class="form-submit-event" action="{{ route('timetracker.downloads.store') }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     <input type="hidden" name="redirect_url" value="{{ route('timetracker.downloads.index') }}" >
+                    <div class="mb-3">
+                        <label class="form-label">{{ get_label('title','Title') }}</label>
+                        <input type="text" name="title" class="form-control" placeholder="{{ get_label('eg_setup_name','e.g. Onboarding Setup') }}">
+                        <small class="text-muted">{{ get_label('title_hint','Leave blank to use the file name.') }}</small>
+                    </div>
                     <div class="row mb-3">
                         <div class="col-md-4">
-                            <label class="form-label">{{ get_label('platform','Platform') }}</label>
-                            <select name="platform" class="form-control" required>
+                            <label class="form-label">{{ get_label('platform','Platform') }} <span class="text-muted">({{ get_label('optional','optional') }})</span></label>
+                            <select name="platform" class="form-control">
+                                <option value="">{{ get_label('none','None') }}</option>
                                 <option value="windows">{{ get_label('windows','Windows') }}</option>
                                 <option value="mac">{{ get_label('macOS','macOS') }}</option>
                                 <option value="linux">{{ get_label('linux','Linux') }}</option>
                             </select>
                         </div>
                         <div class="col-md-4">
-                            <label class="form-label">{{ get_label('architecture','Architecture') }}</label>
+                            <label class="form-label">{{ get_label('architecture','Architecture') }} <span class="text-muted">({{ get_label('optional','optional') }})</span></label>
                             <select name="arch" class="form-control">
                                 <option value="">{{ get_label('default','Default') }}</option>
                                 <option value="x64">{{ get_label('x64','x64') }}</option>
@@ -52,16 +58,17 @@
                             </select>
                         </div>
                         <div class="col-md-4">
-                            <label class="form-label">{{ get_label('version','Version') }}</label>
-                            <input type="text" name="version" class="form-control" placeholder="e.g. 1.0.3" required>
+                            <label class="form-label">{{ get_label('version','Version') }} <span class="text-muted">({{ get_label('optional','optional') }})</span></label>
+                            <input type="text" name="version" class="form-control" placeholder="e.g. 1.0.3">
                         </div>
                     </div>
                     <div class="mb-3">
                         <label class="form-label">{{ get_label('upload_file','Upload File') }}</label>
-                        <input type="file" name="file" class="form-control" accept=".exe,.dmg,.tar.gz" required>
+                        <input type="file" name="file" class="form-control" required>
+                        <small class="text-muted">{{ get_label('max_file_size_500','Max 500 MB. Script/executable web files (.php, .html, .svg, …) are not allowed.') }}</small>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label">{{ get_label('changelog_optional','Changelog (Optional)') }}</label>
+                        <label class="form-label">{{ get_label('description_optional','Description / Changelog (Optional)') }}</label>
                         <textarea name="changelog" rows="3" class="form-control"></textarea>
                     </div>
                     <button type="submit" id="submit_btn" class="btn btn-primary">

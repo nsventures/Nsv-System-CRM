@@ -15,7 +15,7 @@ class ManualTimeController extends Controller
     public function index()
     {
         $employees = User::select('id', 'first_name', 'last_name')->orderBy('first_name')->get();
-        if (! isAdminOrHasAllDataAccess() || ! $this->isManualTimeApprover()) {
+        if (! isAdminOrHasAllDataAccess() && ! $this->isManualTimeApprover()) {
             $employees = $employees->filter(function ($employee) {
                 return $employee->id === getAuthenticatedUser()->id;
             });
@@ -34,7 +34,7 @@ class ManualTimeController extends Controller
                 'manual-processing-stop',
             ]);
 
-        if (! isAdminOrHasAllDataAccess() || ! $this->isManualTimeApprover()) {
+        if (! isAdminOrHasAllDataAccess() && ! $this->isManualTimeApprover()) {
             $query->where('user_id', getAuthenticatedUser()->id);
         }
 
@@ -115,7 +115,15 @@ class ManualTimeController extends Controller
                     $durationInMinutes = $startTime->diffInMinutes($endTime);
                     $durationFormatted = sprintf('%02d:%02d', intdiv($durationInMinutes, 60), $durationInMinutes % 60);
 
-                    $metadata = is_array($item->metadata) ? $item->metadata : json_decode($item->metadata ?? '{}', true);
+                    $metadata = $this->decodeMetadata($item->metadata);
+
+                    // Reason lives in the reason column (tracker/form); fall back to legacy
+                    // metadata. It may be attached to the start entry rather than the stop.
+                    $startMetadata = $this->decodeMetadata($pendingStart->metadata);
+                    $reason = $item->reason
+                        ?? $pendingStart->reason
+                        ?? $metadata['reason']
+                        ?? ($startMetadata['reason'] ?? 'N/A');
 
                     $approvalStatus = $metadata['approval_status'] ?? 'Pending';
                     $approvedAt = $metadata['approved_at'] ?? ($metadata['rejected_at'] ?? null);
@@ -130,7 +138,7 @@ class ManualTimeController extends Controller
                     }
 
                     $actionsHtml = '-';
-                    if ($approvalStatus === 'Pending' && $this->isManualTimeApprover()) {
+                    if ($approvalStatus === 'Pending' && ($this->isManualTimeApprover() || isAdminOrHasAllDataAccess())) {
                         $actionsHtml = '<button class="btn btn-sm btn-primary approve-manual-time" data-id="' . $pendingStart->id . '">
                         <i class="bx bx-check-double"></i> Approve
                         </button>';
@@ -152,7 +160,7 @@ class ManualTimeController extends Controller
                         'status' => ucfirst($approvalStatus),
                         'approved_at' => $approvedAtDisplay,
                         'approver' => $approverName,
-                        'reason' => $metadata['reason'] ?? 'N/A',
+                        'reason' => $reason,
                         'remarks' => $metadata['remarks'] ?? 'N/A',
                         'actions' => $actionsHtml,
                     ];
@@ -204,20 +212,20 @@ class ManualTimeController extends Controller
         $startDateTime = Carbon::parse($request->date . ' ' . $request->start_time, $userTimezone)->setTimezone('UTC');
         $endDateTime = Carbon::parse($request->date . ' ' . $request->end_time, $userTimezone)->setTimezone('UTC');
 
-        // Insert manual_processing_start (stored in UTC)
+        // Insert manual_processing_start (stored in UTC). Reason is a first-class column now.
         TimeTrackerActivityLog::create([
             'user_id' => $user_id,
             'action' => 'manual-processing-start',
+            'reason' => $request->reason,
             'timestamp' => $startDateTime,
-            'metadata' => json_encode(['reason' => $request->reason]),
         ]);
 
-        // Insert manual_processing_stop (stored in UTC)
+        // Insert manual_processing_stop (stored in UTC).
         TimeTrackerActivityLog::create([
             'user_id' => $user_id,
             'action' => 'manual-processing-stop',
+            'reason' => $request->reason,
             'timestamp' => $endDateTime,
-            'metadata' => json_encode(['reason' => $request->reason]),
         ]);
 
         return response()->json(['message' => 'Manual time added successfully.']);
@@ -266,7 +274,7 @@ class ManualTimeController extends Controller
                 $manualStart->update([
                     'action' => 'manual-start',
                     'metadata' => array_merge(
-                        json_decode($manualStart->metadata ?? '[]', true) ?: [],
+                        $this->decodeMetadata($manualStart->metadata),
                         $approvedMetadata
                     ),
                 ]);
@@ -274,7 +282,7 @@ class ManualTimeController extends Controller
                 $manualStop->update([
                     'action' => 'manual-stop',
                     'metadata' => array_merge(
-                        json_decode($manualStop->metadata ?? '[] ', true) ?: [],
+                        $this->decodeMetadata($manualStop->metadata),
                         $approvedMetadata
                     ),
                 ]);
@@ -289,14 +297,14 @@ class ManualTimeController extends Controller
 
                 $manualStart->update([
                     'metadata' => array_merge(
-                        json_decode($manualStart->metadata ?? '[]', true) ?: [],
+                        $this->decodeMetadata($manualStart->metadata),
                         $rejectedMetadata
                     ),
                 ]);
 
                 $manualStop->update([
                     'metadata' => array_merge(
-                        json_decode($manualStop->metadata ?? '[]', true) ?: [],
+                        $this->decodeMetadata($manualStop->metadata),
                         $rejectedMetadata
                     ),
                 ]);
@@ -329,7 +337,7 @@ class ManualTimeController extends Controller
             ->first();
 
         $user = $startLog->user;
-        $reason = json_decode($startLog->metadata, true)['reason'] ?? '';
+        $reason = $startLog->reason ?? $this->decodeMetadata($startLog->metadata)['reason'] ?? '';
 
         // Get timezone from general settings for display
         $general_settings = get_settings('general_settings');
@@ -349,12 +357,30 @@ class ManualTimeController extends Controller
         ]);
     }
 
+    /**
+     * Normalize an activity log's metadata to an array.
+     *
+     * The `metadata` column is JSON-cast (returns an array), but older/form entries
+     * may have been stored as a JSON string. Handle both safely.
+     */
+    private function decodeMetadata($value): array
+    {
+        if (is_array($value)) {
+            return $value;
+        }
+        if (is_string($value) && $value !== '') {
+            $decoded = json_decode($value, true);
+            return is_array($decoded) ? $decoded : [];
+        }
+        return [];
+    }
+
     private function isManualTimeApprover()
     {
         // Check if the user has the role or permission to approve manual time entries
         $configData = TimeTrackerConfig::where('name', 'time_tracker_config')->value('value');
 
-        $manualApprovers = $configData['manualTimeApprover'];
+        $manualApprovers = $configData['manualTimeApprover'] ?? [];
         if (is_array($manualApprovers) && in_array(getAuthenticatedUser()->id, $manualApprovers)) {
             return true;
         }

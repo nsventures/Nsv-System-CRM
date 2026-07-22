@@ -30,3 +30,5 @@ bootstrap/cache/*.php
 # OS files
 .DS_Store
 Thumbs.db
+# Vite dev-server marker (must never be deployed)
+/public/hot

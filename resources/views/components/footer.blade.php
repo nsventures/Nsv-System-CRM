@@ -7,7 +7,7 @@
                 <script>
                     document.write(new Date().getFullYear());
                 </script>
-                , <?= $general_settings['footer_text'] ?>
+                , <?= $general_settings['footer_text'] ?? ($general_settings['company_title'] ?? 'Taskify') ?>
                 <p class="mx-4 fw-bolder">v{{get_current_version()}}</p>
 
                 @if (config('constants.ALLOW_MODIFICATION') === 0)

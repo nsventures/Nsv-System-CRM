@@ -13,6 +13,13 @@ class CreateCommentsTable extends Migration
      */
     public function up()
     {
+        // Guarded: this migration was renamed, so existing deployments (where the
+        // table was already created under the old filename) would otherwise fail
+        // with "table already exists".
+        if (Schema::hasTable('comments')) {
+            return;
+        }
+
         Schema::create('comments', function (Blueprint $table) {
             $table->id();
             $table->foreignId('parent_id')->nullable()->constrained('comments')->onDelete('cascade');
