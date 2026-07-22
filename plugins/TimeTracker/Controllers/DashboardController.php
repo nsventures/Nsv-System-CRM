@@ -256,9 +256,14 @@ class DashboardController extends Controller
             $lastActivityLog = $sortedLogs->last();
             $lastActivityTs = $lastActivityLog ? ($lastActivityLog->timestamp instanceof Carbon ? $lastActivityLog->timestamp->copy() : Carbon::parse($lastActivityLog->timestamp)) : $activeSessionStart->copy();
 
-            // Check latest screenshot timestamp for today
-            $latestScreenshot = \Plugins\TimeTracker\Models\Screenshot::when(!empty($userIds), function ($q) use ($userIds) {
-                return $q->whereIn('user_id', (array) $userIds);
+            // Check latest screenshot timestamp for today. $sortedLogs is already
+            // grouped per user/day, so scope to that user — the previous code
+            // referenced an undefined $userIds, which raised "Undefined variable"
+            // and (being empty) also matched any user's screenshot.
+            $dayUserId = optional($sortedLogs->first())->user_id;
+
+            $latestScreenshot = \Plugins\TimeTracker\Models\Screenshot::when($dayUserId, function ($q) use ($dayUserId) {
+                return $q->where('user_id', $dayUserId);
             })->whereDate('created_at', Carbon::today()->format('Y-m-d'))
               ->latest('created_at')
               ->first();
