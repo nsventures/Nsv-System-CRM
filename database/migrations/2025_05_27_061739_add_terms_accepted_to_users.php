@@ -11,6 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
+        // Guarded so existing deployments (where the column is already present)
+        // don't fail with "duplicate column".
+        if (Schema::hasColumn('users', 'terms_accepted')) {
+            return;
+        }
+
         Schema::table('users', function (Blueprint $table) {
             $table->boolean('terms_accepted')->default(false);
         });

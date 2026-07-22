@@ -11,6 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
+        // Guarded so existing deployments (where the table was already created)
+        // don't fail with "table already exists".
+        if (Schema::hasTable('custom_fieldables')) {
+            return;
+        }
+
         Schema::create('custom_fieldables', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('custom_field_id');

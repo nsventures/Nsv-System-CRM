@@ -11,6 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
+        // Guarded so existing deployments (where the column is already present)
+        // don't fail with "duplicate column".
+        if (Schema::hasColumn('leads', 'lead_form_id')) {
+            return;
+        }
+
         Schema::table('leads', function (Blueprint $table) {
             $table->unsignedBigInteger('lead_form_id')->after('id')->nullable();
             $table->foreign('lead_form_id')->references('id')->on('lead_forms')->onDelete('cascade');
