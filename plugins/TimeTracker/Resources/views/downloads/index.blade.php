@@ -107,7 +107,7 @@
                             <!-- Card Footer -->
                             <div class="card-footer border-top bg-transparent pt-3">
                                 <div class="d-flex gap-2">
-                                    <a href="{{ Storage::url($file->file_path) }}" class="btn btn-primary flex-fill"
+                                    <a href="{{ route('downloads.download', $file->id) }}" class="btn btn-primary flex-fill"
                                         target="_blank">
                                         <i class="bx bx-download me-1"></i>
                                         {{ get_label('download','Download') }}
@@ -135,7 +135,7 @@
                                                     <hr class="dropdown-divider">
                                                 </li>
                                                 <li>
-                                                    <a class="dropdown-item" href="#" onclick="navigator.clipboard.writeText('{{ url(Storage::url($file->file_path)) }}'); this.innerHTML='<i class=\'bx bx-check me-1\'></i>Copied!'; setTimeout(() => this.innerHTML='<i class=\'bx bx-copy me-1\'></i>Copy Download Link', 2000)">
+                                                    <a class="dropdown-item" href="#" onclick="navigator.clipboard.writeText('{{ route('downloads.download', $file->id) }}'); this.innerHTML='<i class=\'bx bx-check me-1\'></i>Copied!'; setTimeout(() => this.innerHTML='<i class=\'bx bx-copy me-1\'></i>Copy Download Link', 2000)">
                                                     <i class="bx bx-copy me-1"></i>{{ get_label('copy_download_link','Copy Download Link') }}
                                                 </a>
                                                 </li>

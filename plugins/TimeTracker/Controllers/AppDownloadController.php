@@ -148,9 +148,16 @@ class AppDownloadController extends Controller
     public function download($id)
     {
         $app = AppDownload::findOrFail($id);
+
+        // Files live on the public disk (storage/app/public/app_downloads) — always
+        // read them from that disk explicitly. The default disk follows the media
+        // storage setting and may point at S3, which never holds these uploads.
+        if (!$app->file_path || !Storage::disk('public')->exists($app->file_path)) {
+            abort(404, 'This file is no longer available.');
+        }
+
         $app->increment('download_count');
 
-        // Files live on the public disk (storage/app/public/app_downloads).
         return Storage::disk('public')->download($app->file_path);
     }
 
