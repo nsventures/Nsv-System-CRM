@@ -286,20 +286,45 @@ class DashboardController extends Controller
             }
         }
 
-        if ($breakStartTime && $referenceNow->greaterThanOrEqualTo($breakStartTime)) {
-            $metrics['break_time'] += $breakStartTime->diffInSeconds($referenceNow);
+        // Where should a state that was never closed stop accruing?
+        //
+        // Previously these ran all the way to "now", so a break/idle/manual state
+        // opened weeks ago and never stopped kept counting forever — which is how
+        // break time (536h) could exceed total work time (137h) and manual
+        // processing could reach 1200h+.
+        //
+        // For TODAY we still accrue to now (the state may genuinely be ongoing).
+        // For a PAST day we cap at the last event actually recorded that day —
+        // beyond that there is no evidence the state continued. This mirrors the
+        // cap the work_time branch above already applies.
+        $lastLogForDay = $sortedLogs->last();
+        $lastLogTs = $lastLogForDay
+            ? ($lastLogForDay->timestamp instanceof Carbon
+                ? $lastLogForDay->timestamp->copy()
+                : Carbon::parse($lastLogForDay->timestamp))
+            : null;
+
+        $tz = $this->settingsTimezone();
+        $dayIsToday = $lastLogTs
+            ? $lastLogTs->copy()->setTimezone($tz)->isSameDay(Carbon::now($tz))
+            : false;
+
+        $openCap = $dayIsToday ? $referenceNow : ($lastLogTs ?? $referenceNow);
+
+        if ($breakStartTime && $openCap->greaterThanOrEqualTo($breakStartTime)) {
+            $metrics['break_time'] += $breakStartTime->diffInSeconds($openCap);
         }
 
-        if ($idleStartTime && $referenceNow->greaterThanOrEqualTo($idleStartTime)) {
-            $metrics['idle_time'] += $idleStartTime->diffInSeconds($referenceNow);
+        if ($idleStartTime && $openCap->greaterThanOrEqualTo($idleStartTime)) {
+            $metrics['idle_time'] += $idleStartTime->diffInSeconds($openCap);
         }
 
-        if ($manualStartTime && $referenceNow->greaterThanOrEqualTo($manualStartTime)) {
-            $metrics['manual_time'] += $manualStartTime->diffInSeconds($referenceNow);
+        if ($manualStartTime && $openCap->greaterThanOrEqualTo($manualStartTime)) {
+            $metrics['manual_time'] += $manualStartTime->diffInSeconds($openCap);
         }
 
-        if ($manualProcessingStartTime && $referenceNow->greaterThanOrEqualTo($manualProcessingStartTime)) {
-            $metrics['manual_processing_time'] += $manualProcessingStartTime->diffInSeconds($referenceNow);
+        if ($manualProcessingStartTime && $openCap->greaterThanOrEqualTo($manualProcessingStartTime)) {
+            $metrics['manual_processing_time'] += $manualProcessingStartTime->diffInSeconds($openCap);
         }
 
         // Calculate active time - subtract all tracked activities from work time

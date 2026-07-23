@@ -32,3 +32,6 @@ bootstrap/cache/*.php
 Thumbs.db
 # Vite dev-server marker (must never be deployed)
 /public/hot
+
+# Local DB dumps / query exports (never commit production data)
+*.sql
