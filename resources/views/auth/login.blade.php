@@ -1,5 +1,61 @@
 @extends('layout')
 <title>{{ get_label('login', 'Login') }} - {{ $general_settings['company_title'] }}</title>
+
+@section('page_styles')
+    <style>
+        /* Login background: client logo wall, softened so the form stays legible.
+           Scoped to the auth pages via page_styles, so nothing else is affected. */
+        .authentication-wrapper::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            background-image: url("{{ asset('assets/img/backgrounds/bg_login.png') }}");
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            opacity: .20;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        /* Keep the form above the watermark */
+        .authentication-wrapper,
+        .authentication-inner {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Let the card clearly float above the logo wall */
+        .authentication-inner .card {
+            background-color: #fff;
+            border: 1px solid rgba(16, 24, 40, .06);
+            box-shadow: 0 18px 45px rgba(16, 24, 40, .14), 0 2px 6px rgba(16, 24, 40, .06);
+        }
+
+        /* On narrow screens `cover` would zoom into one or two logos — fit the grid instead */
+        @media (max-width: 768px) {
+            .authentication-wrapper::before {
+                background-size: contain;
+                opacity: .14;
+            }
+        }
+
+        /* Dark mode: dim the (white) artwork and keep the card readable */
+        [data-theme="dark"] .authentication-wrapper::before,
+        .dark-style .authentication-wrapper::before {
+            opacity: .10;
+            filter: invert(1) hue-rotate(180deg);
+        }
+
+        [data-theme="dark"] .authentication-inner .card,
+        .dark-style .authentication-inner .card {
+            background-color: #2b2c40;
+            border-color: rgba(255, 255, 255, .08);
+            box-shadow: 0 18px 45px rgba(0, 0, 0, .45);
+        }
+    </style>
+@endsection
+
 @section('content')
     <!-- Content -->
     <div class="container-fluid">
