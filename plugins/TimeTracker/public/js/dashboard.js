@@ -164,9 +164,9 @@ $(function () {
             manual_time: { icon: 'bxs-keyboard', color: 'info', title: 'Manual Time', description: 'Manually entered time' },
             break_time: { icon: 'bx-coffee', color: 'warning', title: 'Break Time', description: 'Recorded break periods' },
             idle_time: { icon: 'bx-pause-circle', color: 'secondary', title: 'Idle Time', description: 'Periods of inactivity' },
-            productive_time: { icon: 'bx-check-circle', color: 'success', title: 'Productive Time', description: 'Active work time' },
-            unproductive_time: { icon: 'bx-x-circle', color: 'danger', title: 'Unproductive Time', description: 'Non-productive activities' },
-            utilization: { icon: 'bx-tachometer', color: 'primary', title: 'Utilization Rate', description: 'Productivity efficiency' },
+            productive_time: { icon: 'bx-check-circle', color: 'success', title: 'Productive Time (Active + Manual)', description: 'Active work time' },
+            unproductive_time: { icon: 'bx-x-circle', color: 'danger', title: 'Unproductive Time (Idle + Break)', description: 'Non-productive activities' },
+            utilization: { icon: 'bx-tachometer', color: 'primary', title: 'Utilization Rate (%)', description: 'Productivity efficiency' },
             neutral_time: { icon: 'bx-adjust', color: 'secondary', title: 'Neutral Time', description: 'Uncategorized time' },
             manual_processing_time: { icon: 'bx-time', color: 'info', title: 'Manual Processing Time', description: 'Time spent on manual processing' }
         };
